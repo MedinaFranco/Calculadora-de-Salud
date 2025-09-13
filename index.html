@@ -14,6 +14,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #FDFBF6;
             color: #333333;
+            padding-top: 80px; /* Espacio para el header fijo */
         }
         .chart-container {
             position: relative;
@@ -24,1020 +25,461 @@
             height: 350px;
             max-height: 400px;
         }
-        .input-group {
-            @apply flex flex-col mb-4;
-        }
-        .input-group label {
-            @apply text-sm font-bold text-gray-700 mb-1;
-        }
-        .input-group input, .input-group select, .input-group textarea {
-            @apply w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2;
-        }
-        .warning-box {
-            @apply bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative;
-        }
-        .hidden {
-            display: none !important;
-        }
-        /* Efecto de zoom interactivo */
+        .input-group { @apply flex flex-col mb-4; }
+        .input-group label { @apply text-base font-bold text-gray-700 mb-1; }
+        .input-group input, .input-group select, .input-group textarea { @apply w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2; }
+        .hidden { display: none !important; }
+
         .interactive-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .interactive-card:hover {
             transform: scale(1.03);
-            @apply shadow-xl; /* Usando una sombra más pronunciada de Tailwind */
+            @apply shadow-xl;
         }
-        /* Ocultar elementos en la vista de impresión */
+
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
         @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: #fff;
-            }
-            .w-full.max-w-6xl.bg-white.rounded-xl.shadow-lg {
-                box-shadow: none !important;
-                border: none !important;
-            }
+            .no-print { display: none !important; }
+            body { background-color: #fff; padding-top: 0; }
+            .printable-content { box-shadow: none !important; border: none !important; }
         }
     </style>
 </head>
-<body class="flex flex-col items-center p-4 sm:p-6 md:p-10">
-    <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
-        <!-- Encabezado de la página -->
-        <header class="text-center mb-8 no-print">
-            <h1 class="text-3xl md:text-5xl font-bold text-[#6B8E23] mb-2">Calculadora de Salud Integral</h1>
-            <p class="text-md text-gray-600">Creado por Luis A. Medina Franco</p>
-        </header>
+<body class="bg-[#FDFBF6]">
 
-        <!-- Mensaje de propósito -->
-        <div class="text-center mb-8 text-md text-gray-700 leading-relaxed no-print">
-            <p>
-                Esta herramienta es un apoyo para ti, no un reemplazo para tu médico. El objetivo es hacerte partícipe de tu salud y ofrecerte datos para que puedas tener una conversación más informada con tu profesional de la salud. Te invito a usar estos resultados como una guía, una motivación para tomar el control y un punto de partida para que, en conjunto con tu médico, puedas tomar las riendas de tu bienestar.
-            </p>
+    <!-- ===== ENCABEZADO FIJO Y NAVEGACIÓN ===== -->
+    <header class="fixed top-0 left-0 w-full bg-[#FDFBF6] bg-opacity-90 backdrop-blur-sm shadow-md z-50 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Título a la Izquierda -->
+                <div class="flex-shrink-0">
+                    <a href="#" class="nav-link" data-section="inicio-section">
+                        <h1 class="text-xl md:text-2xl font-bold text-[#6B8E23]">Calculadora de Salud Integral</h1>
+                        <p class="text-xs text-gray-600 font-normal">Creado por Luis A. Medina Franco</p>
+                    </a>
+                </div>
+                <!-- Menú para pantallas grandes -->
+                <!-- EXPLICACIÓN: La clase 'hidden' lo oculta en móviles. La clase 'md:block' lo muestra en pantallas medianas ('md') en adelante. -->
+                <div class="hidden">
+                    <nav class="flex items-center space-x-6">
+                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="inicio-section">Inicio</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="quien-soy-section">¿Quién Soy?</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="metricas-section">Métricas</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="calculadora-section">Calculadora</a>
+                    </nav>
+                </div>
+                <!-- Menú Hamburguesa a la Derecha -->
+                <!-- EXPLICACIÓN: La clase 'flex' lo muestra en móviles. La clase 'md:hidden' lo oculta en pantallas medianas ('md') en adelante. -->
+                <div class="flex">
+                    <button id="menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-[#F7F9F4] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#6B8E23]">
+                        <span class="sr-only">Abrir menú</span>
+                        <svg id="menu-open-icon" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="menu-close-icon" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
+        <!-- Menú desplegable para móviles -->
+        <div id="mobile-menu" class="bg-white shadow-lg absolute w-full transform -translate-x-full">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="inicio-section">Inicio</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="quien-soy-section">¿Quién Soy?</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="metricas-section">Métricas</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-white bg-[#6B8E23] hover:bg-[#58751d]" data-section="calculadora-section">Calculadora</a>
+            </div>
+        </div>
+    </header>
 
-        <!-- Mensaje informativo inicial -->
-        <section id="disclaimer-intro" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg mb-8 no-print">
-             <div class="ml-3">
-                <h3 class="text-base font-bold mb-1">Nota Importante</h3>
-                <p class="text-sm">Si no tienes todos los datos, puedes usar los que tengas y la herramienta estimará las medidas correspondientes. Sin embargo, se sugiere utilizar todos los datos posibles para obtener una aproximación más precisa.</p>
+    <!-- ===== CONTENEDOR PRINCIPAL DE SECCIONES ===== -->
+    <main class="w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-10 pb-20">
+
+        <!-- ===== SECCIÓN: ¿QUIÉN SOY? ===== -->
+        <section id="quien-soy-section" class="page-section hidden bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
+            <div class="text-center">
+                 <h2 class="text-3xl font-bold text-[#6B8E23] mb-4">¡Hola, soy Luis!</h2>
+            </div>
+             <div class="text-lg text-gray-700 leading-relaxed space-y-4">
+               <p>
+                    Soy estudiante de medicina en la Universidad de Carabobo, en el corazón de Venezuela, y me apasiona explorar la encrucijada donde la salud, la tecnología y la humanidad convergen. Esta herramienta no es solo un ejercicio académico, ni una simple interfaz de cálculo. Es una extensión de una inquietud más profunda: comprender al ser humano a través de sus datos, sin reducirlo a ellos.
+                </p>
+                <p>
+                    La medicina, para mí, no es únicamente diagnóstico y tratamiento. Es también escucha, interpretación, contexto. Esta plataforma intenta ser eso: un espacio donde lo cuantitativo se encuentra con lo cualitativo, donde el número se convierte en narrativa.
+                </p>
+                <p>
+                    Cada fórmula aquí encierra una pregunta, cada resultado puede ser el inicio de una reflexión. Porque detrás de cada cifra hay un cuerpo, una historia, una voluntad.
+                </p>
+                 <p>
+                    Si esta herramienta te orienta, si te invita a pensar, si te ofrece un instante de claridad en medio del ruido, entonces ya ha cumplido su propósito.
+                </p>
+                 <p>
+                    Y si además logra que te veas con otros ojos —más informados, más compasivos, más tuyos— entonces habrá valido la pena construirla.
+                </p>
             </div>
         </section>
 
-        <!-- Sección de entrada de datos -->
-        <section id="inputs" class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
-            <h2 class="col-span-1 md:col-span-2 lg:col-span-3 text-2xl font-semibold text-gray-800 mb-2 text-center">Tus Datos Personales</h2>
-            
-            <!-- Datos Generales -->
-            <div class="input-group">
-                <label for="altura">Altura (cm)</label>
-                <input type="number" id="altura" placeholder="Ej: 175">
+        <!-- ===== SECCIÓN: INICIO ===== -->
+        <section id="inicio-section" class="page-section bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
+            <div class="text-center">
+                 <h2 class="text-3xl font-bold text-[#6B8E23] mb-4">Una Herramienta para Ti y tu Médico</h2>
             </div>
-            <div class="input-group">
-                <label for="peso">Peso Actual (kg)</label>
-                <input type="number" id="peso" placeholder="Ej: 70">
-            </div>
-            <div class="input-group">
-                <label for="edad">Edad</label>
-                <input type="number" id="edad" placeholder="Ej: 30">
-            </div>
-            <div class="input-group">
-                <label for="sexo">Sexo</label>
-                <select id="sexo">
-                    <option value="hombre">Hombre</option>
-                    <option value="mujer">Mujer</option>
-                </select>
-            </div>
-            <div id="embarazada-option" class="input-group flex items-center hidden">
-                <input type="checkbox" id="embarazada" class="rounded text-[#6B8E23] focus:ring-[#6B8E23]">
-                <label for="embarazada" class="ml-2 text-sm font-bold text-gray-700">¿Estás embarazada?</label>
-            </div>
-            
-            <!-- Campos específicos para el embarazo -->
-            <div id="pregnancy-inputs" class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                <div class="input-group">
-                    <label for="pre-pregnancy-weight">Peso antes del embarazo (kg)</label>
-                    <input type="number" id="pre-pregnancy-weight" placeholder="Ej: 65">
-                </div>
-                <div class="input-group">
-                    <label for="lmp-date">Fecha de Última Menstruación</label>
-                    <input type="date" id="lmp-date">
-                </div>
-            </div>
-
-            <!-- Campos generales - Visibles por defecto -->
-            <div id="general-inputs" class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Datos Antropométricos Adicionales -->
-                <div class="input-group">
-                    <label for="cintura">Cintura (cm)</label>
-                    <input type="number" id="cintura" placeholder="Ej: 85">
-                </div>
-                <div class="input-group">
-                    <label for="cadera">Cadera (cm)</label>
-                    <input type="number" id="cadera" placeholder="Ej: 95">
-                </div>
-                <div class="input-group">
-                    <label for="cuello">Cuello (cm)</label>
-                    <input type="number" id="cuello" placeholder="Ej: 38">
-                </div>
-                
-                <!-- Datos de Laboratorio -->
-                <div class="input-group">
-                    <label for="trigliceridos">Triglicéridos (mg/dL)</label>
-                    <input type="number" id="trigliceridos" placeholder="Ej: 150">
-                </div>
-                <div class="input-group">
-                    <label for="hdl">Colesterol HDL (mg/dL)</label>
-                    <input type="number" id="hdl" placeholder="Ej: 45">
-                </div>
-                <div class="input-group">
-                    <label for="colesterolTotal">Colesterol Total (mg/dL)</label>
-                    <input type="number" id="colesterolTotal" placeholder="Ej: 180">
-                </div>
-                <div class="input-group">
-                    <label for="creatinina">Creatinina (mg/dL)</label>
-                    <input type="number" id="creatinina" placeholder="Ej: 0.9">
-                </div>
-                <div class="input-group">
-                    <label for="albumina">Albúmina (mg/L)</label>
-                    <input type="number" id="albumina" placeholder="Ej: 15">
-                </div>
-                <div class="input-group">
-                    <label for="ast">AST (U/L)</label>
-                    <input type="number" id="ast" placeholder="Ej: 20">
-                </div>
-                <div class="input-group">
-                    <label for="alt">ALT (U/L)</label>
-                    <input type="number" id="alt" placeholder="Ej: 25">
-                </div>
-                <div class="input-group">
-                    <label for="glicemia">Glicemia en ayunas (mg/dL)</label>
-                    <input type="number" id="glicemia" placeholder="Ej: 80">
-                </div>
-                <div class="input-group">
-                    <label for="insulina">Insulina en ayunas (mIU/L)</label>
-                    <input type="number" id="insulina" placeholder="Ej: 5">
-                </div>
-
-                <!-- Datos de Presión Arterial -->
-                <div class="input-group">
-                    <label for="pas">Presión Arterial Sistólica (PAS, mmHg)</label>
-                    <input type="number" id="pas" placeholder="Ej: 120">
-                </div>
-                <div class="input-group">
-                    <label for="pad">Presión Arterial Diastólica (PAD, mmHg)</label>
-                    <input type="number" id="pad" placeholder="Ej: 80">
-                </div>
-
-                <!-- Datos de Actividad y Nutrición -->
-                <div class="input-group">
-                    <label for="actividad">Nivel de Actividad</label>
-                    <select id="actividad">
-                        <option value="1.2">Sedentario (poco o ningún ejercicio)</option>
-                        <option value="1.375">Ligero (1-3 días a la semana)</option>
-                        <option value="1.55">Moderado (3-5 días a la semana)</option>
-                        <option value="1.725">Alto (6-7 días a la semana)</option>
-                        <option value="1.9">Muy Alto (atletas, trabajo físico)</option>
-                    </select>
-                </div>
-
-                <!-- Gasto Calórico por Actividad Física (Movido desde resultados) -->
-                <div class="input-group col-span-1 md:col-span-2 lg:col-span-3">
-                    <label for="activity-select">Añadir Actividad Específica (Opcional)</label>
-                    <p class="text-sm text-gray-600 mb-2">
-                        Selecciona una actividad para estimar las calorías quemadas por hora, basado en tu peso actual. Esto te ayuda a elegir tu "Nivel de Actividad" general de forma más precisa.
-                    </p>
-                    <select id="activity-select" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label for="anosFumando">Años fumando</label>
-                    <input type="number" id="anosFumando" placeholder="Ej: 10">
-                </div>
-                <div class="input-group">
-                    <label for="cigarrillosDiarios">Cigarrillos diarios</label>
-                    <input type="number" id="cigarrillosDiarios" placeholder="Ej: 5">
-                </div>
-                
-                <!-- Nuevos campos de Bienestar Emocional -->
-                <div class="input-group">
-                    <label for="bienestar-emocional">Bienestar Emocional (1-10)</label>
-                    <select id="bienestar-emocional">
-                        <option value="" disabled selected>Selecciona una opción</option>
-                        <option value="1">1 - Muy bajo</option>
-                        <option value="2">2 - Bajo</option>
-                        <option value="3">3 - Regular</option>
-                        <option value="4">4 - Aceptable</option>
-                        <option value="5">5 - Medio</option>
-                        <option value="6">6 - Bueno</option>
-                        <option value="7">7 - Muy bueno</option>
-                        <option value="8">8 - Excelente</option>
-                        <option value="9">9 - Fantástico</option>
-                        <option value="10">10 - Pleno</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="emocion-principal">Emoción Principal</label>
-                    <input type="text" id="emocion-principal" placeholder="Ej: Alegría, Estrés, Ansiedad">
-                </div>
-
-                <!-- Nuevos campos de Análisis del Sueño -->
-                <div class="input-group">
-                    <label for="horas-sueno">Horas de sueño</label>
-                    <input type="number" id="horas-sueno" placeholder="Ej: 7">
-                </div>
-                <div class="input-group">
-                    <label for="despierta-noche">¿Se despierta durante la noche?</label>
-                    <select id="despierta-noche">
-                        <option value="no">No</option>
-                        <option value="si">Sí</option>
-                    </select>
-                </div>
-                <div id="despierta-noche-detalles" class="hidden col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="input-group">
-                        <label for="veces-despierta">¿Cuántas veces?</label>
-                        <input type="number" id="veces-despierta" placeholder="Ej: 2">
-                    </div>
-                    <div class="input-group">
-                        <label for="porque-despierta">¿Por qué se despierta? (opcional)</label>
-                        <input type="text" id="porque-despierta" placeholder="Ej: Ruido, ir al baño, estrés">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="somnolencia-diurna">Somnolencia durante el día</label>
-                    <select id="somnolencia-diurna">
-                        <option value="nunca">Nunca</option>
-                        <option value="a_veces">A veces</option>
-                        <option value="frecuentemente">Frecuentemente</option>
-                    </select>
-                </div>
+            <div class="text-lg text-gray-700 leading-relaxed space-y-4">
+                <p>
+                    Esta herramienta es un apoyo, no un reemplazo para tu médico. El objetivo es hacerte partícipe activo de tu salud, ofreciéndote datos para que puedas tener una conversación más rica e informada con tu profesional de confianza.
+                </p>
+                <p>
+                    <span class="font-semibold">Para los pacientes,</span> es una guía, una motivación para tomar el control y un punto de partida para entender mejor su cuerpo. <span class="font-semibold">Para los profesionales de la salud,</span> es un recurso que puede agilizar la recopilación de índices y facilitar la educación del paciente, permitiendo visualizar rápidamente métricas clave.
+                </p>
+                <p>
+                    El verdadero poder de esta calculadora se manifiesta en el trabajo en conjunto. Les invitamos —tanto a pacientes como a profesionales— a usar estos resultados como una base para el diálogo. Que sirvan como punto de partida para que, en un verdadero equipo, puedan tomar las riendas del bienestar de una forma más consciente, colaborativa y, en definitiva, más humana.
+                </p>
             </div>
         </section>
 
-        <!-- Sección de resultados -->
-        <section id="results-section" class="mb-10">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Tus Indicadores de Salud</h2>
-
-            <!-- Explicación de cambio de métricas en embarazo -->
-            <div id="pregnancy-explanation" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg mb-8 no-print hidden">
+        <!-- ===== SECCIÓN: MÉTRICAS ===== -->
+        <section id="metricas-section" class="page-section hidden bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
+            <h2 class="text-3xl font-bold text-center text-[#6B8E23] mb-8">Glosario de Métricas de Salud</h2>
+            <div class="space-y-4">
+                <!-- GENERALES -->
                 <div>
-                    <h3 class="text-base font-bold mb-1">Información importante sobre el embarazo</h3>
-                    <p class="text-sm">Al marcar esta opción, los índices estándar como el IMC, IAC y otros desaparecen porque sus valores de referencia no son aplicables durante el embarazo. En su lugar, se utilizan métricas específicas como la ganancia de peso gestacional y la semana de gestación, que son cruciales para el seguimiento prenatal.</p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-[#6B8E23] pb-2">Generales</h3>
+                    <div id="generales-accordion" class="space-y-2"></div>
+                </div>
+
+                <!-- OBSTÉTRICAS -->
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4 border-b-2 border-[#6B8E23] pb-2">Obstétricas</h3>
+                    <div id="obstetricas-accordion" class="space-y-2"></div>
+                </div>
+
+                <!-- PEDIÁTRICAS -->
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4 border-b-2 border-[#6B8E23] pb-2">Pediátricas</h3>
+                    <div id="pediatricas-accordion" class="space-y-2"></div>
                 </div>
             </div>
-            
-            <!-- Resultados para Embarazo -->
-            <div id="pregnancy-results" class="hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">Semana Gestacional y Fecha Estimada de Parto</h3>
-                        <p id="gestational-week" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="edd-date" class="text-md text-gray-700">-</p>
-                        <p id="gestational-interpretation" class="text-sm text-gray-600 mt-2"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">Ganancia de Peso Recomendada</h3>
-                        <p id="recommended-gain" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="current-gain" class="text-md text-gray-700">-</p>
-                        <p id="gain-interpretation" class="text-sm text-gray-600 mt-2"></p>
-                    </div>
-                </div>
-                <div class="text-center mt-6 text-sm p-4 bg-gray-100 rounded-lg">
-                    <p><strong>Nota:</strong> Estas métricas son solo una guía. La ganancia de peso y el desarrollo del bebé deben ser monitoreados por tu médico.</p>
-                </div>
-            </div>
-            
-            <!-- Gráfico y Resultados Generales -->
-            <div id="general-results">
-                <div class="chart-container mb-10 no-print">
-                    <canvas id="healthChart"></canvas>
-                </div>
-                <div id="results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Composición Corporal y Riesgo Metabólico -->
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">1. IMC (Índice de Masa Corporal)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Relación entre tu peso y altura.</p>
-                        <p id="imc-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="imc-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">2. IAC (Índice de Adiposidad Corporal)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estima el porcentaje de grasa corporal sin el peso.</p>
-                        <p id="iac-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="iac-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">3. ABSI (Índice de Forma Corporal)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Relaciona cintura, altura e IMC para el riesgo.</p>
-                        <p id="absi-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="absi-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">4. BRI (Índice de Redondez Corporal)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Evalúa la forma del cuerpo y la grasa visceral.</p>
-                        <p id="bri-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="bri-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">5. VAI (Índice de Adiposidad Visceral)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estima la función de la grasa visceral y el riesgo metabólico.</p>
-                        <p id="vai-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="vai-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">6. Grasa Corporal (%)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Porcentaje de grasa corporal estimado.</p>
-                        <p id="grasa-corporal-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="grasa-corporal-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">7. FFMI (Índice de Masa Libre de Grasa)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estima la cantidad de masa muscular.</p>
-                        <p id="ffmi-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="ffmi-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">8. Peso Ideal y Ajustado</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estimaciones de peso ideal y ajustado.</p>
-                        <p id="peso-ideal-value" class="text-md font-bold text-gray-800 mb-1">-</p>
-                        <p id="peso-ajustado-value" class="text-md font-bold text-gray-800"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">9. Índices de Distribución</h3>
-                        <p class="text-sm text-gray-600 mb-2">ICC e ICA para el riesgo de salud.</p>
-                        <p id="icc-value" class="text-md font-bold text-gray-800 mb-1">-</p>
-                        <p id="ica-value" class="text-md font-bold text-gray-800"></p>
-                    </div>
+        </section>
 
-                    <!-- Metabolismo y Nutrición -->
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">10. Tasa Metabólica Basal (TMB)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Calorías que quemas en reposo (Mifflin-St Jeor).</p>
-                        <p id="tmb-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p class="text-sm text-gray-700">Calorías en Reposo</p>
+        <!-- ===== SECCIÓN: CALCULADORA ===== -->
+        <section id="calculadora-section" class="page-section hidden">
+            <div class="w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8 printable-content">
+                <!-- Selector de Calculadora -->
+                <div class="flex justify-center mb-8 no-print">
+                    <div class="flex rounded-md shadow-sm w-full max-w-sm mx-auto">
+                        <button id="show-adults-btn" class="flex-1 px-4 py-2 text-sm font-medium transition-colors duration-200 border border-gray-200 rounded-l-lg">
+                            Adultos
+                        </button>
+                        <button id="show-pediatric-btn" class="flex-1 px-4 py-2 text-sm font-medium transition-colors duration-200 border-t border-b border-r border-gray-200 rounded-r-lg">
+                            Pediátricos
+                        </button>
                     </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">11. Gasto Energético Total</h3>
-                        <p class="text-sm text-gray-600 mb-2">Calorías que quemas en total según tu actividad.</p>
-                        <p id="get-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p class="text-sm text-gray-700">Calorías Diarias Totales</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">12. Gasto Calórico por Actividad Física</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estimación para la actividad específica seleccionada.</p>
-                        <p id="calories-burned-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="calories-burned-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">13. Macronutrientes</h3>
-                        <p class="text-sm text-gray-600 mb-2">Rangos recomendados (Proteínas: 1.6-2.5g/kg, Grasas: 20-30%, Carbohidratos: 40-55%).</p>
-                        <p id="macros-value" class="text-md font-bold text-gray-800"></p>
-                    </div>
+                </div>
 
-                    <!-- Riesgos de Salud Crónica -->
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">14. HOMA-IR</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estimación de resistencia a la insulina.</p>
-                        <p id="homa-ir-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="homa-ir-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">15. Relación AST/ALT</h3>
-                        <p class="text-sm text-gray-600 mb-2">Para evaluar la salud del hígado.</p>
-                        <p id="ast-alt-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="ast-alt-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">16. Presión Arterial Media (PAM)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Presión media del sistema circulatorio.</p>
-                        <p id="pam-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="pam-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">17. TFG Estimada (CKD-EPI)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Tasa de Filtración Glomerular para la salud renal.</p>
-                        <p id="tfge-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="tfge-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">18. Riesgo Cardiovascular (ASCVD)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estimación simplificada del riesgo a 10 años.</p>
-                        <p id="ascvd-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="ascvd-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    
-                    <!-- Nuevos Indicadores -->
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">19. IPA (Índice Paquetes/Año)</h3>
-                        <p class="text-sm text-gray-600 mb-2">Estimación del riesgo acumulado de EPOC.</p>
-                        <p id="ipa-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="ipa-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">20. Análisis del Sueño</h3>
-                        <p class="text-sm text-gray-600 mb-2">Análisis detallado de tus hábitos de sueño.</p>
-                        <p id="sueno-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="sueno-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">21. Bienestar Emocional</h3>
-                        <p class="text-sm text-gray-600 mb-2">Valoración de tu estado emocional actual.</p>
-                        <p id="bienestar-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p>
-                        <p id="bienestar-interpretation" class="text-md text-gray-700"></p>
-                    </div>
-                    
-                    <!-- Salud Pediátrica (Simplified) -->
-                    <div class="bg-gray-50 p-6 rounded-lg shadow col-span-1 md:col-span-2 lg:col-span-3 interactive-card">
-                        <h3 class="text-xl font-semibold mb-2">22. Percentiles Pediátricos (Simplificado)</h3>
-                        <p class="text-sm text-gray-600 mb-2">
-                            Esta es una demostración simplificada. Para un cálculo clínico preciso, utiliza las tablas oficiales de la OMS o CDC proporcionadas por tu médico.
-                        </p>
-                        <p id="pediatric-value" class="text-md font-bold text-gray-800"></p>
-                        <p id="pediatric-interpretation" class="text-md text-gray-700"></p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 no-print">
-                            <div class="input-group">
-                                <label for="pediatric-edad-meses">Edad (meses)</label>
-                                <input type="number" id="pediatric-edad-meses" placeholder="Ej: 12">
+                <!-- ===== CALCULADORA DE ADULTOS ===== -->
+                <div id="adults-calculator">
+                     <section id="disclaimer-intro" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg mb-8 no-print">
+                         <div class="ml-3">
+                             <h3 class="text-base font-bold mb-1">Nota Importante</h3>
+                             <p class="text-sm">Si no tienes todos los datos, puedes usar los que tengas. Sin embargo, se sugiere utilizar todos los datos posibles para obtener una aproximación más precisa.</p>
+                         </div>
+                     </section>
+
+                    <section id="inputs" class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
+                        <h2 class="col-span-1 md:col-span-2 lg:col-span-3 text-2xl font-semibold text-gray-800 mb-2 text-center">Tus Datos Personales</h2>
+                        <div class="input-group"><label for="altura">Altura (cm)</label><input type="number" id="altura" placeholder="Ej: 175"></div>
+                        <div class="input-group"><label for="peso">Peso Actual (kg)</label><input type="number" id="peso" placeholder="Ej: 70"></div>
+                        <div class="input-group"><label for="edad">Edad</label><input type="number" id="edad" placeholder="Ej: 30"></div>
+                        <div class="input-group"><label for="sexo">Sexo</label><select id="sexo"><option value="hombre">Hombre</option><option value="mujer">Mujer</option></select></div>
+                        <div class="input-group flex items-center"><input type="checkbox" id="diabetes" class="rounded text-[#6B8E23] focus:ring-[#6B8E23]"><label for="diabetes" class="ml-2 text-base font-bold text-gray-700">¿Tienes diabetes?</label></div>
+                        <div id="embarazada-option" class="input-group flex items-center hidden"><input type="checkbox" id="embarazada" class="rounded text-[#6B8E23] focus:ring-[#6B8E23]"><label for="embarazada" class="ml-2 text-base font-bold text-gray-700">¿Estás embarazada?</label></div>
+                        
+                        <!-- Nuevos campos movidos aquí para estar siempre visibles -->
+                        <div class="input-group"><label for="bienestar-emocional">Bienestar Emocional (1-10)</label><select id="bienestar-emocional"><option value="" disabled selected>Selecciona</option><option value="1">1 - Muy bajo</option><option value="2">2 - Bajo</option><option value="3">3 - Regular</option><option value="4">4 - Aceptable</option><option value="5">5 - Medio</option><option value="6">6 - Bueno</option><option value="7">7 - Muy bueno</option><option value="8">8 - Excelente</option><option value="9">9 - Fantástico</option><option value="10">10 - Pleno</option></select></div>
+                        <div class="input-group"><label for="emocion-principal">Emoción Principal</label><input type="text" id="emocion-principal" placeholder="Ej: Alegría, Estrés"></div>
+                        <div class="input-group"><label for="horas-sueno">Horas de sueño</label><input type="number" id="horas-sueno" placeholder="Ej: 7"></div>
+                        <div class="input-group"><label for="despierta-noche">¿Se despierta en la noche?</label><select id="despierta-noche"><option value="no">No</option><option value="si">Sí</option></select></div>
+                        <div id="despierta-noche-detalles" class="hidden col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6"><div class="input-group"><label for="veces-despierta">¿Cuántas veces?</label><input type="number" id="veces-despierta" placeholder="Ej: 2"></div><div class="input-group"><label for="porque-despierta">¿Por qué? (opcional)</label><input type="text" id="porque-despierta" placeholder="Ej: Ruido, ir al baño"></div></div>
+                        <div class="input-group"><label for="somnolencia-diurna">Somnolencia durante el día</label><select id="somnolencia-diurna"><option value="nunca">Nunca</option><option value="a_veces">A veces</option><option value="frecuentemente">Frecuentemente</option></select></div>
+
+                        <div id="pregnancy-inputs" class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                            <h3 class="col-span-full text-xl font-semibold text-gray-800 mt-4 -mb-2">Datos Obstétricos</h3>
+                            <div class="input-group"><label for="pre-pregnancy-weight">Peso antes del embarazo (kg)</label><input type="number" id="pre-pregnancy-weight" placeholder="Ej: 65"></div>
+                            <div class="input-group"><label for="lmp-date">Fecha de Última Menstruación</label><input type="date" id="lmp-date"></div>
+                            <div class="input-group"><label for="vbac-parto-vaginal-previo">¿Parto vaginal previo?</label><input type="checkbox" id="vbac-parto-vaginal-previo" class="rounded text-[#6B8E23] focus:ring-[#6B8E23]"></div>
+                            <h4 class="col-span-full text-lg font-semibold text-gray-700 mt-2">Biometría Fetal (Ultrasonido)</h4>
+                            <div class="input-group"><label for="fetal-dbp">Diámetro Biparietal (DBP, mm)</label><input type="number" id="fetal-dbp" placeholder="Ej: 80"></div>
+                            <div class="input-group"><label for="fetal-cc">Circunferencia Cefálica (CC, mm)</label><input type="number" id="fetal-cc" placeholder="Ej: 300"></div>
+                            <div class="input-group"><label for="fetal-ca">Circunferencia Abdominal (CA, mm)</label><input type="number" id="fetal-ca" placeholder="Ej: 280"></div>
+                            <div class="input-group"><label for="fetal-lf">Longitud del Fémur (LF, mm)</label><input type="number" id="fetal-lf" placeholder="Ej: 60"></div>
+                            <h4 class="col-span-full text-lg font-semibold text-gray-700 mt-2">Puntuación de Bishop</h4>
+                            <div class="input-group"><label for="bishop-dilatacion">Dilatación (cm)</label><select id="bishop-dilatacion"><option value="0">0</option><option value="1">1-2</option><option value="2">3-4</option><option value="3">>=5</option></select></div>
+                            <div class="input-group"><label for="bishop-borramiento">Borramiento (%)</label><select id="bishop-borramiento"><option value="0">0-30</option><option value="1">40-50</option><option value="2">60-70</option><option value="3">>=80</option></select></div>
+                            <div class="input-group"><label for="bishop-consistencia">Consistencia</label><select id="bishop-consistencia"><option value="0">Firme</option><option value="1">Media</option><option value="2">Blanda</option></select></div>
+                            <div class="input-group"><label for="bishop-posicion">Posición</label><select id="bishop-posicion"><option value="0">Posterior</option><option value="1">Media</option><option value="2">Anterior</option></select></div>
+                            <div class="input-group"><label for="bishop-estacion">Estación Fetal</label><select id="bishop-estacion"><option value="0">-3</option><option value="1">-2</option><option value="2">-1, 0</option><option value="3">+1, +2</option></select></div>
+                        </div>
+
+                        <div id="general-inputs" class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="input-group"><label for="cintura">Cintura (cm)</label><input type="number" id="cintura" placeholder="Ej: 85"></div>
+                            <div class="input-group"><label for="cadera">Cadera (cm)</label><input type="number" id="cadera" placeholder="Ej: 95"></div>
+                            <div class="input-group"><label for="cuello">Cuello (cm)</label><input type="number" id="cuello" placeholder="Ej: 38"></div>
+                            <div class="input-group"><label for="trigliceridos">Triglicéridos (mg/dL)</label><input type="number" id="trigliceridos" placeholder="Ej: 150"></div>
+                            <div class="input-group"><label for="hdl">Colesterol HDL (mg/dL)</label><input type="number" id="hdl" placeholder="Ej: 45"></div>
+                            <div class="input-group"><label for="colesterolTotal">Colesterol Total (mg/dL)</label><input type="number" id="colesterolTotal" placeholder="Ej: 180"></div>
+                            <div class="input-group"><label for="creatinina">Creatinina (mg/dL)</label><input type="number" id="creatinina" placeholder="Ej: 0.9"></div>
+                            <div class="input-group"><label for="albumina">Albúmina (mg/L)</label><input type="number" id="albumina" placeholder="Ej: 15"></div>
+                            <div class="input-group"><label for="ast">AST (U/L)</label><input type="number" id="ast" placeholder="Ej: 20"></div>
+                            <div class="input-group"><label for="alt">ALT (U/L)</label><input type="number" id="alt" placeholder="Ej: 25"></div>
+                            <div class="input-group"><label for="glicemia">Glicemia en ayunas (mg/dL)</label><input type="number" id="glicemia" placeholder="Ej: 80"></div>
+                            <div class="input-group"><label for="insulina">Insulina en ayunas (mIU/L)</label><input type="number" id="insulina" placeholder="Ej: 5"></div>
+                            <div class="input-group"><label for="pas">Presión Arterial Sistólica (PAS, mmHg)</label><input type="number" id="pas" placeholder="Ej: 120"></div>
+                            <div class="input-group"><label for="pad">Presión Arterial Diastólica (PAD, mmHg)</label><input type="number" id="pad" placeholder="Ej: 80"></div>
+                            <div class="input-group"><label for="actividad">Nivel de Actividad</label><select id="actividad"><option value="1.2">Sedentario</option><option value="1.375">Ligero (1-3 días/sem)</option><option value="1.55">Moderado (3-5 días/sem)</option><option value="1.725">Alto (6-7 días/sem)</option><option value="1.9">Muy Alto (atletas)</option></select></div>
+                            <div class="input-group col-span-1 md:col-span-2 lg:col-span-3"><label for="activity-select">Añadir Actividad Específica (Opcional)</label><p class="text-sm text-gray-600 mb-2">Selecciona una actividad para estimar las calorías quemadas por hora, basado en tu peso actual.</p><select id="activity-select" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2"></select></div>
+                            <div class="input-group"><label for="anosFumando">Años fumando</label><input type="number" id="anosFumando" placeholder="Ej: 10"></div>
+                            <div class="input-group"><label for="cigarrillosDiarios">Cigarrillos diarios</label><input type="number" id="cigarrillosDiarios" placeholder="Ej: 5"></div>
+                        </div>
+                    </section>
+
+                    <section id="results-section" class="mb-10">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Tus Indicadores de Salud</h2>
+                        <div id="pregnancy-explanation" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg mb-8 no-print hidden"><div><h3 class="text-base font-bold mb-1">Información importante sobre el embarazo</h3><p class="text-sm">Al marcar esta opción, los índices estándar como el IMC o IAC desaparecen porque no son aplicables durante el embarazo. En su lugar, se usan métricas prenatales.</p></div></div>
+                        <div id="pregnancy-results" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Semana Gestacional y FPP</h3><p id="gestational-week" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="edd-date" class="text-md text-gray-700">-</p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Ganancia de Peso Recomendada</h3><p id="recommended-gain" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="current-gain" class="text-md text-gray-700">-</p><p id="gain-interpretation" class="text-sm text-gray-600 mt-2"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Peso Fetal Estimado (Hadlock)</h3><p id="efw-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="efw-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Puntuación de Bishop</h3><p id="bishop-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="bishop-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Probabilidad de Éxito de PVDC</h3><p id="vbac-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="vbac-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Análisis del Sueño</h3><p id="pregnancy-sueno-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="pregnancy-sueno-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Bienestar Emocional</h3><p id="pregnancy-bienestar-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="pregnancy-bienestar-interpretation" class="text-md text-gray-700"></p></div></div></div>
+                        <div id="general-results">
+                            <div class="chart-container mb-10 no-print"><canvas id="healthChart"></canvas></div>
+                            <div id="results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                        </div>
+                        <div id="macronutrient-note" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg my-8"><h3 class="text-base font-bold mb-2">Nota sobre Macronutrientes</h3><p class="text-sm">Estos rangos son un punto de partida. La distribución ideal es personal y debe ser ajustada a tus objetivos (aumento muscular, pérdida de grasa), salud metabólica y tolerancia. Consulta a un profesional para un plan adaptado a ti.</p></div>
+                        <section id="action-section" class="mt-12 p-6 rounded-lg bg-[#F7F9F4] no-print"><h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Toma el Control de tu Salud</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Sugerencias Personalizadas</h3><ul id="action-items" class="list-disc list-inside space-y-2 text-gray-700"></ul></div><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para tu Médico</h3><p class="text-sm text-gray-600 mb-3">Utiliza este espacio para anotar preguntas o síntomas que quieras discutir con tu profesional.</p><textarea id="doctor-notes" rows="6" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-3 text-sm" placeholder="Ej: Mi presión ha estado más alta por las mañanas..."></textarea></div></div></section>
+                        <div class="text-center mt-8 no-print"><button id="copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar Resultados</button><p class="text-sm text-gray-500 mt-2">Guarda una copia para monitorear tu progreso.</p></div>
+                    </section>
+                </div>
+
+                <!-- ===== CALCULADORA PEDIÁTRICA ===== -->
+                <div id="pediatric-calculator" class="hidden">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Datos del Paciente Pediátrico</h2>
+                    <section class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
+                         <div class="input-group"><label for="pediatric-edad-meses">Edad (meses)</label><input type="number" id="pediatric-edad-meses" placeholder="Ej: 12"></div>
+                        <div class="input-group"><label for="pediatric-peso">Peso (kg)</label><input type="number" id="pediatric-peso" placeholder="Ej: 9.5"></div>
+                        <div class="input-group"><label for="pediatric-altura">Altura (cm)</label><input type="number" id="pediatric-altura" placeholder="Ej: 75"></div>
+                        <div class="input-group"><label for="pediatric-sexo">Sexo</label><select id="pediatric-sexo"><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
+                        <div class="input-group"><label for="pliegue-triceps">Pliegue Tricipital (mm)</label><input type="number" id="pliegue-triceps" placeholder="Ej: 8"></div>
+                        <div class="input-group"><label for="pliegue-subescapular">Pliegue Subescapular (mm)</label><input type="number" id="pliegue-subescapular" placeholder="Ej: 6"></div>
+                    </section>
+                    <section>
+                         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Resultados Pediátricos</h2>
+                         <div id="pediatric-results-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Los resultados pediátricos se inyectarán aquí como tarjetas interactivas -->
+                         </div>
+                    </section>
+                    <section id="pediatric-action-section" class="mt-12 p-6 rounded-lg bg-[#F7F9F4] no-print">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Pasos a Seguir</h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Sugerencias</h3>
+                                <ul id="pediatric-action-items" class="list-disc list-inside space-y-2 text-gray-700">
+                                </ul>
                             </div>
-                            <div class="input-group">
-                                <label for="pediatric-peso">Peso (kg)</label>
-                                <input type="number" id="pediatric-peso" placeholder="Ej: 9.5">
-                            </div>
-                            <div class="input-group">
-                                <label for="pediatric-altura">Altura (cm)</label>
-                                <input type="number" id="pediatric-altura" placeholder="Ej: 75">
-                            </div>
-                            <div class="input-group">
-                                <label for="pediatric-sexo">Sexo</label>
-                                <select id="pediatric-sexo">
-                                    <option value="niño">Niño</option>
-                                    <option value="niña">Niña</option>
-                                </select>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para el Pediatra</h3>
+                                <p class="text-sm text-gray-600 mb-3">Anota aquí preguntas o datos para la próxima consulta.</p>
+                                <textarea id="pediatric-doctor-notes" rows="6" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-3 text-sm" placeholder="Ej: Preguntar sobre la curva de crecimiento..."></textarea>
                             </div>
                         </div>
+                    </section>
+                    <div class="text-center mt-8 no-print">
+                        <button id="pediatric-copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar Resultados</button>
+                        <p class="text-sm text-gray-500 mt-2">Guarda una copia para monitorear el progreso.</p>
                     </div>
                 </div>
-            </div>
-
-            <!-- Nota sobre Macronutrientes movida aquí -->
-            <div class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg my-8">
-                 <h3 class="text-base font-bold mb-2">Nota sobre Macronutrientes</h3>
-                 <p class="text-sm">Estos rangos son un punto de partida basado en guías generales. La distribución ideal es altamente personal y debe ser ajustada según tus objetivos específicos (aumento de masa muscular, pérdida de grasa, rendimiento deportivo), tu salud metabólica (p. ej., sensibilidad a la insulina), y tu tolerancia individual. Por ejemplo, un atleta de resistencia podría necesitar más carbohidratos, mientras que otra persona podría beneficiarse de un ajuste en proteínas y grasas. Consulta siempre a un profesional para un plan adaptado a ti.</p>
-            </div>
-
-            <!-- Secciones de Empoderamiento y Acción -->
-            <section id="action-section" class="mt-12 p-6 rounded-lg bg-[#F7F9F4] no-print">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Toma el Control de tu Salud</h2>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Sección de Sugerencias -->
-                    <div class="bg-white p-6 rounded-lg shadow-sm">
-                        <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Sugerencias Personalizadas</h3>
-                        <ul id="action-items" class="list-disc list-inside space-y-2 text-gray-700">
-                            <!-- El contenido de las sugerencias se inserta aquí por JavaScript -->
-                        </ul>
-                    </div>
-
-                    <!-- Sección de Notas para el Médico -->
-                    <div class="bg-white p-6 rounded-lg shadow-sm">
-                        <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para tu Médico</h3>
-                        <p class="text-sm text-gray-600 mb-3">Utiliza este espacio para anotar preguntas, síntomas o preocupaciones que quieras discutir con tu profesional de la salud.</p>
-                        <textarea id="doctor-notes" rows="6" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-3 text-sm" placeholder="Ej: Mi presión arterial ha estado más alta por las mañanas. ¿Debo cambiar mi medicación?"></textarea>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Botón de Copiar y Nota de Guardado -->
-            <div class="text-center mt-8 no-print">
-                <button id="copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">
-                    Copiar Resultados
-                </button>
-                <p class="text-sm text-gray-500 mt-2">Guarda una copia de tus resultados para monitorear tu progreso a lo largo del tiempo.</p>
             </div>
         </section>
 
-        <!-- Notas de Descargo de Responsabilidad -->
-        <footer class="text-center mt-12 text-gray-500">
-            <div class="mb-4 text-sm p-4 bg-gray-100 rounded-lg">
-                <p><strong>Nota de Descargo de Responsabilidad:</strong> Esta página no sustituye una evaluación médica y es solo una aproximación para conocer tu salud y, por ende, los riesgos asociados a tu condición. Para un diagnóstico preciso, consulta siempre a un profesional de la salud.</p>
-            </div>
-            <p>Creado por Luis A. Medina Franco</p>
-            <p>&copy; 2025 Calculadora de Salud Integral. Todos los derechos reservados.</p>
-        </footer>
-    </div>
+    </main>
+    
+    <!-- ===== FOOTER FIJO ===== -->
+    <footer class="fixed bottom-0 left-0 w-full bg-[#FDFBF6] p-3 border-t border-gray-200 no-print z-40 text-center text-xs text-gray-600 shadow-[0_-2px_5px_rgba(0,0,0,0.05)]">
+        <p class="mb-1"><strong>Descargo de Responsabilidad:</strong> Esta es una herramienta educativa y no sustituye la consulta médica profesional.</p>
+        <p>&copy; <span id="year">2025</span> Calculadora de Salud Integral. Todos los derechos reservados.</p>
+    </footer>
 
-    <!-- Notificación Toast -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-[#6B8E23] text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 no-print">
-    </div>
+    <div id="toast" class="fixed bottom-20 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 no-print"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Referencias a todos los elementos de entrada del DOM
-            const inputElements = {
-                altura: document.getElementById('altura'),
-                peso: document.getElementById('peso'),
-                edad: document.getElementById('edad'),
-                sexo: document.getElementById('sexo'),
-                cintura: document.getElementById('cintura'),
-                cadera: document.getElementById('cadera'),
-                cuello: document.getElementById('cuello'),
-                trigliceridos: document.getElementById('trigliceridos'),
-                hdl: document.getElementById('hdl'),
-                colesterolTotal: document.getElementById('colesterolTotal'),
-                glicemia: document.getElementById('glicemia'),
-                insulina: document.getElementById('insulina'),
-                pas: document.getElementById('pas'),
-                pad: document.getElementById('pad'),
-                creatinina: document.getElementById('creatinina'),
-                albumina: document.getElementById('albumina'),
-                ast: document.getElementById('ast'),
-                alt: document.getElementById('alt'),
-                actividad: document.getElementById('actividad'),
-                anosFumando: document.getElementById('anosFumando'),
-                cigarrillosDiarios: document.getElementById('cigarrillosDiarios'),
-                embarazada: document.getElementById('embarazada'),
-                prePregnancyWeight: document.getElementById('pre-pregnancy-weight'),
-                lmpDate: document.getElementById('lmp-date'),
-                pediatricEdadMeses: document.getElementById('pediatric-edad-meses'),
-                pediatricPeso: document.getElementById('pediatric-peso'),
-                pediatricAltura: document.getElementById('pediatric-altura'),
-                pediatricSexo: document.getElementById('pediatric-sexo'),
-                bienestarEmocional: document.getElementById('bienestar-emocional'),
-                emocionPrincipal: document.getElementById('emocion-principal'),
-                horasSueno: document.getElementById('horas-sueno'),
-                despiertaNoche: document.getElementById('despierta-noche'),
-                vecesDespierta: document.getElementById('veces-despierta'),
-                porqueDespierta: document.getElementById('porque-despierta'),
-                somnolenciaDiurna: document.getElementById('somnolencia-diurna'),
-                activitySelect: document.getElementById('activity-select')
-            };
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pageSections = document.querySelectorAll('.page-section');
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOpenIcon = document.getElementById('menu-open-icon');
+        const menuCloseIcon = document.getElementById('menu-close-icon');
+        const showAdultsBtn = document.getElementById('show-adults-btn');
+        const showPediatricBtn = document.getElementById('show-pediatric-btn');
+        const adultsCalculator = document.getElementById('adults-calculator');
+        const pediatricCalculator = document.getElementById('pediatric-calculator');
+        const pediatricActionItemsList = document.getElementById('pediatric-action-items');
+        const pediatricCopyBtn = document.getElementById('pediatric-copyBtn');
+        
+        const inputElements = {
+            altura: document.getElementById('altura'), peso: document.getElementById('peso'), edad: document.getElementById('edad'), sexo: document.getElementById('sexo'), cintura: document.getElementById('cintura'), cadera: document.getElementById('cadera'), cuello: document.getElementById('cuello'), trigliceridos: document.getElementById('trigliceridos'), hdl: document.getElementById('hdl'), colesterolTotal: document.getElementById('colesterolTotal'), glicemia: document.getElementById('glicemia'), insulina: document.getElementById('insulina'), pas: document.getElementById('pas'), pad: document.getElementById('pad'), creatinina: document.getElementById('creatinina'), albumina: document.getElementById('albumina'), ast: document.getElementById('ast'), alt: document.getElementById('alt'), actividad: document.getElementById('actividad'), anosFumando: document.getElementById('anosFumando'), cigarrillosDiarios: document.getElementById('cigarrillosDiarios'), diabetes: document.getElementById('diabetes'), embarazada: document.getElementById('embarazada'), prePregnancyWeight: document.getElementById('pre-pregnancy-weight'), lmpDate: document.getElementById('lmp-date'), fetalDbp: document.getElementById('fetal-dbp'), fetalCc: document.getElementById('fetal-cc'), fetalCa: document.getElementById('fetal-ca'), fetalLf: document.getElementById('fetal-lf'), bishopDilatacion: document.getElementById('bishop-dilatacion'), bishopBorramiento: document.getElementById('bishop-borramiento'), bishopConsistencia: document.getElementById('bishop-consistencia'), bishopPosicion: document.getElementById('bishop-posicion'), bishopEstacion: document.getElementById('bishop-estacion'), vbacPartoVaginalPrevio: document.getElementById('vbac-parto-vaginal-previo'), pediatricEdadMeses: document.getElementById('pediatric-edad-meses'), pediatricPeso: document.getElementById('pediatric-peso'), pediatricAltura: document.getElementById('pediatric-altura'), pediatricSexo: document.getElementById('pediatric-sexo'), pliegueTriceps: document.getElementById('pliegue-triceps'), pliegueSubescapular: document.getElementById('pliegue-subescapular'), bienestarEmocional: document.getElementById('bienestar-emocional'), emocionPrincipal: document.getElementById('emocion-principal'), horasSueno: document.getElementById('horas-sueno'), despiertaNoche: document.getElementById('despierta-noche'), vecesDespierta: document.getElementById('veces-despierta'), porqueDespierta: document.getElementById('porque-despierta'), somnolenciaDiurna: document.getElementById('somnolencia-diurna'), activitySelect: document.getElementById('activity-select')
+        };
+        const generalInputsSection = document.getElementById('general-inputs');
+        const pregnancyInputsSection = document.getElementById('pregnancy-inputs');
+        const generalResultsSection = document.getElementById('general-results');
+        const pregnancyResultsSection = document.getElementById('pregnancy-results');
+        const pregnancyExplanationSection = document.getElementById('pregnancy-explanation');
+        const embarazadaOption = document.getElementById('embarazada-option');
+        const despiertaNocheDetalles = document.getElementById('despierta-noche-detalles');
+        const actionItemsList = document.getElementById('action-items');
+        const copyBtn = document.getElementById('copyBtn');
+        const macronutrientNote = document.getElementById('macronutrient-note');
+        let healthChart;
+        let currentResults = {};
+        let currentPediatricResults = {};
 
-            // Referencias a secciones y elementos del DOM
-            const generalInputsSection = document.getElementById('general-inputs');
-            const pregnancyInputsSection = document.getElementById('pregnancy-inputs');
-            const generalResultsSection = document.getElementById('general-results');
-            const pregnancyResultsSection = document.getElementById('pregnancy-results');
-            const pregnancyExplanationSection = document.getElementById('pregnancy-explanation');
-            const embarazadaOption = document.getElementById('embarazada-option');
-            const despiertaNocheDetalles = document.getElementById('despierta-noche-detalles');
-            const actionItemsList = document.getElementById('action-items');
-            const copyBtn = document.getElementById('copyBtn');
-            const caloriesBurnedValue = document.getElementById('calories-burned-value');
-            let healthChart;
-            let currentResults = {};
+        const metricas = {
+            generales: [
+                { id: 'imc', title: '1. IMC (Índice de Masa Corporal)', desc: 'Una relación entre tu peso y altura.', detail: 'Es un primer indicador rápido de bajo peso, peso normal, sobrepeso u obesidad.' },
+                { id: 'iac', title: '2. IAC (Índice de Adiposidad Corporal)', desc: 'Estima el porcentaje de grasa corporal.', detail: 'Ofrece una alternativa al IMC para evaluar la adiposidad sin depender del peso corporal total, usando la medida de la cadera.' },
+                { id: 'absi', title: '3. ABSI (Índice de Forma Corporal)', desc: 'Relaciona cintura, altura e IMC para el riesgo.', detail: 'Un ABSI alto sugiere una mayor acumulación de grasa visceral, que se asocia con un mayor riesgo de mortalidad prematura.' },
+                { id: 'bri', title: '4. BRI (Índice de Redondez Corporal)', desc: 'Evalúa la forma del cuerpo y la grasa visceral.', detail: 'Valores más altos se asocian con un mayor riesgo de problemas cardiovasculares y metabólicos.' },
+                { id: 'vai', title: '5. VAI (Índice de Adiposidad Visceral)', desc: 'Estima la función de la grasa visceral.', detail: 'Combina medidas antropométricas (cintura, IMC) y bioquímicas (triglicéridos, HDL) para evaluar el riesgo cardiometabólico.' },
+                { id: 'grasa-corporal', title: '6. Grasa Corporal (%)', desc: 'Porcentaje de grasa corporal estimado.', detail: 'Calculado mediante la fórmula de la Marina de EE. UU., utiliza medidas de cuello, cintura, cadera (en mujeres) y altura.' },
+                { id: 'ffmi', title: '7. FFMI (Índice de Masa Libre de Grasa)', desc: 'Estima la cantidad de masa muscular.', detail: 'Es útil para evaluar la composición corporal, especialmente en atletas o personas que realizan entrenamiento de fuerza.' },
+                { id: 'peso-ideal', title: '8. Peso Ideal y Ajustado', desc: 'Estimaciones de peso ideal y ajustado.', detail: 'El peso ideal es una referencia teórica. El peso ajustado se utiliza en ciertos cálculos clínicos, especialmente en pacientes con obesidad.' },
+                { id: 'distribucion', title: '9. Índices de Distribución (ICC, ICA)', desc: 'Índice Cintura-Cadera e Índice Cintura-Altura.', detail: 'Evalúan la distribución de la grasa corporal. Un valor alto en ambos indica mayor grasa abdominal y, por tanto, mayor riesgo para la salud.' },
+                { id: 'tmb', title: '10. Tasa Metabólica Basal (TMB)', desc: 'Calorías que quemas en reposo.', detail: 'Calculada con la fórmula de Mifflin-St Jeor, es la energía mínima necesaria para mantener las funciones vitales.' },
+                { id: 'get', title: '11. Gasto Energético Total (GET)', desc: 'Calorías totales que quemas en un día.', detail: 'Se calcula multiplicando tu TMB por un factor que representa tu nivel de actividad física diaria.' },
+                { id: 'calories-burned', title: '12. Gasto por Actividad Física', desc: 'Estimación de calorías quemadas para una actividad específica.', detail: 'Utiliza el valor MET (Equivalente Metabólico de Tarea) de una actividad para calcular el gasto calórico por hora según tu peso.' },
+                { id: 'macros', title: '13. Macronutrientes', desc: 'Distribución sugerida de proteínas, grasas y carbohidratos.', detail: 'Ofrece un rango general para la ingesta diaria de macronutrientes, basado en el Gasto Energético Total.' },
+                { id: 'homa-ir', title: '14. HOMA-IR', desc: 'Estimación de resistencia a la insulina.', detail: 'Un valor elevado sugiere que el cuerpo no está utilizando la insulina de manera eficiente, lo cual es un factor de riesgo para la diabetes tipo 2.' },
+                { id: 'ast-alt', title: '15. Relación AST/ALT', desc: 'Para evaluar la salud del hígado.', detail: 'Un cociente superior a 1 puede sugerir ciertas patologías hepáticas, aunque debe ser interpretado por un médico.' },
+                { id: 'pam', title: '16. Presión Arterial Media (PAM)', desc: 'Presión media del sistema circulatorio.', detail: 'Indica la perfusión de los órganos. Un valor entre 70-100 mmHg se considera normal.' },
+                { id: 'tfge', title: '17. TFG Estimada (CKD-EPI)', desc: 'Tasa de Filtración Glomerular.', detail: 'Es el mejor indicador de la función renal. Un valor bajo puede indicar enfermedad renal crónica.' },
+                { id: 'ascvd', title: '18. Riesgo Cardiovascular (ASCVD)', desc: 'Riesgo a 10 años de un evento cardiovascular.', detail: 'Estimación simplificada basada en factores como edad, colesterol, presión arterial y tabaquismo.' },
+                { id: 'framingham', title: '19. Riesgo Cardiovascular (Framingham)', desc: 'Riesgo de evento coronario a 10 años.', detail: 'Un modelo clásico y validado para predecir el riesgo de enfermedad coronaria.' },
+                { id: 'score', title: '20. Riesgo Cardiovascular (SCORE)', desc: 'Riesgo de evento fatal a 10 años (Europa).', detail: 'Calcula la probabilidad de morir por una enfermedad cardiovascular en los próximos 10 años.' },
+                { id: 'castelli', title: '21. Índice Aterogénico (Castelli)', desc: 'Relación Colesterol Total / HDL.', detail: 'Un índice elevado se asocia con un mayor riesgo de aterosclerosis (acumulación de placa en las arterias).' },
+                { id: 'ipa', title: '22. IPA (Índice Paquetes/Año)', desc: 'Riesgo acumulado de tabaquismo.', detail: 'Cuantifica la exposición al tabaco a lo largo del tiempo. Un IPA >10-20 aumenta significativamente el riesgo de EPOC y cáncer de pulmón.' },
+                { id: 'sueno', title: '23. Análisis del Sueño', desc: 'Resumen cualitativo de los hábitos de sueño.', detail: 'Evalúa la calidad del descanso basándose en las horas de sueño, interrupciones nocturnas y somnolencia diurna.' },
+                { id: 'bienestar', title: '24. Bienestar Emocional', desc: 'Autoevaluación del estado emocional.', detail: 'Una métrica subjetiva para reflexionar sobre el bienestar emocional general y la emoción principal percibida.' },
+            ],
+            obstetricas: [
+                { title: 'Semana Gestacional y FPP', desc: 'Tiempo de embarazo y fecha de parto.', detail: 'Calculado a partir de la Fecha de Última Menstruación (FUM), es crucial para el seguimiento del desarrollo fetal y la planificación del cuidado prenatal.' },
+                { title: 'Ganancia de Peso Recomendada', desc: 'Rango de aumento de peso sugerido.', detail: 'Basado en el IMC pre-gestacional, ayuda a asegurar un embarazo saludable, reduciendo riesgos para la madre y el bebé.' },
+                { title: 'Peso Fetal Estimado (Hadlock)', desc: 'Estimación del peso del feto.', detail: 'Se calcula usando medidas de ultrasonido (DBP, CC, CA, LF). Es una guía importante pero tiene un margen de error.' },
+                { title: 'Puntuación de Bishop', desc: 'Evalúa la favorabilidad del cuello uterino para el parto.', detail: 'Una puntuación alta (>=8) sugiere una alta probabilidad de éxito en la inducción del parto. Se basa en dilatación, borramiento, consistencia, posición y estación.' },
+                { title: 'Probabilidad de Éxito de PVDC', desc: 'Probabilidad de Parto Vaginal Después de Cesárea.', detail: 'Una estimación basada en factores como edad materna, IMC y si ha habido partos vaginales previos. Ayuda en la toma de decisiones sobre el tipo de parto.' },
+            ],
+            pediatricas: [
+                { title: 'IMC por Percentil (OMS/CDC)', desc: 'Compara el IMC con niños de misma edad y sexo.', detail: 'Es la herramienta estándar para evaluar el estado nutricional en niños (bajo peso, peso saludable, sobrepeso, obesidad).' },
+                { title: '% Grasa Corporal (Slaughter)', desc: 'Estimación de grasa a partir de pliegues cutáneos.', detail: 'Ofrece una visión más detallada de la composición corporal del niño más allá del IMC, usando pliegues del tríceps y subescapular.' },
+                { title: 'Gasto Energético Basal (Schofield)', desc: 'Calorías mínimas necesarias en reposo.', detail: 'Una estimación de las necesidades calóricas en reposo para niños, basada en peso y edad. Es útil para la planificación nutricional.' },
+            ]
+        };
 
-            function getInputs() {
-                const inputs = {};
-                for (const key in inputElements) {
-                    const element = inputElements[key];
-                    if (element.type === 'checkbox') {
-                        inputs[key] = element.checked;
-                    } else if (element.type === 'number') {
-                        inputs[key] = parseFloat(element.value) || NaN;
-                    } else {
-                        inputs[key] = element.value;
-                    }
-                }
-                return inputs;
-            }
-            
-            function togglePregnancyOption() {
-                if (inputElements.sexo.value === 'mujer') {
-                    embarazadaOption.classList.remove('hidden');
-                } else {
-                    embarazadaOption.classList.add('hidden');
-                    inputElements.embarazada.checked = false;
-                }
-                calculateAll();
-            }
+        function createAccordionItem(item) { return `<div class="accordion-item border rounded-lg overflow-hidden"><button class="accordion-header w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold flex justify-between items-center transition-colors"><span>${item.title}</span><svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content bg-white"><div class="p-4 border-t"><p class="font-semibold">${item.desc}</p><p class="mt-2 text-gray-600">${item.detail}</p></div></div></div>`; }
+        document.getElementById('generales-accordion').innerHTML = metricas.generales.map(createAccordionItem).join('');
+        document.getElementById('obstetricas-accordion').innerHTML = metricas.obstetricas.map(createAccordionItem).join('');
+        document.getElementById('pediatricas-accordion').innerHTML = metricas.pediatricas.map(createAccordionItem).join('');
 
-            function toggleSleepDetails() {
-                if (inputElements.despiertaNoche.value === 'si') {
-                    despiertaNocheDetalles.classList.remove('hidden');
-                } else {
-                    despiertaNocheDetalles.classList.add('hidden');
-                }
-            }
-            
-            function calculateAll() {
-                const inputs = getInputs();
-                
-                if (inputs.embarazada) {
-                    generalInputsSection.classList.add('hidden');
-                    pregnancyInputsSection.classList.remove('hidden');
-                    generalResultsSection.classList.add('hidden');
-                    pregnancyResultsSection.classList.remove('hidden');
-                    pregnancyExplanationSection.classList.remove('hidden');
-                    calculatePregnancyMetrics(inputs);
-                } else {
-                    generalInputsSection.classList.remove('hidden');
-                    pregnancyInputsSection.classList.add('hidden');
-                    generalResultsSection.classList.remove('hidden');
-                    pregnancyResultsSection.classList.add('hidden');
-                    pregnancyExplanationSection.classList.add('hidden');
-                    calculateGeneralMetrics(inputs);
-                    updateActionItems(inputs);
-                }
-            }
+        function switchSection(sectionId) { pageSections.forEach(section => section.classList.add('hidden')); const activeSection = document.getElementById(sectionId); if (activeSection) activeSection.classList.remove('hidden'); navLinks.forEach(link => { const linkSection = link.getAttribute('data-section'); const linkIsActive = linkSection === sectionId; if (link.parentElement.id === 'mobile-menu') { link.classList.toggle('bg-[#6B8E23]', linkIsActive); link.classList.toggle('text-white', linkIsActive); } else { link.classList.toggle('text-[#6B8E23]', linkIsActive); link.classList.toggle('font-bold', linkIsActive); link.classList.toggle('text-gray-700', !linkIsActive); link.classList.toggle('font-semibold', !linkIsActive); } }); mobileMenu.classList.add('-translate-x-full'); menuOpenIcon.classList.remove('hidden'); menuCloseIcon.classList.add('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        switchSection('inicio-section');
+        navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchSection(link.getAttribute('data-section')); }); });
+        menuButton.addEventListener('click', () => { mobileMenu.classList.toggle('-translate-x-full'); menuOpenIcon.classList.toggle('hidden'); menuCloseIcon.classList.toggle('hidden'); });
+        
+        function updateCalculatorToggle(active) { if (active === 'adults') { adultsCalculator.classList.remove('hidden'); pediatricCalculator.classList.add('hidden'); showAdultsBtn.className = 'flex-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-l-lg text-white bg-[#6B8E23]'; showPediatricBtn.className = 'flex-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-r-lg text-[#6B8E23] bg-white hover:bg-gray-50'; } else { pediatricCalculator.classList.remove('hidden'); adultsCalculator.classList.add('hidden'); showPediatricBtn.className = 'flex-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-r-lg text-white bg-[#6B8E23]'; showAdultsBtn.className = 'flex-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-l-lg text-[#6B8E23] bg-white hover:bg-gray-50'; } }
+        showAdultsBtn.addEventListener('click', () => updateCalculatorToggle('adults'));
+        showPediatricBtn.addEventListener('click', () => updateCalculatorToggle('pediatric'));
+        updateCalculatorToggle('adults');
+        
+        document.querySelectorAll('.accordion-header').forEach(header => { header.addEventListener('click', () => { const content = header.nextElementSibling; const icon = header.querySelector('svg'); const isCurrentlyOpen = content.style.maxHeight; const parentAccordion = header.closest('.space-y-2'); parentAccordion.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null); parentAccordion.querySelectorAll('.accordion-header svg').forEach(i => i.style.transform = 'rotate(0deg)'); if (!isCurrentlyOpen) { content.style.maxHeight = content.scrollHeight + 'px'; icon.style.transform = 'rotate(180deg)'; } }); });
 
-            function calculatePregnancyMetrics(inputs) {
-                const { altura, prePregnancyWeight, peso, lmpDate } = inputs;
-                const today = new Date();
-                const lmp = new Date(lmpDate);
-                let gestationalWeek = NaN;
-                let edd = 'Fecha no calculada';
-                if (!isNaN(lmp.getTime())) {
-                    const msPerWeek = 1000 * 60 * 60 * 24 * 7;
-                    gestationalWeek = Math.floor((today.getTime() - lmp.getTime()) / msPerWeek);
-                    const eddMs = lmp.getTime() + (280 * 24 * 60 * 60 * 1000);
-                    edd = new Date(eddMs).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-                }
-                let prePregnancyBMI = NaN;
-                let recommendedGain = 'Necesitas peso antes del embarazo';
-                if (!isNaN(prePregnancyWeight) && !isNaN(altura)) {
-                    const alturaM = altura / 100;
-                    prePregnancyBMI = prePregnancyWeight / (alturaM * alturaM);
-                    if (prePregnancyBMI < 18.5) recommendedGain = '12.5 - 18 kg';
-                    else if (prePregnancyBMI < 25) recommendedGain = '11.5 - 16 kg';
-                    else if (prePregnancyBMI < 30) recommendedGain = '7 - 11.5 kg';
-                    else recommendedGain = '5 - 9 kg';
-                }
-                const currentGain = !isNaN(peso) && !isNaN(prePregnancyWeight) ? (peso - prePregnancyWeight).toFixed(1) : '-';
-                document.getElementById('gestational-week').textContent = !isNaN(gestationalWeek) ? `${gestationalWeek} semanas` : '-';
-                document.getElementById('edd-date').textContent = edd;
-                document.getElementById('recommended-gain').textContent = recommendedGain;
-                document.getElementById('current-gain').textContent = `Ganancia Actual: ${currentGain} kg`;
-                document.getElementById('gestational-interpretation').textContent = `Tu IMC pre-embarazo es: ${prePregnancyBMI.toFixed(1)} (${getIMCInterpretation(prePregnancyBMI)})`;
-            }
-
-            function calculateGeneralMetrics(inputs) {
-                const results = {};
-                results.imc = calculateIMC(inputs.peso, inputs.altura);
-                results.iac = calculateIAC(inputs.cadera, inputs.altura);
-                results.absi = calculateABSI(inputs.cintura, inputs.altura, results.imc.value);
-                results.bri = calculateBRI(inputs.cintura, inputs.altura);
-                results.grasaCorporal = calculateGrasaCorporal(inputs.sexo, inputs.cintura, inputs.cuello, inputs.altura);
-                results.ffmi = calculateFFMI(inputs.peso, inputs.altura, results.grasaCorporal.value);
-                results.vai = calculateVAI(inputs.sexo, inputs.cintura, inputs.trigliceridos, inputs.hdl, results.imc.value);
-                results.pesoIdeal = calculatePesoIdeal(inputs.altura, inputs.sexo);
-                results.pesoAjustado = calculatePesoAjustado(inputs.peso, results.pesoIdeal.value);
-                results.icc = calculateICC(inputs.cintura, inputs.cadera);
-                results.ica = calculateICA(inputs.cintura, inputs.altura);
-                results.tmb = calculateTMB(inputs.sexo, inputs.peso, inputs.altura, inputs.edad);
-                results.get = calculateGET(results.tmb.value, inputs.actividad);
-                results.macros = calculateMacros(results.get.value, inputs.peso);
-                results.homaIr = calculateHOMA_IR(inputs.glicemia, inputs.insulina);
-                results.astAlt = calculateASTALT(inputs.ast, inputs.alt);
-                results.pam = calculatePAM(inputs.pas, inputs.pad);
-                results.tfge = calculateTFGe(inputs.creatinina, inputs.sexo, inputs.edad);
-                results.ascvd = calculateASCVD(inputs.sexo, inputs.edad, inputs.colesterolTotal, inputs.hdl, inputs.pas, inputs.anosFumando, inputs.cigarrillosDiarios);
-                results.pediatric = calculatePediatricPercentiles(inputs.pediatricSexo, inputs.pediatricEdadMeses, inputs.pediatricPeso, inputs.pediatricAltura);
-                results.ipa = calculateIPA(inputs.anosFumando, inputs.cigarrillosDiarios);
-                results.caloriesBurned = calculateCaloriesBurnedActivity(inputs.peso, inputs.activitySelect);
-                results.analisisSueno = getSleepAnalysis(inputs);
-                results.bienestarEmocional = getBienestarInterpretation(inputs);
-                
-                currentResults = results;
-                updateGeneralUI(results);
-                updateChart([
-                    isNaN(results.imc.value) ? 0 : results.imc.value,
-                    isNaN(results.iac.value) ? 0 : results.iac.value,
-                    isNaN(results.absi.value) ? 0 : results.absi.value * 100,
-                    isNaN(results.bri.value) ? 0 : results.bri.value,
-                    isNaN(results.vai.value) ? 0 : results.vai.value,
-                    isNaN(results.grasaCorporal.value) ? 0 : results.grasaCorporal.value,
-                    isNaN(parseFloat(results.ascvd.value)) ? 0 : parseFloat(results.ascvd.value)
-                ]);
-            }
-
-            function updateActionItems(inputs) {
-                 const { altura, peso, horasSueno, somnolenciaDiurna, bienestarEmocional } = inputs;
-                const imc = calculateIMC(peso, altura).value;
-                let suggestionsHTML = '';
-                if (!isNaN(imc)) {
-                    if (imc < 18.5) suggestionsHTML += '<li><strong>Bajo peso:</strong> Tu IMC indica un peso por debajo de lo saludable. Un nutricionista puede ayudarte.</li>';
-                    else if (imc >= 25) suggestionsHTML += '<li><strong>Sobrepeso u Obesidad:</strong> Considera incorporar más actividad física y revisar tu alimentación.</li>';
-                }
-                if (!isNaN(horasSueno) && horasSueno < 7) {
-                    suggestionsHTML += '<li><strong>Pocas horas de sueño:</strong> Dormir menos de 7 horas puede afectar tu salud. Intenta establecer una rutina de sueño regular.</li>';
-                }
-                if (somnolenciaDiurna === 'frecuentemente') {
-                    suggestionsHTML += '<li><strong>Somnolencia diurna:</strong> Sentirse somnoliento frecuentemente puede ser un signo de sueño no reparador. Consulta a un médico.</li>';
-                }
-                if (!isNaN(bienestarEmocional) && bienestarEmocional <= 4) {
-                    suggestionsHTML += '<li><strong>Bienestar bajo:</strong> Tu valoración de bienestar es baja. Considera hablar con un profesional de la salud mental.</li>';
-                }
-                if (suggestionsHTML === '') {
-                    suggestionsHTML = '<li><strong>¡Lo estás haciendo genial!</strong> Tus indicadores de salud están en un rango saludable.</li>';
-                }
-                actionItemsList.innerHTML = suggestionsHTML;
-            }
-            
-            function updateGeneralUI(results) {
-                document.getElementById('imc-value').textContent = isNaN(results.imc.value) ? '-' : results.imc.value.toFixed(2);
-                document.getElementById('imc-interpretation').textContent = results.imc.interpretation;
-                document.getElementById('iac-value').textContent = isNaN(results.iac.value) ? '-' : results.iac.value.toFixed(2) + '%';
-                document.getElementById('iac-interpretation').textContent = results.iac.interpretation;
-                document.getElementById('absi-value').textContent = isNaN(results.absi.value) ? '-' : results.absi.value.toFixed(4);
-                document.getElementById('absi-interpretation').textContent = results.absi.interpretation;
-                document.getElementById('bri-value').textContent = isNaN(results.bri.value) ? '-' : results.bri.value.toFixed(2);
-                document.getElementById('bri-interpretation').textContent = results.bri.interpretation;
-                document.getElementById('vai-value').textContent = isNaN(results.vai.value) ? '-' : results.vai.value.toFixed(2);
-                document.getElementById('vai-interpretation').textContent = results.vai.interpretation;
-                document.getElementById('grasa-corporal-value').textContent = isNaN(results.grasaCorporal.value) ? '-' : results.grasaCorporal.value.toFixed(2) + '%';
-                document.getElementById('grasa-corporal-interpretation').textContent = results.grasaCorporal.interpretation;
-                document.getElementById('ffmi-value').textContent = isNaN(results.ffmi.value) ? '-' : results.ffmi.value.toFixed(2);
-                document.getElementById('ffmi-interpretation').textContent = results.ffmi.interpretation;
-                document.getElementById('peso-ideal-value').textContent = isNaN(results.pesoIdeal.value) ? 'Peso Ideal: -' : `Peso Ideal: ${results.pesoIdeal.value.toFixed(2)} kg`;
-                document.getElementById('peso-ajustado-value').textContent = isNaN(results.pesoAjustado.value) ? 'Peso Ajustado: -' : `Peso Ajustado: ${results.pesoAjustado.value.toFixed(2)} kg`;
-                document.getElementById('icc-value').textContent = isNaN(results.icc.value) ? 'ICC: -' : `ICC: ${results.icc.value.toFixed(2)}`;
-                document.getElementById('ica-value').textContent = isNaN(results.ica.value) ? 'ICA: -' : `ICA: ${results.ica.value.toFixed(2)}`;
-                document.getElementById('tmb-value').textContent = isNaN(results.tmb.value) ? '-' : results.tmb.value.toFixed(0);
-                document.getElementById('get-value').textContent = isNaN(results.get.value) ? '-' : results.get.value.toFixed(0);
-                document.getElementById('macros-value').textContent = results.macros.value;
-                document.getElementById('homa-ir-value').textContent = isNaN(results.homaIr.value) ? '-' : results.homaIr.value.toFixed(2);
-                document.getElementById('homa-ir-interpretation').textContent = results.homaIr.interpretation;
-                document.getElementById('ast-alt-value').textContent = isNaN(results.astAlt.value) ? '-' : results.astAlt.value.toFixed(2);
-                document.getElementById('ast-alt-interpretation').textContent = results.astAlt.interpretation;
-                document.getElementById('pam-value').textContent = isNaN(results.pam.value) ? '-' : results.pam.value.toFixed(2) + ' mmHg';
-                document.getElementById('pam-interpretation').textContent = results.pam.interpretation;
-                document.getElementById('tfge-value').textContent = isNaN(results.tfge.value) ? '-' : results.tfge.value.toFixed(0) + ' ml/min/1.73m²';
-                document.getElementById('tfge-interpretation').textContent = results.tfge.interpretation;
-                document.getElementById('ascvd-value').textContent = isNaN(parseFloat(results.ascvd.value)) ? '-' : results.ascvd.value + '%';
-                document.getElementById('ascvd-interpretation').textContent = results.ascvd.interpretation;
-                document.getElementById('ipa-value').textContent = isNaN(results.ipa.value) ? '-' : results.ipa.value.toFixed(2);
-                document.getElementById('ipa-interpretation').textContent = results.ipa.interpretation;
-                document.getElementById('calories-burned-value').textContent = results.caloriesBurned.value;
-                document.getElementById('calories-burned-interpretation').textContent = results.caloriesBurned.interpretation;
-                document.getElementById('sueno-value').textContent = results.analisisSueno.value || '-';
-                document.getElementById('sueno-interpretation').textContent = results.analisisSueno.interpretation;
-                document.getElementById('bienestar-value').textContent = results.bienestarEmocional.value || '-';
-                document.getElementById('bienestar-interpretation').textContent = results.bienestarEmocional.interpretation;
-                document.getElementById('pediatric-value').textContent = results.pediatric.value;
-                document.getElementById('pediatric-interpretation').textContent = results.pediatric.interpretation;
-            }
-
-            function getIMCInterpretation(value) { if (value < 18.5) return 'Bajo Peso'; else if (value < 25) return 'Normal'; else if (value < 30) return 'Sobrepeso'; else return 'Obesidad'; }
-            function calculateIMC(peso, altura) { if (isNaN(peso) || isNaN(altura) || altura <= 0) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const value = peso / (alturaM * alturaM); return { value, interpretation: getIMCInterpretation(value) }; }
-            function calculateIAC(cadera, altura) { if (isNaN(cadera) || isNaN(altura) || altura <= 0) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const value = (cadera / Math.pow(alturaM, 1.5)) - 18; let interpretation = (value < 8 || value > 32) ? 'Necesita revisión' : 'Rango Normal'; return { value, interpretation }; }
-            function calculateABSI(cintura, altura, imc) { if (isNaN(cintura) || isNaN(altura) || isNaN(imc) || altura <= 0) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const cinturaM = cintura / 100; const value = cinturaM / (Math.pow(imc, 2/3) * Math.pow(alturaM, 0.5)); let interpretation = (value > 0.083) ? 'Mayor Riesgo de Mortalidad' : 'Riesgo Normal'; return { value, interpretation }; }
-            function calculateBRI(cintura, altura) { if (isNaN(cintura) || isNaN(altura) || altura <= 0) return { value: NaN, interpretation: '' }; const value = 364.2 - 365.5 * Math.sqrt(1 - Math.pow((cintura / (2 * Math.PI)), 2) / Math.pow((0.5 * altura), 2)); let interpretation = (value > 3.0) ? 'Mayor Riesgo Cardiometabólico' : 'Riesgo Bajo'; return { value, interpretation }; }
-            function calculateVAI(sexo, cintura, trigliceridos, hdl, imc) { if (isNaN(cintura) || isNaN(trigliceridos) || isNaN(hdl) || isNaN(imc)) return { value: NaN, interpretation: '' }; let vai = (sexo === 'hombre') ? (cintura / (39.68 + (1.89 * imc))) * (trigliceridos / 150) * (40 / hdl) : (cintura / (36.58 + (1.89 * imc))) * (trigliceridos / 150) * (50 / hdl); const interpretation = vai > 1 ? 'Riesgo Elevado' : 'Riesgo Normal'; return { value: vai, interpretation }; }
-            function calculateGrasaCorporal(sexo, cintura, cuello, altura) { if (isNaN(cintura) || isNaN(cuello) || isNaN(altura)) return { value: NaN, interpretation: '' }; let value; let interpretation = ''; if (sexo === 'hombre') { value = 495 / (1.0324 - 0.19077 * Math.log10(cintura - cuello) + 0.15456 * Math.log10(altura)) - 450; if (value < 6) interpretation = 'Esencial'; else if (value < 14) interpretation = 'Atleta'; else if (value < 18) interpretation = 'Fitness'; else if (value < 25) interpretation = 'Aceptable'; else interpretation = 'Obesidad'; } else { const cadera = parseFloat(document.getElementById('cadera').value); if (isNaN(cadera)) return { value: NaN, interpretation: '' }; value = 495 / (1.29579 - 0.35004 * Math.log10(cintura + cadera - cuello) + 0.22100 * Math.log10(altura)) - 450; if (value < 14) interpretation = 'Esencial'; else if (value < 21) interpretation = 'Atleta'; else if (value < 25) interpretation = 'Fitness'; else if (value < 32) interpretation = 'Aceptable'; else interpretation = 'Obesidad'; } return { value, interpretation }; }
-            function calculateFFMI(peso, altura, grasaCorporal) { if (isNaN(peso) || isNaN(altura) || isNaN(grasaCorporal)) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const masaLibreDeGrasaKg = peso * (1 - (grasaCorporal / 100)); const value = masaLibreDeGrasaKg / (alturaM * alturaM); let interpretation = ''; if (value < 18) interpretation = 'Bajo'; else if (value < 22) interpretation = 'Promedio'; else if (value < 25) interpretation = 'Alto'; else interpretation = 'Excelente'; return { value, interpretation }; }
-            function calculatePesoIdeal(altura, sexo) { if (isNaN(altura)) return { value: NaN, interpretation: '' }; const pesoIdeal = (sexo === 'hombre') ? 50 + 0.9 * (altura - 152.4) : 45.5 + 0.9 * (altura - 152.4); return { value: pesoIdeal, interpretation: '' }; }
-            function calculatePesoAjustado(peso, pesoIdeal) { if (isNaN(peso) || isNaN(pesoIdeal)) return { value: NaN, interpretation: '' }; const pesoAjustado = pesoIdeal + 0.4 * (peso - pesoIdeal); return { value: pesoAjustado, interpretation: '' }; }
-            function calculateICC(cintura, cadera) { if (isNaN(cintura) || isNaN(cadera) || cadera === 0) return { value: NaN, interpretation: '' }; const value = cintura / cadera; return { value, interpretation: '' }; }
-            function calculateICA(cintura, altura) { if (isNaN(cintura) || isNaN(altura) || altura === 0) return { value: NaN, interpretation: '' }; const value = cintura / altura; return { value, interpretation: '' }; }
-            function calculateTMB(sexo, peso, altura, edad) { if (isNaN(peso) || isNaN(altura) || isNaN(edad)) return { value: NaN, interpretation: '' }; const tmb = (sexo === 'hombre') ? (10 * peso) + (6.25 * altura) - (5 * edad) + 5 : (10 * peso) + (6.25 * altura) - (5 * edad) - 161; return { value: tmb, interpretation: '' }; }
-            function calculateGET(tmb, actividad) { if (isNaN(tmb) || !actividad) return { value: NaN, interpretation: '' }; const get = tmb * parseFloat(actividad); return { value: get, interpretation: '' }; }
-            function calculateHOMA_IR(glicemia, insulina) { if (isNaN(glicemia) || isNaN(insulina) || insulina === 0) return { value: NaN, interpretation: 'Faltan datos.' }; const value = (glicemia * insulina) / 405; let interpretation = value < 2.5 ? 'Sensibilidad a la insulina normal.' : 'Posible resistencia a la insulina.'; return { value, interpretation }; }
-            function calculateASTALT(ast, alt) { if (isNaN(ast) || isNaN(alt) || alt === 0) return { value: NaN, interpretation: '' }; const value = ast / alt; let interpretation = (value > 1.0) ? 'Puede indicar daño hepático.' : 'Normal.'; return { value, interpretation }; }
-            function calculatePAM(pas, pad) { if (isNaN(pas) || isNaN(pad)) return { value: NaN, interpretation: '' }; const value = (pas + 2 * pad) / 3; let interpretation = (value > 100) ? 'Riesgo de hipertensión.' : (value < 70) ? 'Hipotensión.' : 'Normal.'; return { value, interpretation }; }
-            function calculateTFGe(creatinina, sexo, edad) { if (isNaN(creatinina) || isNaN(edad)) return { value: NaN, interpretation: '' }; let value, kappa, alpha, genderFactor = 1; if (sexo === 'mujer') { kappa = 0.7; alpha = -0.329; if (creatinina > kappa) { genderFactor = 1.018; } } else { kappa = 0.9; alpha = -0.411; } value = 141 * Math.pow(Math.min(creatinina / kappa, 1), alpha) * Math.pow(Math.max(creatinina / kappa, 1), -1.209) * Math.pow(0.993, edad) * genderFactor; let interpretation = ''; if (value >= 90) interpretation = 'Función renal normal.'; else if (value >= 60) interpretation = 'Posible enfermedad renal leve.'; else if (value >= 30) interpretation = 'Enfermedad renal crónica moderada.'; else if (value >= 15) interpretation = 'Enfermedad renal crónica severa.'; else interpretation = 'Fallo renal.'; return { value, interpretation }; }
-            function calculateASCVD(sexo, edad, colesterolTotal, hdl, pas, anosFumando, cigarrillosDiarios) { if (isNaN(edad) || isNaN(colesterolTotal) || isNaN(hdl) || isNaN(pas)) return { value: NaN, interpretation: 'Faltan datos.' }; let points = 0; if (edad <= 39) points += 2; else if (edad <= 49) points += 6; else if (edad <= 59) points += 10; else if (edad <= 69) points += 12; else points += 14; if (colesterolTotal >= 200) points += 2; if (hdl < 40) points += 2; if (pas >= 130) points += 2; if (!isNaN(anosFumando) && anosFumando > 0) points += 4; let riskPercent = '<1'; if (points >= 14) riskPercent = '>30'; else if (points >= 12) riskPercent = '22'; else if (points >= 10) riskPercent = '14'; else if (points >= 8) riskPercent = '8'; else if (points >= 6) riskPercent = '4'; else if (points >= 4) riskPercent = '2'; else if (points >= 2) riskPercent = '1'; let interpretation = (parseFloat(riskPercent) < 10) ? 'Riesgo bajo.' : 'Riesgo elevado.'; return { value: riskPercent, interpretation }; }
-            function calculatePediatricPercentiles(sexo, edadMeses, peso, altura) { if (isNaN(edadMeses) || isNaN(peso) || isNaN(altura)) return { value: 'Faltan datos', interpretation: '' }; let pesoIdeal50th = (sexo === 'niño') ? 3.3 + (edadMeses * 0.7) : 3.2 + (edadMeses * 0.65); let alturaIdeal50th = (sexo === 'niño') ? 50 + (edadMeses * 2.5) : 49 + (edadMeses * 2.3); let pesoPercentil = (peso / pesoIdeal50th) * 50; let alturaPercentil = (altura / alturaIdeal50th) * 50; let pesoInterp = pesoPercentil < 15 ? 'Bajo' : pesoPercentil > 85 ? 'Alto' : 'Normal'; let alturaInterp = alturaPercentil < 15 ? 'Baja' : alturaPercentil > 85 ? 'Alta' : 'Normal'; return { value: `Peso: P${pesoPercentil.toFixed(0)} | Altura: P${alturaPercentil.toFixed(0)}`, interpretation: `Peso: ${pesoInterp} | Altura: ${alturaInterp}` }; }
-            function calculateIPA(anosFumando, cigarrillosDiarios) { if (isNaN(anosFumando) || isNaN(cigarrillosDiarios) || (anosFumando === 0 && cigarrillosDiarios === 0)) return { value: NaN, interpretation: 'No aplica.' }; const value = (anosFumando * cigarrillosDiarios) / 20; let interpretation = value <= 10 ? 'Riesgo bajo de EPOC.' : value <= 20 ? 'Riesgo moderado de EPOC.' : 'Riesgo alto de EPOC.'; return { value, interpretation }; }
-            
-            function calculateCaloriesBurnedActivity(peso, metValue) {
-                const met = parseFloat(metValue);
-                if (isNaN(peso) || isNaN(met)) {
-                    return { value: '-', interpretation: '' };
-                }
-                const calories = met * peso;
-                return { value: calories.toFixed(0), interpretation: 'Calorías por hora (aprox.)' };
-            }
-
-            function calculateMacros(get, peso) {
-                if (isNaN(get) || isNaN(peso)) return { value: '-', interpretation: '' };
-
-                // Proteínas (1.6g - 2.5g por kg de peso)
-                const proteinMinGrams = peso * 1.6;
-                const proteinMaxGrams = peso * 2.5;
-
-                // Grasas (20-30% of total calories)
-                const fatMinGrams = (get * 0.20) / 9;
-                const fatMaxGrams = (get * 0.30) / 9;
-
-                // Carbohidratos (40-55% of total calories)
-                const carbsMinGrams = (get * 0.40) / 4;
-                const carbsMaxGrams = (get * 0.55) / 4;
-
-                const value = `Proteínas: ${proteinMinGrams.toFixed(0)}-${proteinMaxGrams.toFixed(0)}g | Grasas: ${fatMinGrams.toFixed(0)}-${fatMaxGrams.toFixed(0)}g | Carbohidratos: ${carbsMinGrams.toFixed(0)}-${carbsMaxGrams.toFixed(0)}g`;
-                return { value, interpretation: '' };
-            }
-
-            function getSleepAnalysis(inputs) {
-                const { horasSueno, despiertaNoche, vecesDespierta, porqueDespierta, somnolenciaDiurna } = inputs;
-                if (isNaN(horasSueno)) return { value: '-', interpretation: 'Ingresa las horas de sueño.' };
-                
-                let interpretation = `Duermes un promedio de ${horasSueno} horas. `;
-                if (despiertaNoche === 'si') {
-                    interpretation += `Te despiertas ${!isNaN(vecesDespierta) ? vecesDespierta : ''} veces por noche`;
-                    interpretation += porqueDespierta ? ` (principalmente por: ${porqueDespierta}). ` : '. ';
-                } else {
-                    interpretation += 'No sueles despertarte por la noche. ';
-                }
-                
-                if (somnolenciaDiurna === 'frecuentemente') {
-                    interpretation += 'Sientes somnolencia frecuentemente durante el día, lo que puede indicar un sueño no reparador.';
-                } else if (somnolenciaDiurna === 'a_veces') {
-                    interpretation += 'A veces sientes somnolencia durante el día.';
-                } else {
-                    interpretation += 'No sueles sentir somnolencia durante el día.';
-                }
-                
-                return { value: `${horasSueno} horas`, interpretation };
-            }
-
-            function getBienestarInterpretation(inputs) {
-                const { bienestarEmocional, emocionPrincipal } = inputs;
-                if (!bienestarEmocional) return { value: '-', interpretation: 'Selecciona tu nivel de bienestar.' };
-
-                let interpretation = `Tu bienestar emocional es de ${bienestarEmocional}/10. `;
-                if (emocionPrincipal) {
-                    interpretation += `La emoción principal que reportas es: ${emocionPrincipal}.`;
-                }
-                return { value: `${bienestarEmocional}/10`, interpretation };
-            }
-
-            function updateChart(data) {
-                const chartColors = ['#6B8E23', '#8FB158', '#556B2F', '#A8C57D', '#41521C', '#C1D8A8', '#2E3A13'];
-                if (!healthChart) {
-                    const ctx = document.getElementById('healthChart').getContext('2d');
-                    healthChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['IMC', 'IAC', 'ABSI', 'BRI', 'VAI', 'Grasa Corporal', 'Riesgo ECV'],
-                            datasets: [{
-                                label: 'Tus Valores',
-                                data: data,
-                                backgroundColor: chartColors,
-                                borderWidth: 1
-                            }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
-                    });
-                } else {
-                    healthChart.data.datasets[0].data = data;
-                    healthChart.update();
-                }
-            }
-
-            function showToast(message, isError = false) {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.className = `fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 no-print ${isError ? 'bg-red-600' : 'bg-[#6B8E23]'}`;
-                toast.classList.remove('opacity-0');
-                setTimeout(() => {
-                    toast.classList.add('opacity-0');
-                }, 3000);
-            }
-
-            // --- Función de Copiar (Método Robusto) ---
-            function copyResults() {
-                if (Object.keys(currentResults).length === 0) {
-                    showToast("Por favor, calcula tus resultados primero.", true);
-                    return;
-                }
-
-                let shareText = "Resumen de mi Salud - Calculadora de Salud Integral\n\n";
-                const titles = {
-                    imc: "1. IMC", iac: "2. IAC", absi: "3. ABSI", bri: "4. BRI", vai: "5. VAI",
-                    grasaCorporal: "6. Grasa Corporal (%)", ffmi: "7. FFMI", pesoIdeal: "8. Peso Ideal",
-                    icc: "9. ICC", ica: "9. ICA", tmb: "10. TMB", get: "11. Gasto Energético Total",
-                    caloriesBurned: "12. Gasto Calórico Específico", homaIr: "14. HOMA-IR", astAlt: "15. Relación AST/ALT", pam: "16. PAM",
-                    tfge: "17. TFG Estimada", ascvd: "18. Riesgo Cardiovascular", ipa: "19. IPA",
-                    analisisSueno: "20. Análisis del Sueño", bienestarEmocional: "21. Bienestar Emocional"
-                };
-
-                for (const key in titles) {
-                    if (currentResults[key] && currentResults[key].value !== undefined && !isNaN(currentResults[key].value)) {
-                        shareText += `${titles[key]}: ${currentResults[key].value}\n`;
-                        shareText += `Interpretación: ${currentResults[key].interpretation}\n\n`;
-                    } else if (currentResults[key] && typeof currentResults[key].value === 'string') {
-                         shareText += `${titles[key]}: ${currentResults[key].value}\n`;
-                         shareText += `Interpretación: ${currentResults[key].interpretation}\n\n`;
-                    }
-                }
-                
-                shareText += "Nota: Estos resultados son una estimación y no reemplazan la consulta médica.\n";
-                
-                const textArea = document.createElement("textarea");
-                textArea.value = shareText;
-                textArea.style.position = "fixed"; 
-                textArea.style.left = "-9999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-
-                try {
-                    const successful = document.execCommand('copy');
-                    if (successful) {
-                        showToast('Resultados copiados al portapapeles.');
-                    } else {
-                        showToast('No se pudo copiar. Inténtalo manualmente.', true);
-                    }
-                } catch (err) {
-                    showToast('Error al copiar. Inténtalo manualmente.', true);
-                }
-
-                document.body.removeChild(textArea);
-            }
-            
-            const activityMETs = {
-                'Reposo (sentado, quieto)': 1.3,
-                'Trabajo de oficina (ligero)': 1.5,
-                'Limpieza del hogar (ligera)': 2.3,
-                'Limpieza del hogar (general)': 3.3,
-                'Cocinar': 3.5,
-                'Jardinería (general)': 3.8,
-                'Caminar (lento, 3.2 km/h)': 2.8,
-                'Caminar (moderado, 4.8 km/h)': 3.5,
-                'Caminar (rápido, 6.4 km/h)': 5.0,
-                'Caminar (muy rápido, 8 km/h)': 6.3,
-                'Subir escaleras': 8.0,
-                'Correr (jogging, 8 km/h)': 8.3,
-                'Correr (10 km/h)': 10.0,
-                'Correr (12 km/h)': 12.5,
-                'Correr (16 km/h)': 16.0,
-                'Ciclismo (muy ligero, <16 km/h)': 4.0,
-                'Ciclismo (moderado, 16-19 km/h)': 6.8,
-                'Ciclismo (vigoroso, 22-25 km/h)': 10.0,
-                'Ciclismo (competitivo, >25 km/h)': 12.0,
-                'Bicicleta estática (moderado)': 7.0,
-                'Natación (estilo libre, ligero)': 5.8,
-                'Natación (estilo libre, vigoroso)': 9.8,
-                'Natación (espalda)': 7.0,
-                'Natación (pecho)': 10.0,
-                'Aeróbicos (bajo impacto)': 5.0,
-                'Aeróbicos (alto impacto)': 7.3,
-                'Entrenamiento en circuito (general)': 8.0,
-                'Entrenamiento de fuerza (ligero)': 3.5,
-                'Entrenamiento de fuerza (vigoroso)': 6.0,
-                'Hipertrofia': 6.0,
-                'Halterofilia (Levantamiento de pesas olímpico)': 6.0,
-                'CrossFit': 12.0,
-                'Calistenia (vigoroso)': 8.0,
-                'Yoga (Hatha)': 2.5,
-                'Pilates (general)': 3.0,
-                'Baile (salón, lento)': 3.0,
-                'Baile (aeróbico, zumba)': 7.3,
-                'Baloncesto (partido)': 8.0,
-                'Fútbol (casual)': 7.0,
-                'Fútbol (competitivo)': 10.0,
-                'Tenis (individual)': 7.3,
-                'Tenis (dobles)': 6.0,
-                'Tenis de mesa': 4.0,
-                'Bádminton (competitivo)': 7.0,
-                'Voleibol (recreativo)': 3.5,
-                'Voleibol (competitivo, playa)': 8.0,
-                'Golf (caminando, llevando palos)': 4.8,
-                'Béisbol / Sóftbol': 5.0,
-                'Balonmano (Handball)': 12.0,
-                'Hockey sobre césped': 7.8,
-                'Boxeo (sparring)': 9.0,
-                'Boxeo (saco de boxeo)': 5.5,
-                'Artes marciales (general)': 10.3,
-                'Judo, Karate, Taekwondo, Jiu-Jitsu': 10.3,
-                'Esgrima': 6.0,
-                'Lucha libre': 6.0,
-                'Senderismo (cross-country)': 6.0,
-                'Escalada en roca': 8.0,
-                'Gimnasia (general)': 4.0,
-                'Remo (moderado)': 7.0,
-                'Vela (Sailing)': 3.0,
-                'Tiro con arco': 3.5,
-                'Triatlón (competitivo)': 10.0,
-                'Esquí (alpino, moderado)': 6.0,
-                'Patinaje sobre hielo': 7.0
-            };
-
-            // Populate activity dropdown
-            let optionsHTML = '<option value="" disabled selected>Elige una actividad...</option>';
-            for (const activity in activityMETs) {
-                optionsHTML += `<option value="${activityMETs[activity]}">${activity}</option>`;
-            }
-            inputElements.activitySelect.innerHTML = optionsHTML;
-            
-            // Event Listeners
-            Object.values(inputElements).forEach(input => {
-                if(input) input.addEventListener('input', calculateAll);
-            });
-            inputElements.sexo.addEventListener('change', togglePregnancyOption);
-            inputElements.despiertaNoche.addEventListener('change', toggleSleepDetails);
-            copyBtn.addEventListener('click', copyResults);
-            
-            // Initial calculation
-            togglePregnancyOption();
-        });
+        function getInputs() { const inputs = {}; for (const key in inputElements) { const element = inputElements[key]; if (!element) continue; if (element.type === 'checkbox') { inputs[key] = element.checked; } else if (element.type === 'number' || element.type === 'date') { inputs[key] = element.value ? (element.type === 'date' ? element.value : parseFloat(element.value)) : NaN; } else { inputs[key] = element.value; } } return inputs; }
+        function togglePregnancyOption() { if (inputElements.sexo.value === 'mujer') { embarazadaOption.classList.remove('hidden'); } else { embarazadaOption.classList.add('hidden'); inputElements.embarazada.checked = false; } calculateAll(); }
+        function toggleSleepDetails() { if (inputElements.despiertaNoche.value === 'si') { despiertaNocheDetalles.classList.remove('hidden'); } else { despiertaNocheDetalles.classList.add('hidden'); } }
+        function calculateAll() { const inputs = getInputs(); if (inputs.embarazada) { generalInputsSection.classList.add('hidden'); pregnancyInputsSection.classList.remove('hidden'); generalResultsSection.classList.add('hidden'); pregnancyResultsSection.classList.remove('hidden'); pregnancyExplanationSection.classList.remove('hidden'); macronutrientNote.classList.add('hidden'); calculatePregnancyMetrics(inputs); updateActionItems(inputs); } else { generalInputsSection.classList.remove('hidden'); pregnancyInputsSection.classList.add('hidden'); generalResultsSection.classList.remove('hidden'); pregnancyResultsSection.classList.add('hidden'); pregnancyExplanationSection.classList.add('hidden'); macronutrientNote.classList.remove('hidden'); calculateGeneralMetrics(inputs); updateActionItems(inputs); } calculatePediatricMetrics(inputs); }
+        function calculatePregnancyMetrics(inputs) { const results = {}; const { altura, prePregnancyWeight, peso, lmpDate } = inputs; const today = new Date(); const lmp = new Date(lmpDate); let gestationalWeek = NaN; let edd = 'Fecha no calculada'; if (!isNaN(lmp.getTime())) { const msPerWeek = 1000 * 60 * 60 * 24 * 7; gestationalWeek = Math.floor((today.getTime() - lmp.getTime()) / msPerWeek); const eddMs = lmp.getTime() + (280 * 24 * 60 * 60 * 1000); edd = new Date(eddMs).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }); } let prePregnancyBMI = NaN; let recommendedGain = 'Necesitas peso antes del embarazo'; if (!isNaN(prePregnancyWeight) && !isNaN(altura)) { const alturaM = altura / 100; prePregnancyBMI = prePregnancyWeight / (alturaM * alturaM); if (prePregnancyBMI < 18.5) recommendedGain = '12.5 - 18 kg'; else if (prePregnancyBMI < 25) recommendedGain = '11.5 - 16 kg'; else if (prePregnancyBMI < 30) recommendedGain = '7 - 11.5 kg'; else recommendedGain = '5 - 9 kg'; } const currentGain = !isNaN(peso) && !isNaN(prePregnancyWeight) ? (peso - prePregnancyWeight).toFixed(1) : '-'; results.gestationalWeek = { value: gestationalWeek, edd: edd }; results.recommendedGain = { value: recommendedGain, currentGain: currentGain, prePregnancyBMI: prePregnancyBMI }; results.efw = calculateEFW(inputs.fetalDbp, inputs.fetalCc, inputs.fetalCa, inputs.fetalLf); results.bishop = calculateBishopScore(inputs); results.vbac = calculateVBACScore(inputs.edad, prePregnancyBMI, inputs.vbacPartoVaginalPrevio); results.analisisSueno = getSleepAnalysis(inputs); results.bienestarEmocional = getBienestarInterpretation(inputs); currentResults = results; updatePregnancyUI(results); }
+        function updatePregnancyUI(results) { document.getElementById('gestational-week').textContent = !isNaN(results.gestationalWeek.value) ? `${results.gestationalWeek.value} semanas` : '-'; document.getElementById('edd-date').textContent = `FPP: ${results.gestationalWeek.edd}`; document.getElementById('recommended-gain').textContent = results.recommendedGain.value; document.getElementById('current-gain').textContent = `Ganancia Actual: ${results.recommendedGain.currentGain} kg`; document.getElementById('gain-interpretation').textContent = `IMC pre-embarazo: ${!isNaN(results.recommendedGain.prePregnancyBMI) ? results.recommendedGain.prePregnancyBMI.toFixed(1) : '-'} (${getIMCInterpretation(results.recommendedGain.prePregnancyBMI)})`; document.getElementById('efw-value').textContent = isNaN(results.efw.value) ? '-' : `${results.efw.value.toFixed(0)} g`; document.getElementById('efw-interpretation').textContent = results.efw.interpretation; document.getElementById('bishop-value').textContent = isNaN(results.bishop.value) ? '-' : results.bishop.value; document.getElementById('bishop-interpretation').textContent = results.bishop.interpretation; document.getElementById('vbac-value').textContent = isNaN(results.vbac.value) ? '-' : `${results.vbac.value.toFixed(1)}%`; document.getElementById('vbac-interpretation').textContent = results.vbac.interpretation; document.getElementById('pregnancy-sueno-value').textContent = results.analisisSueno.value || '-'; document.getElementById('pregnancy-sueno-interpretation').textContent = results.analisisSueno.interpretation; document.getElementById('pregnancy-bienestar-value').textContent = results.bienestarEmocional.value || '-'; document.getElementById('pregnancy-bienestar-interpretation').textContent = results.bienestarEmocional.interpretation; }
+        function getMetricsOrder(results) { return [ { id: 'imc', title: metricas.generales[0].title, value: isNaN(results.imc.value) ? '-' : results.imc.value.toFixed(2), interpretation: results.imc.interpretation }, { id: 'iac', title: metricas.generales[1].title, value: isNaN(results.iac.value) ? '-' : results.iac.value.toFixed(2) + '%', interpretation: results.iac.interpretation }, { id: 'absi', title: metricas.generales[2].title, value: isNaN(results.absi.value) ? '-' : results.absi.value.toFixed(4), interpretation: results.absi.interpretation }, { id: 'bri', title: metricas.generales[3].title, value: isNaN(results.bri.value) ? '-' : results.bri.value.toFixed(2), interpretation: results.bri.interpretation }, { id: 'vai', title: metricas.generales[4].title, value: isNaN(results.vai.value) ? '-' : results.vai.value.toFixed(2), interpretation: results.vai.interpretation }, { id: 'grasa-corporal', title: metricas.generales[5].title, value: isNaN(results.grasaCorporal.value) ? '-' : results.grasaCorporal.value.toFixed(2) + '%', interpretation: results.grasaCorporal.interpretation }, { id: 'ffmi', title: metricas.generales[6].title, value: isNaN(results.ffmi.value) ? '-' : results.ffmi.value.toFixed(2), interpretation: results.ffmi.interpretation }, { id: 'peso-ideal', title: metricas.generales[7].title, value: `Ideal: ${isNaN(results.pesoIdeal.value) ? '-' : results.pesoIdeal.value.toFixed(1)}kg<br>Ajustado: ${isNaN(results.pesoAjustado.value) ? '-' : results.pesoAjustado.value.toFixed(1)}kg`, interpretation: '' }, { id: 'distribucion', title: metricas.generales[8].title, value: `ICC: ${isNaN(results.icc.value) ? '-' : results.icc.value.toFixed(2)}<br>ICA: ${isNaN(results.ica.value) ? '-' : results.ica.value.toFixed(2)}`, interpretation: '' }, { id: 'tmb', title: metricas.generales[9].title, value: isNaN(results.tmb.value) ? '-' : results.tmb.value.toFixed(0), interpretation: 'Calorías en Reposo' }, { id: 'get', title: metricas.generales[10].title, value: isNaN(results.get.value) ? '-' : results.get.value.toFixed(0), interpretation: 'Calorías Diarias Totales' }, { id: 'calories-burned', title: metricas.generales[11].title, value: results.caloriesBurned.value, interpretation: results.caloriesBurned.interpretation }, { id: 'macros', title: metricas.generales[12].title, value: results.macros.value, interpretation: 'Proteínas | Grasas | Carbohidratos' }, { id: 'homa-ir', title: metricas.generales[13].title, value: isNaN(results.homaIr.value) ? '-' : results.homaIr.value.toFixed(2), interpretation: results.homaIr.interpretation }, { id: 'ast-alt', title: metricas.generales[14].title, value: isNaN(results.astAlt.value) ? '-' : results.astAlt.value.toFixed(2), interpretation: results.astAlt.interpretation }, { id: 'pam', title: metricas.generales[15].title, value: isNaN(results.pam.value) ? '-' : results.pam.value.toFixed(2) + ' mmHg', interpretation: results.pam.interpretation }, { id: 'tfge', title: metricas.generales[16].title, value: isNaN(results.tfge.value) ? '-' : results.tfge.value.toFixed(0) + ' ml/min', interpretation: results.tfge.interpretation }, { id: 'ascvd', title: metricas.generales[17].title, value: isNaN(parseFloat(results.ascvd.value)) ? '-' : results.ascvd.value + '%', interpretation: results.ascvd.interpretation }, { id: 'framingham', title: metricas.generales[18].title, value: isNaN(results.framingham.value) ? '-' : `${results.framingham.value}%`, interpretation: results.framingham.interpretation }, { id: 'score', title: metricas.generales[19].title, value: isNaN(results.score.value) ? '-' : `< ${results.score.value}%`, interpretation: results.score.interpretation }, { id: 'castelli', title: metricas.generales[20].title, value: isNaN(results.castelli.value) ? '-' : results.castelli.value.toFixed(2), interpretation: results.castelli.interpretation }, { id: 'ipa', title: metricas.generales[21].title, value: isNaN(results.ipa.value) ? '-' : results.ipa.value.toFixed(2), interpretation: results.ipa.interpretation }, { id: 'sueno', title: metricas.generales[22].title, value: results.analisisSueno.value || '-', interpretation: results.analisisSueno.interpretation }, { id: 'bienestar', title: metricas.generales[23].title, value: results.bienestarEmocional.value || '-', interpretation: results.bienestarEmocional.interpretation }, ]; }
+        function calculateGeneralMetrics(inputs) { const results = { imc: calculateIMC(inputs.peso, inputs.altura), iac: calculateIAC(inputs.cadera, inputs.altura), absi: calculateABSI(inputs.cintura, inputs.altura, calculateIMC(inputs.peso, inputs.altura).value), bri: calculateBRI(inputs.cintura, inputs.altura), grasaCorporal: calculateGrasaCorporal(inputs.sexo, inputs.cintura, inputs.cuello, inputs.altura, inputs.cadera), vai: calculateVAI(inputs.sexo, inputs.cintura, inputs.trigliceridos, inputs.hdl, calculateIMC(inputs.peso, inputs.altura).value), pesoIdeal: calculatePesoIdeal(inputs.altura, inputs.sexo), icc: calculateICC(inputs.cintura, inputs.cadera), ica: calculateICA(inputs.cintura, inputs.altura), tmb: calculateTMB(inputs.sexo, inputs.peso, inputs.altura, inputs.edad), homaIr: calculateHOMA_IR(inputs.glicemia, inputs.insulina), astAlt: calculateASTALT(inputs.ast, inputs.alt), pam: calculatePAM(inputs.pas, inputs.pad), tfge: calculateTFGe(inputs.creatinina, inputs.sexo, inputs.edad), ascvd: calculateASCVD(inputs.sexo, inputs.edad, inputs.colesterolTotal, inputs.hdl, inputs.pas, (inputs.anosFumando > 0 || inputs.cigarrillosDiarios > 0), inputs.diabetes), framingham: calculateFramingham(inputs.sexo, inputs.edad, inputs.colesterolTotal, inputs.hdl, inputs.pas, (inputs.anosFumando > 0 || inputs.cigarrillosDiarios > 0), inputs.diabetes), score: calculateSCORE(inputs.sexo, inputs.edad, inputs.colesterolTotal, inputs.pas, (inputs.anosFumando > 0 || inputs.cigarrillosDiarios > 0)), castelli: calculateCastelli(inputs.colesterolTotal, inputs.hdl), ipa: calculateIPA(inputs.anosFumando, inputs.cigarrillosDiarios), caloriesBurned: calculateCaloriesBurnedActivity(inputs.peso, inputs.activitySelect), analisisSueno: getSleepAnalysis(inputs), bienestarEmocional: getBienestarInterpretation(inputs) }; results.ffmi = calculateFFMI(inputs.peso, inputs.altura, results.grasaCorporal.value); results.pesoAjustado = calculatePesoAjustado(inputs.peso, results.pesoIdeal.value); results.get = calculateGET(results.tmb.value, inputs.actividad); results.macros = calculateMacros(results.get.value, inputs.peso); currentResults = results; updateGeneralUI(results); updateChart([ isNaN(results.imc.value) ? 0 : results.imc.value, isNaN(results.iac.value) ? 0 : results.iac.value, isNaN(results.absi.value) ? 0 : results.absi.value * 100, isNaN(results.bri.value) ? 0 : results.bri.value, isNaN(results.vai.value) ? 0 : results.vai.value, isNaN(results.grasaCorporal.value) ? 0 : results.grasaCorporal.value, isNaN(parseFloat(results.framingham.value)) ? 0 : parseFloat(results.framingham.value) ]); }
+        function createResultCard(id, title, value, interpretation) { return ` <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"> <h3 class="text-xl font-semibold mb-2">${title}</h3> <p id="${id}-value" class="text-3xl font-bold text-[#6B8E23] mb-1">${value}</p> <p id="${id}-interpretation" class="text-md text-gray-700">${interpretation}</p> </div>`; }
+        function updateGeneralUI(results) { const resultsContainer = document.getElementById('results'); const metricsOrder = getMetricsOrder(results); resultsContainer.innerHTML = metricsOrder.map(m => createResultCard(m.id, m.title, m.value, m.interpretation)).join(''); }
+        function calculatePediatricMetrics(inputs) { const { pediatricSexo, pediatricEdadMeses, pediatricPeso, pediatricAltura, pliegueTriceps, pliegueSubescapular } = inputs; if (isNaN(pediatricEdadMeses) || isNaN(pediatricPeso) || isNaN(pediatricAltura) || pediatricEdadMeses <= 0) { updatePediatricUI(null); return; } const pediatricIMC = pediatricPeso / Math.pow(pediatricAltura / 100, 2); const ageYears = pediatricEdadMeses / 12; const L = pediatricSexo === 'niño' ? 1 : 1.2; const M = pediatricSexo === 'niño' ? 16 + (ageYears * 0.3) : 15.5 + (ageYears * 0.3); const S = 0.12; const Z = (Math.pow(pediatricIMC / M, L) - 1) / (L * S); const percentile = Math.round(cdf(Z) * 100); let bmiInterpretation = ''; if(percentile < 5) bmiInterpretation = 'Bajo peso'; else if (percentile < 85) bmiInterpretation = 'Peso saludable'; else if (percentile < 95) bmiInterpretation = 'Sobrepeso'; else bmiInterpretation = 'Obesidad'; const bodyFat = calculateSlaughterBodyFat(pediatricSexo, pliegueTriceps, pliegueSubescapular, ageYears > 8); const geb = calculatePediatricGEB(pediatricSexo, ageYears, pediatricPeso); const results = { bmiPercentile: { value: percentile, interpretation: bmiInterpretation }, bodyFat: bodyFat, geb: geb }; currentPediatricResults = results; updatePediatricUI(results); }
+        function updatePediatricUI(results) { const container = document.getElementById('pediatric-results-cards'); if (!results) { container.innerHTML = '<p class="col-span-full text-center text-gray-600">Por favor, introduce los datos del niño para ver los resultados.</p>'; updatePediatricActionItems(null); return; } container.innerHTML = ` ${createResultCard('ped-imc', 'IMC por Percentil', `${results.bmiPercentile.value}`, results.bmiPercentile.interpretation)} ${createResultCard('ped-fat', '% Grasa Corporal (Slaughter)', isNaN(results.bodyFat.value) ? '-' : `${results.bodyFat.value.toFixed(1)}%`, results.bodyFat.interpretation)} ${createResultCard('ped-geb', 'Gasto Energético Basal', isNaN(results.geb.value) ? '-' : `${results.geb.value.toFixed(0)} kcal/día`, results.geb.interpretation)} `; updatePediatricActionItems(results); }
+        function updateActionItems(inputs) { const { altura, peso, horasSueno, somnolenciaDiurna, bienestarEmocional, embarazada } = inputs; let suggestionsHTML = ''; if (embarazada) { suggestionsHTML += '<li><strong>Cuidado prenatal:</strong> Es crucial mantener todas las citas con tu médico para monitorear tu salud y la del bebé.</li>'; } else { const imc = calculateIMC(peso, altura).value; if (!isNaN(imc)) { if (imc < 18.5) suggestionsHTML += '<li><strong>Bajo peso:</strong> Tu IMC indica un peso por debajo de lo saludable. Un nutricionista puede ayudarte.</li>'; else if (imc >= 25 && imc < 30) suggestionsHTML += '<li><strong>Sobrepeso:</strong> Considera incorporar más actividad física y revisar tu alimentación.</li>'; else if (imc >= 30) suggestionsHTML += '<li><strong>Obesidad:</strong> Es importante consultar a un médico para crear un plan de salud integral.</li>'; } } if (!isNaN(horasSueno) && horasSueno < 7) { suggestionsHTML += `<li><strong>Descanso adecuado:</strong> Dormir menos de 7 horas puede ser especialmente desafiante${embarazada ? ' durante el embarazo' : ''}. Prioriza el descanso.</li>`; } if (somnolenciaDiurna === 'frecuentemente') { suggestionsHTML += `<li><strong>Somnolencia diurna:</strong> Sentirse muy somnoliento/a es común${embarazada ? ', pero si es excesivo, coméntalo con tu médico' : '. Puede indicar un sueño no reparador'}.</li>`; } if (!isNaN(bienestarEmocional) && bienestarEmocional <= 4) { suggestionsHTML += '<li><strong>Bienestar emocional:</strong> Tu bienestar es una prioridad. Si te sientes abrumado/a, es importante buscar apoyo.</li>'; } if (suggestionsHTML === '') { suggestionsHTML = '<li><strong>¡Vas por buen camino!</strong> Sigue cuidándote y manteniendo hábitos saludables.</li>'; } actionItemsList.innerHTML = suggestionsHTML; }
+        function updatePediatricActionItems(results) { if (!results || isNaN(results.bmiPercentile.value)) { pediatricActionItemsList.innerHTML = '<li>Introduce los datos para ver sugerencias.</li>'; return; } const percentile = results.bmiPercentile.value; let suggestionsHTML = ''; if (percentile < 5) { suggestionsHTML += '<li><strong>Bajo peso:</strong> El percentil de IMC es bajo. Es importante hablar con el pediatra para evaluar la nutrición y el crecimiento del niño/a.</li>'; } else if (percentile >= 85 && percentile < 95) { suggestionsHTML += '<li><strong>Sobrepeso:</strong> El percentil de IMC indica sobrepeso. Es un buen momento para fomentar hábitos saludables en familia, como una dieta balanceada y actividad física regular.</li>'; } else if (percentile >= 95) { suggestionsHTML += '<li><strong>Obesidad:</strong> El percentil de IMC es elevado. Se recomienda una evaluación médica para crear un plan de manejo que apoye un crecimiento saludable.</li>'; } else { suggestionsHTML = '<li><strong>¡Crecimiento saludable!</strong> El percentil de IMC se encuentra en un rango saludable. Continúa fomentando buenos hábitos.</li>'; } pediatricActionItemsList.innerHTML = suggestionsHTML; }
+        function getIMCInterpretation(value) { if (isNaN(value)) return ''; if (value < 18.5) return 'Bajo Peso'; else if (value < 25) return 'Normal'; else if (value < 30) return 'Sobrepeso'; else return 'Obesidad'; }
+        function calculateIMC(peso, altura) { if (isNaN(peso) || isNaN(altura) || altura <= 0) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const value = peso / (alturaM * alturaM); return { value, interpretation: getIMCInterpretation(value) }; }
+        function calculateIAC(cadera, altura) { if (isNaN(cadera) || isNaN(altura) || altura <= 0) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const value = (cadera / Math.pow(alturaM, 1.5)) - 18; let interpretation = 'Normal'; return { value, interpretation }; }
+        function calculateABSI(cintura, altura, imc) { if (isNaN(cintura) || isNaN(altura) || isNaN(imc) || altura <= 0) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const cinturaM = cintura / 100; const value = cinturaM / (Math.pow(imc, 2/3) * Math.pow(alturaM, 0.5)); let interpretation = (value > 0.083) ? 'Riesgo Elevado' : 'Riesgo Normal'; return { value, interpretation }; }
+        function calculateBRI(cintura, altura) { if (isNaN(cintura) || isNaN(altura) || altura <= 0) return { value: NaN, interpretation: '' }; const value = 364.2 - 365.5 * Math.sqrt(1 - Math.pow(((cintura / 100) / (2 * Math.PI)), 2) / Math.pow((0.5 * (altura / 100)), 2)); let interpretation = (value > 3.0) ? 'Riesgo Elevado' : 'Riesgo Bajo'; return { value, interpretation }; }
+        function calculateVAI(sexo, cintura, trigliceridos, hdl, imc) { if (isNaN(cintura) || isNaN(trigliceridos) || isNaN(hdl) || isNaN(imc)) return { value: NaN, interpretation: '' }; const tg_mmol = trigliceridos / 88.5; const hdl_mmol = hdl / 38.67; let vai = (sexo === 'hombre') ? (cintura / (39.68 + (1.88 * imc))) * (tg_mmol / 1.03) * (1.31 / hdl_mmol) : (cintura / (36.58 + (1.89 * imc))) * (tg_mmol / 0.81) * (1.52 / hdl_mmol); const interpretation = vai > 1 ? 'Riesgo Elevado' : 'Riesgo Normal'; return { value: vai, interpretation }; }
+        function calculateGrasaCorporal(sexo, cintura, cuello, altura, cadera) { if (isNaN(cintura) || isNaN(cuello) || isNaN(altura)) return { value: NaN, interpretation: '' }; let value; let interpretation = ''; if (sexo === 'hombre') { value = 495 / (1.0324 - 0.19077 * Math.log10(cintura - cuello) + 0.15456 * Math.log10(altura)) - 450; if (value < 6) interpretation = 'Esencial'; else if (value < 14) interpretation = 'Atleta'; else if (value < 18) interpretation = 'Fitness'; else if (value < 25) interpretation = 'Aceptable'; else interpretation = 'Obesidad'; } else { if (isNaN(cadera)) return { value: NaN, interpretation: '' }; value = 495 / (1.29579 - 0.35004 * Math.log10(cintura + cadera - cuello) + 0.22100 * Math.log10(altura)) - 450; if (value < 14) interpretation = 'Esencial'; else if (value < 21) interpretation = 'Atleta'; else if (value < 25) interpretation = 'Fitness'; else if (value < 32) interpretation = 'Aceptable'; else interpretation = 'Obesidad'; } return { value, interpretation }; }
+        function calculateFFMI(peso, altura, grasaCorporal) { if (isNaN(peso) || isNaN(altura) || isNaN(grasaCorporal)) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const masaLibreDeGrasaKg = peso * (1 - (grasaCorporal / 100)); const value = masaLibreDeGrasaKg / (alturaM * alturaM); let interpretation = ''; if (value < 18) interpretation = 'Bajo'; else if (value < 22) interpretation = 'Promedio'; else if (value < 25) interpretation = 'Alto'; else interpretation = 'Excelente'; return { value, interpretation }; }
+        function calculatePesoIdeal(altura, sexo) { if (isNaN(altura)) return { value: NaN }; return { value: (sexo === 'hombre') ? 50 + 0.9 * (altura - 152.4) : 45.5 + 0.9 * (altura - 152.4) }; }
+        function calculatePesoAjustado(peso, pesoIdeal) { if (isNaN(peso) || isNaN(pesoIdeal)) return { value: NaN }; return { value: pesoIdeal + 0.4 * (peso - pesoIdeal) }; }
+        function calculateICC(cintura, cadera) { if (isNaN(cintura) || isNaN(cadera) || cadera === 0) return { value: NaN }; return { value: cintura / cadera }; }
+        function calculateICA(cintura, altura) { if (isNaN(cintura) || isNaN(altura) || altura === 0) return { value: NaN }; return { value: cintura / altura }; }
+        function calculateTMB(sexo, peso, altura, edad) { if (isNaN(peso) || isNaN(altura) || isNaN(edad)) return { value: NaN }; return { value: (sexo === 'hombre') ? (10 * peso) + (6.25 * altura) - (5 * edad) + 5 : (10 * peso) + (6.25 * altura) - (5 * edad) - 161 }; }
+        function calculateGET(tmb, actividad) { if (isNaN(tmb) || !actividad) return { value: NaN }; return { value: tmb * parseFloat(actividad) }; }
+        function calculateHOMA_IR(glicemia, insulina) { if (isNaN(glicemia) || isNaN(insulina)) return { value: NaN, interpretation: 'Faltan datos.' }; const value = (glicemia * insulina) / 405; let interpretation = value < 2.5 ? 'Normal' : 'Resistencia a la insulina.'; return { value, interpretation }; }
+        function calculateASTALT(ast, alt) { if (isNaN(ast) || isNaN(alt) || alt === 0) return { value: NaN, interpretation: '' }; const value = ast / alt; let interpretation = (value > 1.0) ? 'Posible daño hepático' : 'Normal'; return { value, interpretation }; }
+        function calculatePAM(pas, pad) { if (isNaN(pas) || isNaN(pad)) return { value: NaN, interpretation: '' }; const value = (pas + 2 * pad) / 3; let interpretation = (value > 100) ? 'Hipertensión' : (value < 70) ? 'Hipotensión' : 'Normal'; return { value, interpretation }; }
+        function calculateTFGe(creatinina, sexo, edad) { if (isNaN(creatinina) || isNaN(edad)) return { value: NaN, interpretation: '' }; let kappa = sexo === 'mujer' ? 0.7 : 0.9; let alpha = sexo === 'mujer' ? -0.329 : -0.411; let genderFactor = sexo === 'mujer' ? 1.018 : 1; let value = 141 * Math.pow(Math.min(creatinina / kappa, 1), alpha) * Math.pow(Math.max(creatinina / kappa, 1), -1.209) * Math.pow(0.993, edad) * genderFactor; let interpretation = ''; if (value >= 90) interpretation = 'Función renal normal.'; else if (value >= 60) interpretation = 'Levemente disminuida.'; else if (value >= 30) interpretation = 'Disfunción moderada.'; else if (value >= 15) interpretation = 'Disfunción severa.'; else interpretation = 'Fallo renal.'; return { value, interpretation }; }
+        function calculateASCVD(sexo, edad, colTotal, hdl, pas, fuma, diabetes) { if (isNaN(edad) || isNaN(colTotal) || isNaN(hdl) || isNaN(pas)) return { value: NaN, interpretation: 'Faltan datos.' }; let l_age = Math.log(edad); let l_tc = Math.log(colTotal); let l_hdl = Math.log(hdl); let l_sbp = Math.log(pas); let sum_b; if (sexo === 'mujer') { sum_b = -29.799 * l_age + 4.884 * Math.pow(l_age, 2) + 13.540 * l_tc - 3.375 * l_age * l_tc - 13.578 * l_hdl + 3.149 * l_age * l_hdl + 2.019 * l_sbp + (fuma ? 7.574 - 1.665 * l_age : 0) + (diabetes ? 0.661 : 0); let prob = 1 - Math.pow(0.9665, Math.exp(sum_b - (-29.18))); return { value: (prob * 100).toFixed(1), interpretation: prob < 0.05 ? 'Riesgo bajo' : prob < 0.2 ? 'Riesgo intermedio' : 'Riesgo alto' }; } else { sum_b = 12.344 * l_age + 11.853 * l_tc - 2.664 * l_age * l_tc - 7.990 * l_hdl + 1.769 * l_age * l_hdl + 1.797 * l_sbp + (fuma ? 7.837 - 1.795 * l_age : 0) + (diabetes ? 0.658 : 0); let prob = 1 - Math.pow(0.9144, Math.exp(sum_b - 61.18)); return { value: (prob * 100).toFixed(1), interpretation: prob < 0.05 ? 'Riesgo bajo' : prob < 0.2 ? 'Riesgo intermedio' : 'Riesgo alto' }; } }
+        function calculateIPA(anos, cigarrillos) { if (isNaN(anos) || isNaN(cigarrillos) || (anos === 0 && cigarrillos === 0)) return { value: NaN, interpretation: 'No aplica.' }; const value = (anos * cigarrillos) / 20; let interpretation = value <= 10 ? 'Riesgo bajo de EPOC' : value <= 20 ? 'Riesgo moderado' : 'Riesgo alto'; return { value, interpretation }; }
+        function calculateCaloriesBurnedActivity(peso, metValue) { const met = parseFloat(metValue); if (isNaN(peso) || isNaN(met)) { return { value: '-', interpretation: '' }; } const calories = met * 3.5 * peso / 200 * 60; return { value: calories.toFixed(0), interpretation: 'Calorías por hora (aprox.)' }; }
+        function calculateMacros(get, peso) { if (isNaN(get) || isNaN(peso)) return { value: '-', interpretation: '' }; const proteinMinGrams = peso * 1.6; const proteinMaxGrams = peso * 2.5; const fatMinGrams = (get * 0.20) / 9; const fatMaxGrams = (get * 0.30) / 9; const carbsMinGrams = (get * 0.40) / 4; const carbsMaxGrams = (get * 0.55) / 4; const value = `P: ${proteinMinGrams.toFixed(0)}-${proteinMaxGrams.toFixed(0)}g | G: ${fatMinGrams.toFixed(0)}-${fatMaxGrams.toFixed(0)}g | C: ${carbsMinGrams.toFixed(0)}-${carbsMaxGrams.toFixed(0)}g`; return { value, interpretation: '' }; }
+        function calculateFramingham(sexo, edad, colTotal, hdl, pas, fuma, diabetes) { if (isNaN(edad) || isNaN(colTotal) || isNaN(hdl) || isNaN(pas)) return { value: NaN, interpretation: 'Faltan datos.' }; let points = 0; if (sexo === 'hombre') { if (edad <= 34) points -= 9; else if (edad <= 39) points -= 4; else if (edad <= 49) points += 3; else if (edad <= 54) points += 6; else if (edad <= 59) points += 8; else if (edad <= 64) points += 10; else if (edad <= 69) points += 11; else if (edad <= 74) points += 12; else points += 13; if (fuma) { if (edad <= 39) points += 8; else if (edad <= 49) points += 5; else if (edad <= 59) points += 3; else points += 1; } if(colTotal > 160) { if (colTotal <= 199) points += 4; else if (colTotal <= 239) points += 7; else if (colTotal <= 279) points += 9; else points += 11; } if (hdl < 40) points += 2; else if (hdl <= 49) points += 1; else if (hdl >= 60) points -= 1; if (pas >= 130 && pas <= 139) points += 1; else if (pas <= 159) points += 2; else if (pas >= 160) points += 3; if (diabetes) points += 3; const riskMap = {0:1,1:1,2:1,3:1,4:1,5:2,6:2,7:2,8:3,9:3,10:4,11:4,12:5,13:6,14:8,15:10,16:12,17:16,18:20,19:25,20:30}; let risk = riskMap[Math.max(0, Math.min(20, points))] || 30; return { value: risk, interpretation: risk < 10 ? 'Riesgo bajo' : risk <= 20 ? 'Intermedio' : 'Alto' }; } else { if (edad <= 34) points -= 7; else if (edad <= 39) points -= 3; else if (edad <= 49) points += 3; else if (edad <= 54) points += 6; else if (edad <= 59) points += 8; else if (edad <= 64) points += 10; else if (edad <= 69) points += 12; else if (edad <= 74) points += 14; else points += 16; if (fuma) { if (edad <= 39) points += 9; else if (edad <= 49) points += 7; else if (edad <= 59) points += 4; else if (edad <= 69) points += 2; else points += 1; } if(colTotal > 160) {if (colTotal <= 199) points += 4; else if (colTotal <= 239) points += 8; else if (colTotal <= 279) points += 11; else points += 13;} if (hdl < 40) points += 2; else if (hdl <= 49) points += 1; else if (hdl >= 60) points -= 1; if (pas >= 120 && pas <= 129) points += 1; else if (pas <= 139) points += 2; else if (pas <= 159) points += 4; else if (pas >= 160) points += 5; if (diabetes) points += 4; const riskMap = {0:1,1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:2,10:2,11:2,12:3,13:3,14:4,15:5,16:6,17:7,18:9,19:11,20:14,21:17,22:22,23:27,24:30}; let risk = riskMap[Math.max(0, Math.min(24, points))] || 30; return { value: risk, interpretation: risk < 10 ? 'Riesgo bajo' : risk <= 20 ? 'Intermedio' : 'Alto' }; } }
+        function calculateSCORE(sexo, edad, colTotal, pas, fuma) { if (isNaN(edad) || isNaN(colTotal) || isNaN(pas)) return { value: NaN, interpretation: 'Faltan datos.'}; let risk = 1; if(edad > 50) risk += 1; if(edad > 60) risk += 2; if(pas > 140) risk += 1; if(pas > 160) risk += 2; if(colTotal > 200) risk += 1; if(colTotal > 240) risk += 2; if(fuma) risk += 2; if(sexo === 'hombre') risk += 1; let riskCategory = 1; if(risk > 10) riskCategory = 10; else if (risk > 6) riskCategory = 5; else if (risk > 4) riskCategory = 3; let interpretation = 'Riesgo bajo'; if(riskCategory >= 5) interpretation = 'Riesgo alto'; else if(riskCategory >= 3) interpretation = 'Riesgo moderado'; return { value: riskCategory, interpretation }; }
+        function calculateCastelli(colTotal, hdl) { if(isNaN(colTotal) || isNaN(hdl) || hdl === 0) return { value: NaN, interpretation: 'Faltan datos.' }; const value = colTotal / hdl; let interpretation = 'Riesgo bajo'; if(value > 5.0) interpretation = 'Riesgo alto'; else if(value >= 3.5) interpretation = 'Riesgo moderado'; return { value, interpretation }; }
+        function cdf(z) { const p = 0.3275911, a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429; const sign = z < 0 ? -1 : 1; const x = Math.abs(z) / Math.sqrt(2.0); const t = 1.0 / (1.0 + p * x); const erf = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x); return 0.5 * (1.0 + sign * erf); }
+        function calculateSlaughterBodyFat(sexo, triceps, subscapular, isPubertal) { if(isNaN(triceps) || isNaN(subscapular)) return { value: NaN, interpretation: 'Faltan pliegues.' }; const sumPliegues = triceps + subscapular; let value = NaN; if(sexo === 'niño'){ value = sumPliegues > 35 ? 0.735 * sumPliegues + 1.0 : 0.61 * sumPliegues + 5.1; } else { value = sumPliegues > 35 ? 0.61 * sumPliegues + 5.1 : 0.546 * sumPliegues + 9.7; } return { value: value, interpretation: 'Estimación.' }; }
+        function calculatePediatricGEB(sexo, edadAnos, peso) { if(isNaN(edadAnos) || isNaN(peso)) return { value: NaN, interpretation: '' }; let value = NaN; if(sexo === 'niño'){ if(edadAnos < 3) value = 60.9 * peso - 54; else if(edadAnos < 10) value = 22.7 * peso + 495; else if(edadAnos < 18) value = 17.5 * peso + 651; } else { if(edadAnos < 3) value = 61.0 * peso - 51; else if(edadAnos < 10) value = 22.5 * peso + 499; else if(edadAnos < 18) value = 12.2 * peso + 746; } return { value: value, interpretation: 'Calorías en reposo.' }; }
+        function calculateEFW(dbp, cc, ca, lf) { if(isNaN(ca) || isNaN(lf)) return { value: NaN, interpretation: 'Faltan CA y LF.' }; const log10PFE = 1.3596 - (0.00386 * (ca/10) * (lf/10)) + (0.0064 * (cc/10)) + (0.00061 * (dbp/10) * (ca/10)) + (0.0424 * (ca/10)) + (0.174 * (lf/10)); const value = Math.pow(10, log10PFE); return { value, interpretation: 'Error de ±15%.' }; }
+        function calculateBishopScore(inputs) { const { bishopDilatacion, bishopBorramiento, bishopConsistencia, bishopPosicion, bishopEstacion } = inputs; const score = parseInt(bishopDilatacion) + parseInt(bishopBorramiento) + parseInt(bishopConsistencia) + parseInt(bishopPosicion) + parseInt(bishopEstacion); if(isNaN(score)) return { value: NaN, interpretation: 'Faltan datos.' }; let interpretation = score >= 8 ? 'Favorable para inducción' : 'Desfavorable'; return { value: score, interpretation }; }
+        function calculateVBACScore(edad, imc, partoVaginalPrevio) { if (isNaN(edad) || isNaN(imc)) return { value: NaN, interpretation: 'Faltan datos.' }; let baseProb = 70; if (imc >= 30) baseProb -= 10; if (imc >= 40) baseProb -= 10; if (edad >= 40) baseProb -= 5; if (partoVaginalPrevio) baseProb += 15; const value = Math.max(20, Math.min(95, baseProb)); return { value, interpretation: 'Probabilidad de PVDC.' }; }
+        function getSleepAnalysis(inputs) { const { horasSueno, despiertaNoche, vecesDespierta, porqueDespierta, somnolenciaDiurna } = inputs; if (isNaN(horasSueno)) return { value: '-', interpretation: 'Ingresa horas de sueño.' }; let interpretation = `Duermes ${horasSueno} horas. `; if (despiertaNoche === 'si') { interpretation += `Te despiertas ${!isNaN(vecesDespierta) ? vecesDespierta : ''} veces`; interpretation += porqueDespierta ? ` (por: ${porqueDespierta}). ` : '. '; } else { interpretation += 'No sueles despertarte. '; } if (somnolenciaDiurna === 'frecuentemente') { interpretation += 'Sientes somnolencia frecuente.'; } return { value: `${horasSueno} horas`, interpretation }; }
+        function getBienestarInterpretation(inputs) { const { bienestarEmocional, emocionPrincipal } = inputs; if (!bienestarEmocional) return { value: '-', interpretation: 'Selecciona tu bienestar.' }; let interpretation = `Tu bienestar es de ${bienestarEmocional}/10. `; if (emocionPrincipal) { interpretation += `Emoción principal: ${emocionPrincipal}.`; } return { value: `${bienestarEmocional}/10`, interpretation }; }
+        function updateChart(data) { const chartColors = ['#6B8E23', '#8FB158', '#556B2F', '#A8C57D', '#41521C', '#C1D8A8', '#2E3A13']; if (!healthChart) { const ctx = document.getElementById('healthChart').getContext('2d'); healthChart = new Chart(ctx, { type: 'bar', data: { labels: ['IMC', 'IAC', 'ABSI', 'BRI', 'VAI', '% Grasa', 'Riesgo Fram.'], datasets: [{ label: 'Tus Valores', data: data, backgroundColor: chartColors, borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } } }); } else { healthChart.data.datasets[0].data = data; healthChart.update(); } }
+        function showToast(message, isError = false) { const toast = document.getElementById('toast'); toast.textContent = message; toast.className = `fixed bottom-20 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 no-print ${isError ? 'bg-red-600' : 'bg-[#6B8E23]'}`; toast.classList.remove('opacity-0'); setTimeout(() => { toast.classList.add('opacity-0'); }, 3000); }
+        function copyToClipboard(text, successMessage) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.left = "-9999px"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { document.execCommand('copy'); showToast(successMessage); } catch (err) { showToast('Error al copiar los resultados.', true); } document.body.removeChild(textArea); }
+        function copyResults() { const isEmbarazada = inputElements.embarazada.checked; if (isEmbarazada) { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.gestationalWeek?.value)) { showToast("Calcula los resultados obstétricos primero.", true); return; } let shareText = "Resumen de Salud Obstétrica\n\n"; shareText += `Semana Gestacional: ${!isNaN(currentResults.gestationalWeek.value) ? currentResults.gestationalWeek.value + ' semanas' : '-'}\n`; shareText += `FPP: ${currentResults.gestationalWeek.edd}\n`; shareText += `Ganancia de Peso Recomendada: ${currentResults.recommendedGain.value}\n`; shareText += `Ganancia Actual: ${currentResults.recommendedGain.currentGain} kg\n`; shareText += `Peso Fetal Estimado: ${isNaN(currentResults.efw.value) ? '-' : currentResults.efw.value.toFixed(0) + ' g'}\n`; shareText += `Puntuación de Bishop: ${isNaN(currentResults.bishop.value) ? '-' : currentResults.bishop.value} (${currentResults.bishop.interpretation})\n`; shareText += `Probabilidad de Éxito de PVDC: ${isNaN(currentResults.vbac.value) ? '-' : currentResults.vbac.value.toFixed(1) + '%'} (${currentResults.vbac.interpretation})\n`; shareText += `\n=== BIENESTAR ===\n`; shareText += `Análisis del Sueño: ${currentResults.analisisSueno.value}. ${currentResults.analisisSueno.interpretation}\n`; shareText += `Bienestar Emocional: ${currentResults.bienestarEmocional.value}. ${currentResults.bienestarEmocional.interpretation}\n`; const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados obstétricos copiados."); } else { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.imc?.value)) { showToast("Calcula los resultados de adulto primero.", true); return; } let shareText = "Resumen de Salud Integral\n\n"; const metricsOrder = getMetricsOrder(currentResults); metricsOrder.forEach(m => { const cleanValue = m.value.toString().replace(/<br>/g, ' | '); const cleanTitle = m.title.substring(m.title.indexOf('.') + 2); shareText += `${cleanTitle}: ${cleanValue} ${m.interpretation}\n`; }); const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados de adulto copiados."); } }
+        function copyPediatricResults() { if (Object.keys(currentPediatricResults).length === 0 || isNaN(currentPediatricResults.bmiPercentile.value)) { showToast("Calcula los resultados pediátricos primero.", true); return; } const { bmiPercentile, bodyFat, geb } = currentPediatricResults; const notes = document.getElementById('pediatric-doctor-notes').value; let shareText = "Resumen de Salud Pediátrica\n\n"; shareText += `=== INDICADORES ===\n`; shareText += `IMC por Percentil: ${bmiPercentile.value} (${bmiPercentile.interpretation})\n`; shareText += `% Grasa Corporal (Slaughter): ${isNaN(bodyFat.value) ? '-' : bodyFat.value.toFixed(1) + '%'} (${bodyFat.interpretation})\n`; shareText += `Gasto Energético Basal: ${isNaN(geb.value) ? '-' : geb.value.toFixed(0)} kcal/día (${geb.interpretation})\n\n`; if (notes.trim() !== '') { shareText += `=== NOTAS PARA EL PEDIATRA ===\n${notes}\n`; } copyToClipboard(shareText, 'Resultados Pediátricos copiados.'); }
+        
+        const activityMETs = { 'Reposo (sentado, quieto)': 1.3, 'Trabajo de oficina (ligero)': 1.5, 'Limpieza del hogar (ligera)': 2.3, 'Limpieza del hogar (general)': 3.3, 'Cocinar': 3.5, 'Jardinería (general)': 3.8, 'Caminar (lento, 3.2 km/h)': 2.8, 'Caminar (moderado, 4.8 km/h)': 3.5, 'Caminar (rápido, 6.4 km/h)': 5.0, 'Caminar (muy rápido, 8 km/h)': 6.3, 'Subir escaleras': 8.0, 'Correr (jogging, 8 km/h)': 8.3, 'Correr (10 km/h)': 10.0, 'Correr (12 km/h)': 12.5, 'Correr (16 km/h)': 16.0, 'Ciclismo (muy ligero, <16 km/h)': 4.0, 'Ciclismo (moderado, 16-19 km/h)': 6.8, 'Ciclismo (vigoroso, 22-25 km/h)': 10.0, 'Ciclismo (competitivo, >25 km/h)': 12.0, 'Bicicleta estática (moderado)': 7.0, 'Natación (estilo libre, ligero)': 5.8, 'Natación (estilo libre, vigoroso)': 9.8, 'Natación (espalda)': 7.0, 'Natación (pecho)': 10.0, 'Aeróbicos (bajo impacto)': 5.0, 'Aeróbicos (alto impacto)': 7.3, 'Entrenamiento en circuito (general)': 8.0, 'Entrenamiento de fuerza (ligero)': 3.5, 'Entrenamiento de fuerza (vigoroso)': 6.0, 'Hipertrofia': 6.0, 'Halterofilia (Levantamiento de pesas olímpico)': 6.0, 'CrossFit': 12.0, 'Calistenia (vigoroso)': 8.0, 'Yoga (Hatha)': 2.5, 'Pilates (general)': 3.0, 'Baile (salón, lento)': 3.0, 'Baile (aeróbico, zumba)': 7.3, 'Baloncesto (partido)': 8.0, 'Fútbol (casual)': 7.0, 'Fútbol (competitivo)': 10.0, 'Tenis (individual)': 7.3, 'Tenis (dobles)': 6.0, 'Tenis de mesa': 4.0, 'Bádminton (competitivo)': 7.0, 'Voleibol (recreativo)': 3.5, 'Voleibol (competitivo, playa)': 8.0, 'Golf (caminando, llevando palos)': 4.8, 'Béisbol / Sóftbol': 5.0, 'Balonmano (Handball)': 12.0, 'Hockey sobre césped': 7.8, 'Boxeo (sparring)': 9.0, 'Boxeo (saco de boxeo)': 5.5, 'Artes marciales (general)': 10.3, 'Judo, Karate, Taekwondo, Jiu-Jitsu': 10.3, 'Esgrima': 6.0, 'Lucha libre': 6.0, 'Senderismo (cross-country)': 6.0, 'Escalada en roca': 8.0, 'Gimnasia (general)': 4.0, 'Remo (moderado)': 7.0, 'Vela (Sailing)': 3.0, 'Tiro con arco': 3.5, 'Triatlón (competitivo)': 10.0, 'Esquí (alpino, moderado)': 6.0, 'Patinaje sobre hielo': 7.0 };
+        let optionsHTML = '<option value="" disabled selected>Elige una actividad...</option>';
+        for (const activity in activityMETs) { optionsHTML += `<option value="${activityMETs[activity]}">${activity}</option>`; }
+        inputElements.activitySelect.innerHTML = optionsHTML;
+        
+        Object.values(inputElements).forEach(input => { if(input) input.addEventListener('input', calculateAll); });
+        inputElements.sexo.addEventListener('change', togglePregnancyOption);
+        inputElements.despiertaNoche.addEventListener('change', toggleSleepDetails);
+        copyBtn.addEventListener('click', copyResults);
+        pediatricCopyBtn.addEventListener('click', copyPediatricResults);
+        
+        togglePregnancyOption();
+        calculateAll();
+        document.getElementById('year').textContent = new Date().getFullYear();
+    });
     </script>
 </body>
 </html>
-
-
 
 
