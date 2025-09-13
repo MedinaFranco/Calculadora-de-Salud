@@ -10,11 +10,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        html {
+            height: 100%;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #FDFBF6;
             color: #333333;
             padding-top: 80px; /* Espacio para el header fijo */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .chart-container {
             position: relative;
@@ -105,7 +111,7 @@
     </header>
 
     <!-- ===== CONTENEDOR PRINCIPAL DE SECCIONES ===== -->
-    <main class="w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-10 pb-20">
+    <main class="w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-10 pb-20 flex-grow">
 
         <!-- ===== SECCIÓN: ¿QUIÉN SOY? ===== -->
         <section id="quien-soy-section" class="page-section hidden bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
@@ -311,15 +317,18 @@
 
         <!-- ===== SECCIÓN: CALCULADORA DE DOSIS ===== -->
         <section id="dosis-section" class="page-section hidden">
-             <div class="w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                    <h2 class="text-3xl font-bold text-center text-[#6B8E23] flex-grow">Calculadora de Dosis</h2>
-                    <div class="relative">
-                        <button id="show-examples-btn-new" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors w-full sm:w-auto">
-                            Ver Ejemplos
-                        </button>
-                        <div id="examples-list-new" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl z-10 border">
-                            <!-- Los ejemplos se inyectarán aquí -->
+             <div class="w-full bg-white rounded-xl shadow-lg p-4 sm:p-8 md:p-12 mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div class="hidden md:block md:flex-1"></div>
+                    <h2 class="text-3xl font-bold text-center text-[#6B8E23] w-full md:w-auto">Calculadora de Dosis</h2>
+                    <div class="w-full md:flex-1 md:flex md:justify-end">
+                        <div class="relative w-full md:w-auto">
+                            <button id="show-examples-btn-new" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors w-full md:w-auto">
+                                Ver Ejemplos
+                            </button>
+                            <div id="examples-list-new" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl z-10 border">
+                                <!-- Los ejemplos se inyectarán aquí -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -334,7 +343,7 @@
                                 <input type="number" id="dosis-peso-new" placeholder="15">
                             </div>
                              <div class="input-group">
-                                <label for="dosis-posologia-new">Posología</label>
+                                <label for="dosis-posologia-new">Posología (mg/kg/día)</label>
                                 <input type="number" id="dosis-posologia-new" placeholder="30">
                             </div>
                             <div class="input-group">
@@ -353,7 +362,7 @@
                     <!-- Grupo 2: Datos del Medicamento -->
                     <div>
                         <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">2. Datos del Medicamento</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                              <div class="input-group">
                                 <label for="dosis-presentacion-new">Presentación</label>
                                 <select id="dosis-presentacion-new">
@@ -389,11 +398,11 @@
                         <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
                              <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
                                 <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis Diaria Total</h4>
-                                <p id="dosis-dia-result-new" class="text-3xl font-bold text-[#6B8E23]">-</p>
+                                <p id="dosis-dia-result-new" class="text-3xl font-bold text-[#6B8E23] break-words">-</p>
                             </div>
                              <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
                                 <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis por Toma</h4>
-                                <p id="dosis-toma-result-new" class="text-3xl font-bold text-[#6B8E23]">-</p>
+                                <p id="dosis-toma-result-new" class="text-3xl font-bold text-[#6B8E23] break-words">-</p>
                             </div>
                         </div>
                     </div>
@@ -415,6 +424,12 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Botón de Copiar Resultados -->
+                <div class="text-center mt-8 no-print">
+                    <button id="dosis-copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar Resultados</button>
+                    <p class="text-sm text-gray-500 mt-2">Guarda una copia para tus registros o para compartir.</p>
                 </div>
 
                 <!-- Disclaimer -->
@@ -719,6 +734,70 @@
             }
         }
         
+        function copyDoseResults() {
+            const peso = parseFloat(doseInputElementsNew.peso.value);
+            const posologia = parseFloat(doseInputElementsNew.posologia.value);
+            const numDoses = parseFloat(doseInputElementsNew.frecuencia.value);
+            const frecuenciaEl = doseInputElementsNew.frecuencia;
+            const frecuenciaText = frecuenciaEl.options[frecuenciaEl.selectedIndex].text;
+            const presentacionEl = doseInputElementsNew.presentacion;
+            const presentacionValue = presentacionEl.value;
+            const presentacionText = presentacionEl.options[presentacionEl.selectedIndex].text;
+            
+            if ([peso, posologia, numDoses].some(isNaN) || [peso, numDoses].some(v => v <= 0)) {
+                showToast("Por favor, completa los campos para calcular la dosis antes de copiar.", true);
+                return;
+            }
+
+            const totalDoseMgDay = peso * posologia;
+            const dosePerTakeMg = totalDoseMgDay / numDoses;
+            
+            let dosisTomaText = `${dosePerTakeMg.toFixed(2)} mg`;
+            
+            let shareText = "Resumen de Cálculo de Dosis\n\n";
+            shareText += `=== DATOS DE LA PRESCRIPCIÓN ===\n`;
+            shareText += `Peso del Paciente: ${peso} kg\n`;
+            shareText += `Posología: ${posologia} mg/kg/día\n`;
+            shareText += `Frecuencia: ${frecuenciaText}\n\n`;
+
+            shareText += `=== DATOS DEL MEDICAMENTO ===\n`;
+            shareText += `Presentación: ${presentacionText}\n`;
+            
+            const isLiquid = ['solucion', 'gotas', 'inyectables'].includes(presentacionValue);
+            if (isLiquid) {
+                const concMg = parseFloat(doseInputElementsNew.concMg.value);
+                const concMl = parseFloat(doseInputElementsNew.concMl.value);
+                if(!isNaN(concMg) && !isNaN(concMl) && concMg > 0) {
+                    shareText += `Concentración: ${concMg} mg / ${concMl} ml\n\n`;
+                    const volumePerTakeMl = (dosePerTakeMg * concMl) / concMg;
+                    dosisTomaText += ` (${volumePerTakeMl.toFixed(2)} ml)`;
+                    if (presentacionValue === 'gotas') {
+                        const drops = volumePerTakeMl * 20; // Asumiendo 20 gotas/ml
+                        dosisTomaText += ` ≈ ${drops.toFixed(0)} gotas`;
+                    }
+                } else {
+                    shareText += `Concentración: No especificada\n\n`;
+                }
+            } else { // Sólidos
+                const mgUnidad = parseFloat(doseInputElementsNew.mgUnidad.value);
+                if(!isNaN(mgUnidad) && mgUnidad > 0) {
+                    shareText += `Concentración: ${mgUnidad} mg por unidad\n\n`;
+                    const units = dosePerTakeMg / mgUnidad;
+                    let unitName = presentacionValue.slice(0, -1);
+                    if (units > 1 || units === 0) unitName = presentacionValue;
+                    dosisTomaText += ` (${units.toFixed(2)} ${unitName})`;
+                } else {
+                    shareText += `Concentración: No especificada\n\n`;
+                }
+            }
+
+            shareText += `=== RESULTADOS ===\n`;
+            shareText += `Dosis Diaria Total: ${totalDoseMgDay.toFixed(2)} mg\n`;
+            shareText += `Dosis por Toma: ${dosisTomaText}\n`;
+
+            copyToClipboard(shareText, "Resultados de dosis copiados.");
+        }
+        
         showExamplesBtnNew.addEventListener('click', (e) => {
             e.stopPropagation();
             examplesListNew.classList.toggle('hidden');
@@ -742,6 +821,8 @@
         inputElements.despiertaNoche.addEventListener('change', toggleSleepDetails);
         copyBtn.addEventListener('click', copyResults);
         pediatricCopyBtn.addEventListener('click', copyPediatricResults);
+        const doseCopyBtn = document.getElementById('dosis-copyBtn');
+        doseCopyBtn.addEventListener('click', copyDoseResults);
         
         togglePregnancyOption();
         calculateAll();
@@ -754,5 +835,4 @@
     </script>
 </body>
 </html>
-
 
