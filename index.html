@@ -68,18 +68,17 @@
                         <p class="text-xs text-gray-600 font-normal">Creado por Luis A. Medina Franco</p>
                     </a>
                 </div>
-                <!-- Menú para pantallas grandes -->
-                <!-- EXPLICACIÓN: La clase 'hidden' lo oculta en móviles. La clase 'md:block' lo muestra en pantallas medianas ('md') en adelante. -->
+                <!-- Menú para pantallas grandes (Oculto por defecto, pero con enlaces actualizados) -->
                 <div class="hidden">
                     <nav class="flex items-center space-x-6">
                         <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="inicio-section">Inicio</a>
                         <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="quien-soy-section">¿Quién Soy?</a>
                         <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="metricas-section">Métricas</a>
-                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="calculadora-section">Calculadora</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="calculadora-section">Calculadora de Salud</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="dosis-section">Calculadora de Dosis</a>
                     </nav>
                 </div>
                 <!-- Menú Hamburguesa a la Derecha -->
-                <!-- EXPLICACIÓN: La clase 'flex' lo muestra en móviles. La clase 'md:hidden' lo oculta en pantallas medianas ('md') en adelante. -->
                 <div class="flex">
                     <button id="menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-[#F7F9F4] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#6B8E23]">
                         <span class="sr-only">Abrir menú</span>
@@ -99,7 +98,8 @@
                 <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="inicio-section">Inicio</a>
                 <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="quien-soy-section">¿Quién Soy?</a>
                 <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="metricas-section">Métricas</a>
-                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-white bg-[#6B8E23] hover:bg-[#58751d]" data-section="calculadora-section">Calculadora</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="calculadora-section">Calculadora de Salud Integral</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="dosis-section">Calculadora de Dosis de Medicamentos</a>
             </div>
         </div>
     </header>
@@ -173,7 +173,7 @@
             </div>
         </section>
 
-        <!-- ===== SECCIÓN: CALCULADORA ===== -->
+        <!-- ===== SECCIÓN: CALCULADORA DE SALUD INTEGRAL ===== -->
         <section id="calculadora-section" class="page-section hidden">
             <div class="w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8 printable-content">
                 <!-- Selector de Calculadora -->
@@ -309,6 +309,123 @@
             </div>
         </section>
 
+        <!-- ===== SECCIÓN: CALCULADORA DE DOSIS ===== -->
+        <section id="dosis-section" class="page-section hidden">
+             <div class="w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold text-center text-[#6B8E23] flex-grow">Calculadora de Dosis</h2>
+                    <div class="relative">
+                        <button id="show-examples-btn-new" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors w-full sm:w-auto">
+                            Ver Ejemplos
+                        </button>
+                        <div id="examples-list-new" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl z-10 border">
+                            <!-- Los ejemplos se inyectarán aquí -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- Grupo 1: Datos de la Prescripción -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">1. Datos de la Prescripción</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div class="input-group">
+                                <label for="dosis-peso-new">Peso (kg)</label>
+                                <input type="number" id="dosis-peso-new" placeholder="15">
+                            </div>
+                             <div class="input-group">
+                                <label for="dosis-posologia-new">Posología</label>
+                                <input type="number" id="dosis-posologia-new" placeholder="30">
+                            </div>
+                            <div class="input-group">
+                                <label for="dosis-frecuencia-new">A repartir en</label>
+                                <select id="dosis-frecuencia-new">
+                                    <option value="1">1 dosis = cada 24 horas</option>
+                                    <option value="2">2 dosis = cada 12 horas</option>
+                                    <option value="3" selected>3 dosis = cada 8 horas</option>
+                                    <option value="4">4 dosis = cada 6 horas</option>
+                                    <option value="6">6 dosis = cada 4 horas</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grupo 2: Datos del Medicamento -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">2. Datos del Medicamento</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+                             <div class="input-group">
+                                <label for="dosis-presentacion-new">Presentación</label>
+                                <select id="dosis-presentacion-new">
+                                    <option value="solucion">Solución / Suspensión</option>
+                                    <option value="gotas">Gotas</option>
+                                    <option value="comprimidos">Comprimidos</option>
+                                    <option value="sobres">Sobres</option>
+                                    <option value="supositorios">Supositorios</option>
+                                    <option value="inyectables">Inyectables</option>
+                                </select>
+                            </div>
+                             <!-- Conditional Fields -->
+                            <div id="dosis-field-liquido-new" class="grid grid-cols-2 gap-x-6">
+                                <div class="input-group">
+                                    <label for="dosis-concentracion-mg-new">Nº de mg</label>
+                                    <input type="number" id="dosis-concentracion-mg-new" placeholder="100">
+                                </div>
+                                <div class="input-group">
+                                    <label for="dosis-concentracion-ml-new">Nº de ml</label>
+                                    <input type="number" id="dosis-concentracion-ml-new" placeholder="5">
+                                </div>
+                            </div>
+                            <div id="dosis-field-solido-new" class="input-group hidden">
+                                <label for="dosis-mg-unidad-new">mg por unidad</label>
+                                <input type="number" id="dosis-mg-unidad-new" placeholder="250">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grupo 3: Resultados -->
+                     <div>
+                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">3. Resultados del Cálculo</h3>
+                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                             <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
+                                <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis Diaria Total</h4>
+                                <p id="dosis-dia-result-new" class="text-3xl font-bold text-[#6B8E23]">-</p>
+                            </div>
+                             <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
+                                <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis por Toma</h4>
+                                <p id="dosis-toma-result-new" class="text-3xl font-bold text-[#6B8E23]">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Utilidad Adicional -->
+                    <div class="pt-6 mt-6 border-t">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-800 mb-2 text-center">Utilidad Adicional: Calcular Concentración (mg/ml)</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center max-w-lg mx-auto">
+                                 <div class="input-group mb-0">
+                                    <label for="dosis-util-mg-new" class="text-sm">Nº de mg</label>
+                                    <input type="number" id="dosis-util-mg-new" placeholder="250">
+                                </div>
+                                <div class="input-group mb-0">
+                                    <label for="dosis-util-ml-new" class="text-sm">Nº de ml</label>
+                                    <input type="number" id="dosis-util-ml-new" placeholder="5">
+                                </div>
+                                 <p class="text-center text-lg font-bold text-[#6B8E23] mt-2 sm:mt-0" id="dosis-mgml-result-new">Resultado: - mg/ml</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="mt-10 bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg no-print">
+                    <p class="text-sm">
+                        Los resultados ofrecidos representan una aproximación general confiable, aunque su aplicabilidad individual puede variar. Por ello, se recomienda que un profesional calificado evalúe y supervise su interpretación en cada caso particular.
+                    </p>
+                </div>
+            </div>
+        </section>
+
     </main>
     
     <!-- ===== FOOTER FIJO ===== -->
@@ -398,7 +515,26 @@
         document.getElementById('obstetricas-accordion').innerHTML = metricas.obstetricas.map(createAccordionItem).join('');
         document.getElementById('pediatricas-accordion').innerHTML = metricas.pediatricas.map(createAccordionItem).join('');
 
-        function switchSection(sectionId) { pageSections.forEach(section => section.classList.add('hidden')); const activeSection = document.getElementById(sectionId); if (activeSection) activeSection.classList.remove('hidden'); navLinks.forEach(link => { const linkSection = link.getAttribute('data-section'); const linkIsActive = linkSection === sectionId; if (link.parentElement.id === 'mobile-menu') { link.classList.toggle('bg-[#6B8E23]', linkIsActive); link.classList.toggle('text-white', linkIsActive); } else { link.classList.toggle('text-[#6B8E23]', linkIsActive); link.classList.toggle('font-bold', linkIsActive); link.classList.toggle('text-gray-700', !linkIsActive); link.classList.toggle('font-semibold', !linkIsActive); } }); mobileMenu.classList.add('-translate-x-full'); menuOpenIcon.classList.remove('hidden'); menuCloseIcon.classList.add('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function switchSection(sectionId) {
+            pageSections.forEach(section => section.classList.add('hidden'));
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) activeSection.classList.remove('hidden');
+
+            navLinks.forEach(link => {
+                const linkSection = link.getAttribute('data-section');
+                const linkIsActive = linkSection === sectionId;
+                
+                link.classList.toggle('text-[#6B8E23]', linkIsActive);
+                link.classList.toggle('font-bold', linkIsActive);
+                link.classList.toggle('text-gray-700', !linkIsActive);
+                link.classList.toggle('font-medium', !linkIsActive); // For mobile
+            });
+
+            mobileMenu.classList.add('-translate-x-full');
+            menuOpenIcon.classList.remove('hidden');
+            menuCloseIcon.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
         switchSection('inicio-section');
         navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchSection(link.getAttribute('data-section')); }); });
         menuButton.addEventListener('click', () => { mobileMenu.classList.toggle('-translate-x-full'); menuOpenIcon.classList.toggle('hidden'); menuCloseIcon.classList.toggle('hidden'); });
@@ -432,7 +568,13 @@
         function calculateVAI(sexo, cintura, trigliceridos, hdl, imc) { if (isNaN(cintura) || isNaN(trigliceridos) || isNaN(hdl) || isNaN(imc)) return { value: NaN, interpretation: '' }; const tg_mmol = trigliceridos / 88.5; const hdl_mmol = hdl / 38.67; let vai = (sexo === 'hombre') ? (cintura / (39.68 + (1.88 * imc))) * (tg_mmol / 1.03) * (1.31 / hdl_mmol) : (cintura / (36.58 + (1.89 * imc))) * (tg_mmol / 0.81) * (1.52 / hdl_mmol); const interpretation = vai > 1 ? 'Riesgo Elevado' : 'Riesgo Normal'; return { value: vai, interpretation }; }
         function calculateGrasaCorporal(sexo, cintura, cuello, altura, cadera) { if (isNaN(cintura) || isNaN(cuello) || isNaN(altura)) return { value: NaN, interpretation: '' }; let value; let interpretation = ''; if (sexo === 'hombre') { value = 495 / (1.0324 - 0.19077 * Math.log10(cintura - cuello) + 0.15456 * Math.log10(altura)) - 450; if (value < 6) interpretation = 'Esencial'; else if (value < 14) interpretation = 'Atleta'; else if (value < 18) interpretation = 'Fitness'; else if (value < 25) interpretation = 'Aceptable'; else interpretation = 'Obesidad'; } else { if (isNaN(cadera)) return { value: NaN, interpretation: '' }; value = 495 / (1.29579 - 0.35004 * Math.log10(cintura + cadera - cuello) + 0.22100 * Math.log10(altura)) - 450; if (value < 14) interpretation = 'Esencial'; else if (value < 21) interpretation = 'Atleta'; else if (value < 25) interpretation = 'Fitness'; else if (value < 32) interpretation = 'Aceptable'; else interpretation = 'Obesidad'; } return { value, interpretation }; }
         function calculateFFMI(peso, altura, grasaCorporal) { if (isNaN(peso) || isNaN(altura) || isNaN(grasaCorporal)) return { value: NaN, interpretation: '' }; const alturaM = altura / 100; const masaLibreDeGrasaKg = peso * (1 - (grasaCorporal / 100)); const value = masaLibreDeGrasaKg / (alturaM * alturaM); let interpretation = ''; if (value < 18) interpretation = 'Bajo'; else if (value < 22) interpretation = 'Promedio'; else if (value < 25) interpretation = 'Alto'; else interpretation = 'Excelente'; return { value, interpretation }; }
-        function calculatePesoIdeal(altura, sexo) { if (isNaN(altura)) return { value: NaN }; return { value: (sexo === 'hombre') ? 50 + 0.9 * (altura - 152.4) : 45.5 + 0.9 * (altura - 152.4) }; }
+        function calculatePesoIdeal(altura, sexo) {
+            if (isNaN(altura) || altura <= 152.4) return { value: NaN }; // La fórmula de Devine es para estaturas > 5 pies (152.4 cm)
+            const alturaInches = altura / 2.54;
+            const inchesOver5Feet = alturaInches - 60;
+            const value = (sexo === 'hombre') ? 50 + (2.3 * inchesOver5Feet) : 45.5 + (2.3 * inchesOver5Feet);
+            return { value };
+        }
         function calculatePesoAjustado(peso, pesoIdeal) { if (isNaN(peso) || isNaN(pesoIdeal)) return { value: NaN }; return { value: pesoIdeal + 0.4 * (peso - pesoIdeal) }; }
         function calculateICC(cintura, cadera) { if (isNaN(cintura) || isNaN(cadera) || cadera === 0) return { value: NaN }; return { value: cintura / cadera }; }
         function calculateICA(cintura, altura) { if (isNaN(cintura) || isNaN(altura) || altura === 0) return { value: NaN }; return { value: cintura / altura }; }
@@ -463,11 +605,138 @@
         function copyResults() { const isEmbarazada = inputElements.embarazada.checked; if (isEmbarazada) { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.gestationalWeek?.value)) { showToast("Calcula los resultados obstétricos primero.", true); return; } let shareText = "Resumen de Salud Obstétrica\n\n"; shareText += `Semana Gestacional: ${!isNaN(currentResults.gestationalWeek.value) ? currentResults.gestationalWeek.value + ' semanas' : '-'}\n`; shareText += `FPP: ${currentResults.gestationalWeek.edd}\n`; shareText += `Ganancia de Peso Recomendada: ${currentResults.recommendedGain.value}\n`; shareText += `Ganancia Actual: ${currentResults.recommendedGain.currentGain} kg\n`; shareText += `Peso Fetal Estimado: ${isNaN(currentResults.efw.value) ? '-' : currentResults.efw.value.toFixed(0) + ' g'}\n`; shareText += `Puntuación de Bishop: ${isNaN(currentResults.bishop.value) ? '-' : currentResults.bishop.value} (${currentResults.bishop.interpretation})\n`; shareText += `Probabilidad de Éxito de PVDC: ${isNaN(currentResults.vbac.value) ? '-' : currentResults.vbac.value.toFixed(1) + '%'} (${currentResults.vbac.interpretation})\n`; shareText += `\n=== BIENESTAR ===\n`; shareText += `Análisis del Sueño: ${currentResults.analisisSueno.value}. ${currentResults.analisisSueno.interpretation}\n`; shareText += `Bienestar Emocional: ${currentResults.bienestarEmocional.value}. ${currentResults.bienestarEmocional.interpretation}\n`; const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados obstétricos copiados."); } else { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.imc?.value)) { showToast("Calcula los resultados de adulto primero.", true); return; } let shareText = "Resumen de Salud Integral\n\n"; const metricsOrder = getMetricsOrder(currentResults); metricsOrder.forEach(m => { const cleanValue = m.value.toString().replace(/<br>/g, ' | '); const cleanTitle = m.title.substring(m.title.indexOf('.') + 2); shareText += `${cleanTitle}: ${cleanValue} ${m.interpretation}\n`; }); const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados de adulto copiados."); } }
         function copyPediatricResults() { if (Object.keys(currentPediatricResults).length === 0 || isNaN(currentPediatricResults.bmiPercentile.value)) { showToast("Calcula los resultados pediátricos primero.", true); return; } const { bmiPercentile, bodyFat, geb } = currentPediatricResults; const notes = document.getElementById('pediatric-doctor-notes').value; let shareText = "Resumen de Salud Pediátrica\n\n"; shareText += `=== INDICADORES ===\n`; shareText += `IMC por Percentil: ${bmiPercentile.value} (${bmiPercentile.interpretation})\n`; shareText += `% Grasa Corporal (Slaughter): ${isNaN(bodyFat.value) ? '-' : bodyFat.value.toFixed(1) + '%'} (${bodyFat.interpretation})\n`; shareText += `Gasto Energético Basal: ${isNaN(geb.value) ? '-' : geb.value.toFixed(0)} kcal/día (${geb.interpretation})\n\n`; if (notes.trim() !== '') { shareText += `=== NOTAS PARA EL PEDIATRA ===\n${notes}\n`; } copyToClipboard(shareText, 'Resultados Pediátricos copiados.'); }
         
-        const activityMETs = { 'Reposo (sentado, quieto)': 1.3, 'Trabajo de oficina (ligero)': 1.5, 'Limpieza del hogar (ligera)': 2.3, 'Limpieza del hogar (general)': 3.3, 'Cocinar': 3.5, 'Jardinería (general)': 3.8, 'Caminar (lento, 3.2 km/h)': 2.8, 'Caminar (moderado, 4.8 km/h)': 3.5, 'Caminar (rápido, 6.4 km/h)': 5.0, 'Caminar (muy rápido, 8 km/h)': 6.3, 'Subir escaleras': 8.0, 'Correr (jogging, 8 km/h)': 8.3, 'Correr (10 km/h)': 10.0, 'Correr (12 km/h)': 12.5, 'Correr (16 km/h)': 16.0, 'Ciclismo (muy ligero, <16 km/h)': 4.0, 'Ciclismo (moderado, 16-19 km/h)': 6.8, 'Ciclismo (vigoroso, 22-25 km/h)': 10.0, 'Ciclismo (competitivo, >25 km/h)': 12.0, 'Bicicleta estática (moderado)': 7.0, 'Natación (estilo libre, ligero)': 5.8, 'Natación (estilo libre, vigoroso)': 9.8, 'Natación (espalda)': 7.0, 'Natación (pecho)': 10.0, 'Aeróbicos (bajo impacto)': 5.0, 'Aeróbicos (alto impacto)': 7.3, 'Entrenamiento en circuito (general)': 8.0, 'Entrenamiento de fuerza (ligero)': 3.5, 'Entrenamiento de fuerza (vigoroso)': 6.0, 'Hipertrofia': 6.0, 'Halterofilia (Levantamiento de pesas olímpico)': 6.0, 'CrossFit': 12.0, 'Calistenia (vigoroso)': 8.0, 'Yoga (Hatha)': 2.5, 'Pilates (general)': 3.0, 'Baile (salón, lento)': 3.0, 'Baile (aeróbico, zumba)': 7.3, 'Baloncesto (partido)': 8.0, 'Fútbol (casual)': 7.0, 'Fútbol (competitivo)': 10.0, 'Tenis (individual)': 7.3, 'Tenis (dobles)': 6.0, 'Tenis de mesa': 4.0, 'Bádminton (competitivo)': 7.0, 'Voleibol (recreativo)': 3.5, 'Voleibol (competitivo, playa)': 8.0, 'Golf (caminando, llevando palos)': 4.8, 'Béisbol / Sóftbol': 5.0, 'Balonmano (Handball)': 12.0, 'Hockey sobre césped': 7.8, 'Boxeo (sparring)': 9.0, 'Boxeo (saco de boxeo)': 5.5, 'Artes marciales (general)': 10.3, 'Judo, Karate, Taekwondo, Jiu-Jitsu': 10.3, 'Esgrima': 6.0, 'Lucha libre': 6.0, 'Senderismo (cross-country)': 6.0, 'Escalada en roca': 8.0, 'Gimnasia (general)': 4.0, 'Remo (moderado)': 7.0, 'Vela (Sailing)': 3.0, 'Tiro con arco': 3.5, 'Triatlón (competitivo)': 10.0, 'Esquí (alpino, moderado)': 6.0, 'Patinaje sobre hielo': 7.0 };
-        let optionsHTML = '<option value="" disabled selected>Elige una actividad...</option>';
-        for (const activity in activityMETs) { optionsHTML += `<option value="${activityMETs[activity]}">${activity}</option>`; }
-        inputElements.activitySelect.innerHTML = optionsHTML;
+        // --- LÓGICA DE LA CALCULADORA DE DOSIS (NUEVA) ---
+        const doseInputElementsNew = {
+            peso: document.getElementById('dosis-peso-new'),
+            posologia: document.getElementById('dosis-posologia-new'),
+            frecuencia: document.getElementById('dosis-frecuencia-new'),
+            presentacion: document.getElementById('dosis-presentacion-new'),
+            concMg: document.getElementById('dosis-concentracion-mg-new'),
+            concMl: document.getElementById('dosis-concentracion-ml-new'),
+            mgUnidad: document.getElementById('dosis-mg-unidad-new'),
+            utilMg: document.getElementById('dosis-util-mg-new'),
+            utilMl: document.getElementById('dosis-util-ml-new')
+        };
+        const doseFieldLiquidoNew = document.getElementById('dosis-field-liquido-new');
+        const doseFieldSolidoNew = document.getElementById('dosis-field-solido-new');
+        const doseDiaResultNew = document.getElementById('dosis-dia-result-new');
+        const doseTomaResultNew = document.getElementById('dosis-toma-result-new');
+        const doseMgmlResultNew = document.getElementById('dosis-mgml-result-new');
+        const showExamplesBtnNew = document.getElementById('show-examples-btn-new');
+        const examplesListNew = document.getElementById('examples-list-new');
         
+        const exampleMedicationsNew = {
+            'Ibuprofeno 2% (20 mg/kg/día)': { posologia: 20, frecuencia: 3, presentacion: 'solucion', concMg: 100, concMl: 5, mgUnidad: '' },
+            'Cefadroxilo 250mg/5ml (30 mg/kg/día)': { posologia: 30, frecuencia: 2, presentacion: 'solucion', concMg: 250, concMl: 5, mgUnidad: '' },
+            'Paracetamol 100mg/ml (60 mg/kg/día)': { posologia: 60, frecuencia: 4, presentacion: 'gotas', concMg: 100, concMl: 1, mgUnidad: '' },
+            'Amoxicilina 250mg/5ml (50 mg/kg/día)': { posologia: 50, frecuencia: 3, presentacion: 'solucion', concMg: 250, concMl: 5, mgUnidad: '' }
+        };
+
+        function handlePresentationChangeNew() {
+            const selectedType = doseInputElementsNew.presentacion.value;
+            const isLiquid = ['solucion', 'gotas', 'inyectables'].includes(selectedType);
+            doseFieldLiquidoNew.classList.toggle('hidden', !isLiquid);
+            doseFieldSolidoNew.classList.toggle('hidden', isLiquid);
+            calculateDoseMetricsNew();
+        }
+
+        function calculateConcentrationNew() {
+            const mg = parseFloat(doseInputElementsNew.utilMg.value);
+            const ml = parseFloat(doseInputElementsNew.utilMl.value);
+            if (!isNaN(mg) && !isNaN(ml) && ml > 0) {
+                doseMgmlResultNew.textContent = `Resultado: ${(mg / ml).toFixed(2)} mg/ml`;
+            } else {
+                doseMgmlResultNew.textContent = 'Resultado: - mg/ml';
+            }
+        }
+        
+        function calculateDoseMetricsNew() {
+            const peso = parseFloat(doseInputElementsNew.peso.value);
+            const posologia = parseFloat(doseInputElementsNew.posologia.value);
+            const numDoses = parseFloat(doseInputElementsNew.frecuencia.value);
+            const presentacion = doseInputElementsNew.presentacion.value;
+
+            if ([peso, posologia, numDoses].some(isNaN) || [peso, numDoses].some(v => v <= 0)) {
+                doseDiaResultNew.textContent = '-';
+                doseTomaResultNew.textContent = '-';
+                return;
+            }
+
+            const totalDoseMgDay = peso * posologia;
+            const dosePerTakeMg = totalDoseMgDay / numDoses;
+            doseDiaResultNew.innerHTML = `${totalDoseMgDay.toFixed(2)} mg`;
+
+            let resultToma = `${dosePerTakeMg.toFixed(2)} mg`;
+            
+            if (['solucion', 'gotas', 'inyectables'].includes(presentacion)) {
+                const concMg = parseFloat(doseInputElementsNew.concMg.value);
+                const concMl = parseFloat(doseInputElementsNew.concMl.value);
+                if(!isNaN(concMg) && !isNaN(concMl) && concMg > 0) {
+                    const volumePerTakeMl = (dosePerTakeMg * concMl) / concMg;
+                    resultToma += ` <br class="sm:hidden"> <span class="text-gray-600 font-normal">(${volumePerTakeMl.toFixed(2)} ml)</span>`;
+                    if (presentacion === 'gotas') {
+                        const drops = volumePerTakeMl * 20; // Asumiendo 20 gotas/ml
+                        resultToma += ` <br class="sm:hidden"> <span class="text-gray-500 font-normal">≈ ${drops.toFixed(0)} gotas</span>`;
+                    }
+                }
+            } else { // Sólidos
+                const mgUnidad = parseFloat(doseInputElementsNew.mgUnidad.value);
+                 if(!isNaN(mgUnidad) && mgUnidad > 0) {
+                    const units = dosePerTakeMg / mgUnidad;
+                    let unitName = presentacion.slice(0, -1);
+                    if (units > 1 || units === 0) unitName = presentacion;
+                    resultToma += ` <br class="sm:hidden"> <span class="text-gray-600 font-normal">(${units.toFixed(2)} ${unitName})</span>`;
+                }
+            }
+            doseTomaResultNew.innerHTML = resultToma;
+        }
+
+        function populateExamplesNew() {
+            examplesListNew.innerHTML = '';
+            for (const name in exampleMedicationsNew) {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100';
+                item.textContent = name;
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const med = exampleMedicationsNew[name];
+                    doseInputElementsNew.posologia.value = med.posologia;
+                    doseInputElementsNew.frecuencia.value = med.frecuencia;
+                    doseInputElementsNew.presentacion.value = med.presentacion;
+                    
+                    const event = new Event('change');
+                    doseInputElementsNew.presentacion.dispatchEvent(event);
+
+                    doseInputElementsNew.concMg.value = med.concMg;
+                    doseInputElementsNew.concMl.value = med.concMl;
+                    doseInputElementsNew.mgUnidad.value = med.mgUnidad;
+                    
+                    examplesListNew.classList.add('hidden');
+                    calculateDoseMetricsNew();
+                });
+                examplesListNew.appendChild(item);
+            }
+        }
+        
+        showExamplesBtnNew.addEventListener('click', (e) => {
+            e.stopPropagation();
+            examplesListNew.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!showExamplesBtnNew.contains(e.target)) {
+                 examplesListNew.classList.add('hidden');
+            }
+        });
+        
+        Object.values(doseInputElementsNew).forEach(input => {
+            if (input) input.addEventListener('input', calculateDoseMetricsNew);
+        });
+        doseInputElementsNew.presentacion.addEventListener('change', handlePresentationChangeNew);
+        doseInputElementsNew.utilMg.addEventListener('input', calculateConcentrationNew);
+        doseInputElementsNew.utilMl.addEventListener('input', calculateConcentrationNew);
+
+        // --- EVENT LISTENERS E INICIALIZACIÓN ---
         Object.values(inputElements).forEach(input => { if(input) input.addEventListener('input', calculateAll); });
         inputElements.sexo.addEventListener('change', togglePregnancyOption);
         inputElements.despiertaNoche.addEventListener('change', toggleSleepDetails);
@@ -476,11 +745,14 @@
         
         togglePregnancyOption();
         calculateAll();
+        populateExamplesNew();
+        handlePresentationChangeNew();
+        calculateDoseMetricsNew();
+        calculateConcentrationNew();
         document.getElementById('year').textContent = new Date().getFullYear();
     });
     </script>
 </body>
 </html>
-
 
 
