@@ -53,6 +53,10 @@
             overflow: hidden;
             transition: max-height 0.3s ease-out;
         }
+        
+        #meds-modal-content .accordion-content {
+             transition: max-height 0.2s ease-in-out;
+        }
 
         @media print {
             .no-print { display: none !important; }
@@ -323,12 +327,9 @@
                     <h2 class="text-3xl font-bold text-center text-[#6B8E23] w-full md:w-auto">Calculadora de Dosis</h2>
                     <div class="w-full md:flex-1 md:flex md:justify-end">
                         <div class="relative w-full md:w-auto">
-                            <button id="show-examples-btn-new" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors w-full md:w-auto">
-                                Ver Ejemplos
+                            <button id="open-meds-list-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors w-full md:w-auto">
+                                Lista de Medicamentos
                             </button>
-                            <div id="examples-list-new" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl z-10 border">
-                                <!-- Los ejemplos se inyectarán aquí -->
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -356,6 +357,9 @@
                                     <option value="6">6 dosis = cada 4 horas</option>
                                 </select>
                             </div>
+                        </div>
+                        <div id="fixed-dose-note" class="hidden bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-3 rounded-lg mt-2">
+                           <p class="text-sm">Este medicamento funciona con dosis fijas (no por peso). La posología se ha establecido en 0. Por favor, verifique el prospecto para la dosis correcta según la edad o condición.</p>
                         </div>
                     </div>
                     
@@ -410,17 +414,23 @@
                     <!-- Utilidad Adicional -->
                     <div class="pt-6 mt-6 border-t">
                         <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="font-semibold text-gray-800 mb-2 text-center">Utilidad Adicional: Calcular Concentración (mg/ml)</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center max-w-lg mx-auto">
-                                 <div class="input-group mb-0">
-                                    <label for="dosis-util-mg-new" class="text-sm">Nº de mg</label>
-                                    <input type="number" id="dosis-util-mg-new" placeholder="250">
+                            <h3 class="font-semibold text-gray-800 mb-4 text-center">Utilidad Adicional: Calcular Concentración (mg/ml)</h3>
+                            <div class="max-w-2xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                                <!-- Inputs container -->
+                                <div class="flex-grow flex flex-col sm:flex-row items-end gap-4">
+                                    <div class="input-group mb-0 w-full sm:w-auto flex-1">
+                                        <label for="dosis-util-mg-new" class="text-sm">Nº de mg</label>
+                                        <input type="number" id="dosis-util-mg-new" placeholder="250">
+                                    </div>
+                                    <div class="input-group mb-0 w-full sm:w-auto flex-1">
+                                        <label for="dosis-util-ml-new" class="text-sm">Nº de ml</label>
+                                        <input type="number" id="dosis-util-ml-new" placeholder="5">
+                                    </div>
                                 </div>
-                                <div class="input-group mb-0">
-                                    <label for="dosis-util-ml-new" class="text-sm">Nº de ml</label>
-                                    <input type="number" id="dosis-util-ml-new" placeholder="5">
+                                <!-- Result container -->
+                                <div class="w-full md:w-auto text-center md:text-left pt-2 md:pt-0">
+                                     <p class="text-lg font-bold text-[#6B8E23]" id="dosis-mgml-result-new">Resultado: - mg/ml</p>
                                 </div>
-                                 <p class="text-center text-lg font-bold text-[#6B8E23] mt-2 sm:mt-0" id="dosis-mgml-result-new">Resultado: - mg/ml</p>
                             </div>
                         </div>
                     </div>
@@ -443,13 +453,38 @@
 
     </main>
     
+    <!-- ===== Modal Farmacológico ===== -->
+    <div id="meds-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 no-print">
+        <div id="meds-modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <!-- Scrollable Area -->
+            <div class="overflow-y-auto">
+                <!-- Header -->
+                <div class="flex justify-between items-center p-4 border-b bg-white rounded-t-xl">
+                    <h3 class="text-2xl font-bold text-[#6B8E23]">Lista de Medicamentos</h3>
+                    <button id="close-meds-modal-btn" class="text-gray-400 hover:text-gray-800 text-3xl leading-none">&times;</button>
+                </div>
+                <!-- Disclaimer -->
+                <div class="p-4 bg-[#F7F9F4] border-b border-gray-200">
+                    <h4 class="font-bold text-[#556B2F]">Aviso Importante</h4>
+                    <p class="text-sm text-[#41521C] mt-1">
+                        Esta calculadora es una herramienta de orientación y no sustituye en ningún caso el diagnóstico, la prescripción o el consejo profesional de un médico o farmacéutico. La información proporcionada se basa en dosis estándar para medicamentos de venta libre. No utilice esta herramienta para tomar decisiones médicas. Antes de administrar cualquier medicamento, lea detenidamente el prospecto y consulte a un profesional de la salud, especialmente si está embarazada, en período de lactancia, padece alguna enfermedad crónica o está tomando otros medicamentos. El creador de esta herramienta no se hace responsable del uso indebido de la información aquí presentada.
+                    </p>
+                </div>
+                <!-- Content -->
+                <div id="meds-list-container" class="p-4">
+                    <!-- Las categorías y medicamentos se inyectarán aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- ===== FOOTER FIJO ===== -->
     <footer class="fixed bottom-0 left-0 w-full bg-[#FDFBF6] p-3 border-t border-gray-200 no-print z-40 text-center text-xs text-gray-600 shadow-[0_-2px_5px_rgba(0,0,0,0.05)]">
         <p class="mb-1"><strong>Descargo de Responsabilidad:</strong> Esta es una herramienta educativa y no sustituye la consulta médica profesional.</p>
         <p>&copy; <span id="year">2025</span> Calculadora de Salud Integral. Todos los derechos reservados.</p>
     </footer>
 
-    <div id="toast" class="fixed bottom-20 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 no-print"></div>
+    <div id="toast" class="opacity-0 no-print"></div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -559,7 +594,38 @@
         showPediatricBtn.addEventListener('click', () => updateCalculatorToggle('pediatric'));
         updateCalculatorToggle('adults');
         
-        document.querySelectorAll('.accordion-header').forEach(header => { header.addEventListener('click', () => { const content = header.nextElementSibling; const icon = header.querySelector('svg'); const isCurrentlyOpen = content.style.maxHeight; const parentAccordion = header.closest('.space-y-2'); parentAccordion.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null); parentAccordion.querySelectorAll('.accordion-header svg').forEach(i => i.style.transform = 'rotate(0deg)'); if (!isCurrentlyOpen) { content.style.maxHeight = content.scrollHeight + 'px'; icon.style.transform = 'rotate(180deg)'; } }); });
+        document.addEventListener('click', function(e) {
+            const header = e.target.closest('.accordion-header');
+            if (!header) return;
+
+            const content = header.nextElementSibling;
+            if (!content || !content.classList.contains('accordion-content')) return;
+
+            const icon = header.querySelector('svg');
+            const isCurrentlyOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+            const parentAccordion = header.closest('#meds-list-container, #metricas-section');
+            if (parentAccordion) {
+                parentAccordion.querySelectorAll('.accordion-header').forEach(otherHeader => {
+                    if (otherHeader !== header) {
+                        const otherContent = otherHeader.nextElementSibling;
+                        if (otherContent && otherContent.classList.contains('accordion-content')) {
+                            otherContent.style.maxHeight = null;
+                        }
+                        const otherIcon = otherHeader.querySelector('svg');
+                        if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+
+            if (!isCurrentlyOpen) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.maxHeight = null;
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        });
 
         function getInputs() { const inputs = {}; for (const key in inputElements) { const element = inputElements[key]; if (!element) continue; if (element.type === 'checkbox') { inputs[key] = element.checked; } else if (element.type === 'number' || element.type === 'date') { inputs[key] = element.value ? (element.type === 'date' ? element.value : parseFloat(element.value)) : NaN; } else { inputs[key] = element.value; } } return inputs; }
         function togglePregnancyOption() { if (inputElements.sexo.value === 'mujer') { embarazadaOption.classList.remove('hidden'); } else { embarazadaOption.classList.add('hidden'); inputElements.embarazada.checked = false; } calculateAll(); }
@@ -614,8 +680,34 @@
         function calculateVBACScore(edad, imc, partoVaginalPrevio) { if (isNaN(edad) || isNaN(imc)) return { value: NaN, interpretation: 'Faltan datos.' }; let baseProb = 70; if (imc >= 30) baseProb -= 10; if (imc >= 40) baseProb -= 10; if (edad >= 40) baseProb -= 5; if (partoVaginalPrevio) baseProb += 15; const value = Math.max(20, Math.min(95, baseProb)); return { value, interpretation: 'Probabilidad de PVDC.' }; }
         function getSleepAnalysis(inputs) { const { horasSueno, despiertaNoche, vecesDespierta, porqueDespierta, somnolenciaDiurna } = inputs; if (isNaN(horasSueno)) return { value: '-', interpretation: 'Ingresa horas de sueño.' }; let interpretation = `Duermes ${horasSueno} horas. `; if (despiertaNoche === 'si') { interpretation += `Te despiertas ${!isNaN(vecesDespierta) ? vecesDespierta : ''} veces`; interpretation += porqueDespierta ? ` (por: ${porqueDespierta}). ` : '. '; } else { interpretation += 'No sueles despertarte. '; } if (somnolenciaDiurna === 'frecuentemente') { interpretation += 'Sientes somnolencia frecuente.'; } return { value: `${horasSueno} horas`, interpretation }; }
         function getBienestarInterpretation(inputs) { const { bienestarEmocional, emocionPrincipal } = inputs; if (!bienestarEmocional) return { value: '-', interpretation: 'Selecciona tu bienestar.' }; let interpretation = `Tu bienestar es de ${bienestarEmocional}/10. `; if (emocionPrincipal) { interpretation += `Emoción principal: ${emocionPrincipal}.`; } return { value: `${bienestarEmocional}/10`, interpretation }; }
+        
         function updateChart(data) { const chartColors = ['#6B8E23', '#8FB158', '#556B2F', '#A8C57D', '#41521C', '#C1D8A8', '#2E3A13']; if (!healthChart) { const ctx = document.getElementById('healthChart').getContext('2d'); healthChart = new Chart(ctx, { type: 'bar', data: { labels: ['IMC', 'IAC', 'ABSI', 'BRI', 'VAI', '% Grasa', 'Riesgo Fram.'], datasets: [{ label: 'Tus Valores', data: data, backgroundColor: chartColors, borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } } }); } else { healthChart.data.datasets[0].data = data; healthChart.update(); } }
-        function showToast(message, isError = false) { const toast = document.getElementById('toast'); toast.textContent = message; toast.className = `fixed bottom-20 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 no-print ${isError ? 'bg-red-600' : 'bg-[#6B8E23]'}`; toast.classList.remove('opacity-0'); setTimeout(() => { toast.classList.add('opacity-0'); }, 3000); }
+        
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const successIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+            const errorIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+            
+            toast.innerHTML = `${isError ? errorIcon : successIcon} <span>${message}</span>`;
+            
+            const baseClasses = 'fixed bottom-5 left-5 right-5 sm:left-auto sm:right-5 sm:w-auto sm:max-w-md text-white py-3 px-5 rounded-lg shadow-2xl transition-all duration-500 ease-in-out transform no-print flex items-center gap-3 z-50 text-center sm:text-left justify-center sm:justify-start';
+            const colorClasses = isError 
+                ? 'bg-red-500' 
+                : 'bg-[#6B8E23]';
+
+            toast.className = `${baseClasses} ${colorClasses} opacity-0 translate-y-10`;
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-y-10');
+                toast.classList.add('opacity-100', 'translate-y-0');
+            }, 10); 
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10');
+            }, 4000); 
+        }
+
         function copyToClipboard(text, successMessage) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.left = "-9999px"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { document.execCommand('copy'); showToast(successMessage); } catch (err) { showToast('Error al copiar los resultados.', true); } document.body.removeChild(textArea); }
         function copyResults() { const isEmbarazada = inputElements.embarazada.checked; if (isEmbarazada) { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.gestationalWeek?.value)) { showToast("Calcula los resultados obstétricos primero.", true); return; } let shareText = "Resumen de Salud Obstétrica\n\n"; shareText += `Semana Gestacional: ${!isNaN(currentResults.gestationalWeek.value) ? currentResults.gestationalWeek.value + ' semanas' : '-'}\n`; shareText += `FPP: ${currentResults.gestationalWeek.edd}\n`; shareText += `Ganancia de Peso Recomendada: ${currentResults.recommendedGain.value}\n`; shareText += `Ganancia Actual: ${currentResults.recommendedGain.currentGain} kg\n`; shareText += `Peso Fetal Estimado: ${isNaN(currentResults.efw.value) ? '-' : currentResults.efw.value.toFixed(0) + ' g'}\n`; shareText += `Puntuación de Bishop: ${isNaN(currentResults.bishop.value) ? '-' : currentResults.bishop.value} (${currentResults.bishop.interpretation})\n`; shareText += `Probabilidad de Éxito de PVDC: ${isNaN(currentResults.vbac.value) ? '-' : currentResults.vbac.value.toFixed(1) + '%'} (${currentResults.vbac.interpretation})\n`; shareText += `\n=== BIENESTAR ===\n`; shareText += `Análisis del Sueño: ${currentResults.analisisSueno.value}. ${currentResults.analisisSueno.interpretation}\n`; shareText += `Bienestar Emocional: ${currentResults.bienestarEmocional.value}. ${currentResults.bienestarEmocional.interpretation}\n`; const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados obstétricos copiados."); } else { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.imc?.value)) { showToast("Calcula los resultados de adulto primero.", true); return; } let shareText = "Resumen de Salud Integral\n\n"; const metricsOrder = getMetricsOrder(currentResults); metricsOrder.forEach(m => { const cleanValue = m.value.toString().replace(/<br>/g, ' | '); const cleanTitle = m.title.substring(m.title.indexOf('.') + 2); shareText += `${cleanTitle}: ${cleanValue} ${m.interpretation}\n`; }); const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados de adulto copiados."); } }
         function copyPediatricResults() { if (Object.keys(currentPediatricResults).length === 0 || isNaN(currentPediatricResults.bmiPercentile.value)) { showToast("Calcula los resultados pediátricos primero.", true); return; } const { bmiPercentile, bodyFat, geb } = currentPediatricResults; const notes = document.getElementById('pediatric-doctor-notes').value; let shareText = "Resumen de Salud Pediátrica\n\n"; shareText += `=== INDICADORES ===\n`; shareText += `IMC por Percentil: ${bmiPercentile.value} (${bmiPercentile.interpretation})\n`; shareText += `% Grasa Corporal (Slaughter): ${isNaN(bodyFat.value) ? '-' : bodyFat.value.toFixed(1) + '%'} (${bodyFat.interpretation})\n`; shareText += `Gasto Energético Basal: ${isNaN(geb.value) ? '-' : geb.value.toFixed(0)} kcal/día (${geb.interpretation})\n\n`; if (notes.trim() !== '') { shareText += `=== NOTAS PARA EL PEDIATRA ===\n${notes}\n`; } copyToClipboard(shareText, 'Resultados Pediátricos copiados.'); }
@@ -637,15 +729,161 @@
         const doseDiaResultNew = document.getElementById('dosis-dia-result-new');
         const doseTomaResultNew = document.getElementById('dosis-toma-result-new');
         const doseMgmlResultNew = document.getElementById('dosis-mgml-result-new');
-        const showExamplesBtnNew = document.getElementById('show-examples-btn-new');
-        const examplesListNew = document.getElementById('examples-list-new');
         
-        const exampleMedicationsNew = {
-            'Ibuprofeno 2% (20 mg/kg/día)': { posologia: 20, frecuencia: 3, presentacion: 'solucion', concMg: 100, concMl: 5, mgUnidad: '' },
-            'Cefadroxilo 250mg/5ml (30 mg/kg/día)': { posologia: 30, frecuencia: 2, presentacion: 'solucion', concMg: 250, concMl: 5, mgUnidad: '' },
-            'Paracetamol 100mg/ml (60 mg/kg/día)': { posologia: 60, frecuencia: 4, presentacion: 'gotas', concMg: 100, concMl: 1, mgUnidad: '' },
-            'Amoxicilina 250mg/5ml (50 mg/kg/día)': { posologia: 50, frecuencia: 3, presentacion: 'solucion', concMg: 250, concMl: 5, mgUnidad: '' }
+        const medsDB = {
+            "Analgésicos y Antipiréticos": [
+                { id: "PAR001", nombre: "Paracetamol Gotas 100 mg/ml", posologia: 60, frecuencia: 4, presentacion: 'gotas', concMg: 100, concMl: 1 },
+                { id: "PAR002", nombre: "Paracetamol Jarabe 120 mg/5 ml", posologia: 60, frecuencia: 4, presentacion: 'solucion', concMg: 120, concMl: 5 },
+                { id: "PAR003", nombre: "Paracetamol Jarabe 160 mg/5 ml", posologia: 60, frecuencia: 4, presentacion: 'solucion', concMg: 160, concMl: 5 },
+                { id: "PAR004", nombre: "Paracetamol Comprimidos 500 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 500 },
+                { id: "IBU001", nombre: "Ibuprofeno Suspensión 2% (100mg/5ml)", posologia: 30, frecuencia: 3, presentacion: 'solucion', concMg: 100, concMl: 5 },
+                { id: "IBU002", nombre: "Ibuprofeno Suspensión 4% (200mg/5ml)", posologia: 30, frecuencia: 3, presentacion: 'solucion', concMg: 200, concMl: 5 },
+                { id: "IBU003", nombre: "Ibuprofeno Comprimidos 400 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 400 },
+                { id: "NAP001", nombre: "Naproxeno Sódico 125 mg/5 ml", posologia: 7.5, frecuencia: 3, presentacion: 'solucion', concMg: 125, concMl: 5 },
+                { id: "DIC001", nombre: "Diclofenac Potásico Gotas 15 mg/ml", posologia: 1.5, frecuencia: 3, presentacion: 'gotas', concMg: 15, concMl: 1 },
+                { id: "DIC002", nombre: "Diclofenac Potásico Comprimidos 25 mg", posologia: 0, frecuencia: 2, presentacion: 'comprimidos', mgUnidad: 25 },
+                { id: "ASP001", nombre: "Ácido Acetilsalicílico 500 mg (Adultos)", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 500 },
+            ],
+            "Afecciones Respiratorias": [
+                { id: "LOR001", nombre: "Loratadina Jarabe 5 mg/5 ml", posologia: 0, frecuencia: 1, presentacion: 'solucion', concMg: 5, concMl: 5 },
+                { id: "LOR002", nombre: "Loratadina Comprimidos 10 mg", posologia: 0, frecuencia: 1, presentacion: 'comprimidos', mgUnidad: 10 },
+                { id: "CET001", nombre: "Cetirizina Gotas 10 mg/ml", posologia: 0, frecuencia: 2, presentacion: 'gotas', concMg: 10, concMl: 1 },
+                { id: "CET002", nombre: "Cetirizina Jarabe 5 mg/5 ml", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 5, concMl: 5 },
+                { id: "CET003", nombre: "Cetirizina Comprimidos 10 mg", posologia: 0, frecuencia: 1, presentacion: 'comprimidos', mgUnidad: 10 },
+                { id: "DES001", nombre: "Desloratadina Jarabe 2.5 mg/5 ml", posologia: 0, frecuencia: 1, presentacion: 'solucion', concMg: 2.5, concMl: 5 },
+                { id: "DES002", nombre: "Desloratadina Comprimidos 5 mg", posologia: 0, frecuencia: 1, presentacion: 'comprimidos', mgUnidad: 5 },
+                { id: "FEX001", nombre: "Fexofenadina Suspensión 30 mg/5 ml", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 30, concMl: 5 },
+                { id: "DIF001", nombre: "Difenhidramina Jarabe 12.5 mg/5 ml", posologia: 5, frecuencia: 4, presentacion: 'solucion', concMg: 12.5, concMl: 5 },
+                { id: "FEN001", nombre: "Fenilefrina Jarabe 2.5 mg/5 ml", posologia: 1, frecuencia: 4, presentacion: 'solucion', concMg: 2.5, concMl: 5 },
+                { id: "PSE001", nombre: "Pseudoefedrina Jarabe 5 mg/ml", posologia: 4, frecuencia: 3, presentacion: 'solucion', concMg: 5, concMl: 1 },
+                { id: "AMB001", nombre: "Ambroxol Jarabe 15 mg/5 ml", posologia: 1.5, frecuencia: 3, presentacion: 'solucion', concMg: 15, concMl: 5 },
+                { id: "AMB002", nombre: "Ambroxol Jarabe 30 mg/5 ml", posologia: 1.5, frecuencia: 3, presentacion: 'solucion', concMg: 30, concMl: 5 },
+                { id: "BRO001", nombre: "Bromhexina Jarabe 4 mg/5 ml", posologia: 0.5, frecuencia: 3, presentacion: 'solucion', concMg: 4, concMl: 5 },
+                { id: "DEX001", nombre: "Dextrometorfano Jarabe 15 mg/5 ml", posologia: 1, frecuencia: 3, presentacion: 'solucion', concMg: 15, concMl: 5 },
+                { id: "GUA001", nombre: "Guaifenesina Jarabe 100 mg/5 ml", posologia: 15, frecuencia: 4, presentacion: 'solucion', concMg: 100, concMl: 5 },
+            ],
+            "Alivio Digestivo": [
+                 { id: "ALM001", nombre: "Hidróxido de Al/Mg Suspensión", posologia: 0, frecuencia: 4, presentacion: 'solucion', concMg: 400, concMl: 5 },
+                 { id: "CAR002", nombre: "Carbonato de Calcio Masticable 500 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 500 },
+                 { id: "HIOS001", nombre: "Butilbromuro de Hioscina 10 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 10 },
+                 { id: "TRIM001", nombre: "Trimebutina Suspensión 24 mg/5 ml", posologia: 12, frecuencia: 3, presentacion: 'solucion', concMg: 24, concMl: 5 },
+                 { id: "TRIM002", nombre: "Trimebutina Comprimidos 200 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 200 },
+                 { id: "LOP001", nombre: "Loperamida 2 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 2 },
+                 { id: "BAC001", nombre: "Enterogermina (Bacillus Clausii)", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 2000000000, concMl: 5 },
+                 { id: "LAC001", nombre: "Lactulosa Jarabe", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 66.6, concMl: 100 },
+                 { id: "BIS001", nombre: "Bisacodilo 5mg", posologia: 0, frecuencia: 1, presentacion: 'comprimidos', mgUnidad: 5},
+                 { id: "POL001", nombre: "Polietilenglicol 3350", posologia: 0, frecuencia: 1, presentacion: 'sobres'},
+                 { id: "SIM001", nombre: "Simeticona Gotas", posologia: 0, frecuencia: 3, presentacion: 'gotas'},
+                 { id: "SIM002", nombre: "Simeticona Comprimidos 80 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 80 },
+            ],
+            "Sales de Rehidratación Oral": [
+                { id: "SRO001", nombre: "Sales de Rehidratación Oral (OMS)", posologia: 0, frecuencia: 1, presentacion: 'sobres' },
+            ],
+            "Medicamentos Tópicos": [
+                { id: "CLO001", nombre: "Clotrimazol Crema 1%", posologia: 0, frecuencia: 2, presentacion: 'solucion' },
+                { id: "MIC001", nombre: "Miconazol Crema 2%", posologia: 0, frecuencia: 2, presentacion: 'solucion' },
+                { id: "TER001", nombre: "Terbinafina Crema 1%", posologia: 0, frecuencia: 1, presentacion: 'solucion' },
+                { id: "POV001", nombre: "Povidona Yodada Solución 10%", posologia: 0, frecuencia: 1, presentacion: 'solucion' },
+                { id: "CHX001", nombre: "Clorhexidina Solución 1%", posologia: 0, frecuencia: 2, presentacion: 'solucion' },
+                { id: "BEN001", nombre: "Peróxido de Benzoilo 5%", posologia: 0, frecuencia: 2, presentacion: 'solucion' },
+                { id: "SAL001", nombre: "Ácido Salicílico 2%", posologia: 0, frecuencia: 2, presentacion: 'solucion' },
+            ],
+            "Medicamentos Oftálmicos": [
+                { id: "KET001", nombre: "Ketotifeno Colirio 0.25 mg/ml", posologia: 0, frecuencia: 2, presentacion: 'gotas', concMg: 0.25, concMl: 1 },
+                { id: "CAR001", nombre: "Carboximetilcelulosa Colirio 0.5%", posologia: 0, frecuencia: 4, presentacion: 'gotas', concMg: 5, concMl: 1 },
+            ]
         };
+
+        const medsModal = document.getElementById('meds-modal');
+        const openMedsListBtn = document.getElementById('open-meds-list-btn');
+        const closeMedsModalBtn = document.getElementById('close-meds-modal-btn');
+        const medsListContainer = document.getElementById('meds-list-container');
+        const fixedDoseNote = document.getElementById('fixed-dose-note');
+        
+        function openMedsModal() { medsModal.classList.remove('hidden'); }
+        function closeMedsModal() { medsModal.classList.add('hidden'); }
+        
+        function populateMedsList() {
+            medsListContainer.innerHTML = '';
+            for (const category in medsDB) {
+                const categoryWrapper = document.createElement('div');
+                categoryWrapper.className = 'mb-4';
+
+                const header = document.createElement('button');
+                header.className = 'accordion-header w-full text-left p-3 bg-gray-100 hover:bg-gray-200 font-bold text-lg text-gray-700 flex justify-between items-center transition-colors rounded-t-lg';
+                header.innerHTML = `<span>${category}</span><svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+                
+                const content = document.createElement('div');
+                content.className = 'accordion-content bg-white border border-t-0 rounded-b-lg';
+                
+                const list = document.createElement('div');
+                medsDB[category].forEach(med => {
+                    const item = document.createElement('a');
+                    item.href = '#';
+                    item.className = 'block px-4 py-3 text-sm text-gray-800 hover:bg-[#F7F9F4] transition-colors border-b last:border-b-0';
+                    item.textContent = med.nombre;
+                    item.dataset.medId = med.id;
+                    item.dataset.category = category;
+                    list.appendChild(item);
+                });
+                
+                content.appendChild(list);
+                categoryWrapper.appendChild(header);
+                categoryWrapper.appendChild(content);
+                medsListContainer.appendChild(categoryWrapper);
+            }
+        }
+        
+        function autoFillDoseCalculator(medId, category) {
+            const med = medsDB[category].find(m => m.id === medId);
+            if (!med) return;
+            
+            const posologiaInput = doseInputElementsNew.posologia;
+
+            if (med.posologia === 0) {
+                posologiaInput.value = '';
+                posologiaInput.placeholder = 'Dosis Fija';
+                posologiaInput.disabled = true;
+                fixedDoseNote.classList.remove('hidden');
+            } else {
+                posologiaInput.value = med.posologia;
+                posologiaInput.placeholder = '30';
+                posologiaInput.disabled = false;
+                fixedDoseNote.classList.add('hidden');
+            }
+
+            doseInputElementsNew.frecuencia.value = med.frecuencia;
+            doseInputElementsNew.presentacion.value = med.presentacion;
+            
+            const event = new Event('change');
+            doseInputElementsNew.presentacion.dispatchEvent(event);
+
+            doseInputElementsNew.concMg.value = med.concMg || '';
+            doseInputElementsNew.concMl.value = med.concMl || '';
+            doseInputElementsNew.mgUnidad.value = med.mgUnidad || '';
+            
+            if (med.id.includes("IBU") || med.id.includes("PAR")) {
+                showToast("Advertencia: No alterne Paracetamol e Ibuprofeno sin indicación médica.", true)
+            }
+            
+            calculateDoseMetricsNew();
+            closeMedsModal();
+        }
+
+        medsListContainer.addEventListener('click', function(e) {
+            if (e.target.dataset.medId) {
+                e.preventDefault();
+                autoFillDoseCalculator(e.target.dataset.medId, e.target.dataset.category);
+            }
+        });
+
+        openMedsListBtn.addEventListener('click', openMedsModal);
+        closeMedsModalBtn.addEventListener('click', closeMedsModal);
+        medsModal.addEventListener('click', (e) => {
+            if (e.target === medsModal) {
+                closeMedsModal();
+            }
+        });
 
         function handlePresentationChangeNew() {
             const selectedType = doseInputElementsNew.presentacion.value;
@@ -670,8 +908,15 @@
             const posologia = parseFloat(doseInputElementsNew.posologia.value);
             const numDoses = parseFloat(doseInputElementsNew.frecuencia.value);
             const presentacion = doseInputElementsNew.presentacion.value;
+            const posologiaInput = doseInputElementsNew.posologia;
 
-            if ([peso, posologia, numDoses].some(isNaN) || [peso, numDoses].some(v => v <= 0)) {
+            if (posologiaInput.disabled) { // Fixed dose logic
+                doseDiaResultNew.textContent = 'Dosis Fija';
+                doseTomaResultNew.textContent = 'Verificar prospecto';
+                return;
+            }
+
+            if (isNaN(peso) || isNaN(posologia) || isNaN(numDoses) || peso <= 0 || numDoses <= 0) {
                 doseDiaResultNew.textContent = '-';
                 doseTomaResultNew.textContent = '-';
                 return;
@@ -680,7 +925,6 @@
             const totalDoseMgDay = peso * posologia;
             const dosePerTakeMg = totalDoseMgDay / numDoses;
             doseDiaResultNew.innerHTML = `${totalDoseMgDay.toFixed(2)} mg`;
-
             let resultToma = `${dosePerTakeMg.toFixed(2)} mg`;
             
             if (['solucion', 'gotas', 'inyectables'].includes(presentacion)) {
@@ -699,65 +943,39 @@
                  if(!isNaN(mgUnidad) && mgUnidad > 0) {
                     const units = dosePerTakeMg / mgUnidad;
                     let unitName = presentacion.slice(0, -1);
-                    if (units > 1 || units === 0) unitName = presentacion;
+                    if (units !== 1) unitName = presentacion;
                     resultToma += ` <br class="sm:hidden"> <span class="text-gray-600 font-normal">(${units.toFixed(2)} ${unitName})</span>`;
                 }
             }
             doseTomaResultNew.innerHTML = resultToma;
         }
-
-        function populateExamplesNew() {
-            examplesListNew.innerHTML = '';
-            for (const name in exampleMedicationsNew) {
-                const item = document.createElement('a');
-                item.href = '#';
-                item.className = 'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100';
-                item.textContent = name;
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const med = exampleMedicationsNew[name];
-                    doseInputElementsNew.posologia.value = med.posologia;
-                    doseInputElementsNew.frecuencia.value = med.frecuencia;
-                    doseInputElementsNew.presentacion.value = med.presentacion;
-                    
-                    const event = new Event('change');
-                    doseInputElementsNew.presentacion.dispatchEvent(event);
-
-                    doseInputElementsNew.concMg.value = med.concMg;
-                    doseInputElementsNew.concMl.value = med.concMl;
-                    doseInputElementsNew.mgUnidad.value = med.mgUnidad;
-                    
-                    examplesListNew.classList.add('hidden');
-                    calculateDoseMetricsNew();
-                });
-                examplesListNew.appendChild(item);
-            }
-        }
         
         function copyDoseResults() {
             const peso = parseFloat(doseInputElementsNew.peso.value);
-            const posologia = parseFloat(doseInputElementsNew.posologia.value);
+            let posologia = parseFloat(doseInputElementsNew.posologia.value);
             const numDoses = parseFloat(doseInputElementsNew.frecuencia.value);
             const frecuenciaEl = doseInputElementsNew.frecuencia;
             const frecuenciaText = frecuenciaEl.options[frecuenciaEl.selectedIndex].text;
             const presentacionEl = doseInputElementsNew.presentacion;
             const presentacionValue = presentacionEl.value;
             const presentacionText = presentacionEl.options[presentacionEl.selectedIndex].text;
-            
-            if ([peso, posologia, numDoses].some(isNaN) || [peso, numDoses].some(v => v <= 0)) {
-                showToast("Por favor, completa los campos para calcular la dosis antes de copiar.", true);
+            const isFixedDose = doseInputElementsNew.posologia.disabled;
+
+            if (isNaN(peso) && !isFixedDose) {
+                 showToast("Por favor, introduce el peso del paciente.", true);
+                 return;
+            }
+            if(isNaN(posologia) && !isFixedDose) {
+                showToast("Por favor, completa la posología.", true);
                 return;
             }
 
-            const totalDoseMgDay = peso * posologia;
-            const dosePerTakeMg = totalDoseMgDay / numDoses;
-            
-            let dosisTomaText = `${dosePerTakeMg.toFixed(2)} mg`;
-            
             let shareText = "Resumen de Cálculo de Dosis\n\n";
             shareText += `=== DATOS DE LA PRESCRIPCIÓN ===\n`;
-            shareText += `Peso del Paciente: ${peso} kg\n`;
-            shareText += `Posología: ${posologia} mg/kg/día\n`;
+            if (!isNaN(peso)) shareText += `Peso del Paciente: ${peso} kg\n`;
+            if (!isFixedDose) {
+                shareText += `Posología: ${posologia} mg/kg/día\n`;
+            }
             shareText += `Frecuencia: ${frecuenciaText}\n\n`;
 
             shareText += `=== DATOS DEL MEDICAMENTO ===\n`;
@@ -769,12 +987,6 @@
                 const concMl = parseFloat(doseInputElementsNew.concMl.value);
                 if(!isNaN(concMg) && !isNaN(concMl) && concMg > 0) {
                     shareText += `Concentración: ${concMg} mg / ${concMl} ml\n\n`;
-                    const volumePerTakeMl = (dosePerTakeMg * concMl) / concMg;
-                    dosisTomaText += ` (${volumePerTakeMl.toFixed(2)} ml)`;
-                    if (presentacionValue === 'gotas') {
-                        const drops = volumePerTakeMl * 20; // Asumiendo 20 gotas/ml
-                        dosisTomaText += ` ≈ ${drops.toFixed(0)} gotas`;
-                    }
                 } else {
                     shareText += `Concentración: No especificada\n\n`;
                 }
@@ -782,35 +994,59 @@
                 const mgUnidad = parseFloat(doseInputElementsNew.mgUnidad.value);
                 if(!isNaN(mgUnidad) && mgUnidad > 0) {
                     shareText += `Concentración: ${mgUnidad} mg por unidad\n\n`;
-                    const units = dosePerTakeMg / mgUnidad;
-                    let unitName = presentacionValue.slice(0, -1);
-                    if (units > 1 || units === 0) unitName = presentacionValue;
-                    dosisTomaText += ` (${units.toFixed(2)} ${unitName})`;
                 } else {
                     shareText += `Concentración: No especificada\n\n`;
                 }
             }
 
             shareText += `=== RESULTADOS ===\n`;
-            shareText += `Dosis Diaria Total: ${totalDoseMgDay.toFixed(2)} mg\n`;
-            shareText += `Dosis por Toma: ${dosisTomaText}\n`;
+             if (!isFixedDose) {
+                const totalDoseMgDay = peso * posologia;
+                const dosePerTakeMg = totalDoseMgDay / numDoses;
+                let dosisTomaText = `${dosePerTakeMg.toFixed(2)} mg`;
+
+                if (isLiquid) {
+                    const concMg = parseFloat(doseInputElementsNew.concMg.value);
+                    const concMl = parseFloat(doseInputElementsNew.concMl.value);
+                    if(!isNaN(concMg) && !isNaN(concMl) && concMg > 0) {
+                        const volumePerTakeMl = (dosePerTakeMg * concMl) / concMg;
+                        dosisTomaText += ` (${volumePerTakeMl.toFixed(2)} ml)`;
+                        if (presentacionValue === 'gotas') {
+                            const drops = volumePerTakeMl * 20;
+                            dosisTomaText += ` ≈ ${drops.toFixed(0)} gotas`;
+                        }
+                    }
+                } else {
+                     const mgUnidad = parseFloat(doseInputElementsNew.mgUnidad.value);
+                     if(!isNaN(mgUnidad) && mgUnidad > 0) {
+                        const units = dosePerTakeMg / mgUnidad;
+                        let unitName = presentacionValue.slice(0, -1);
+                        if (units !== 1) unitName = presentacionValue;
+                        dosisTomaText += ` (${units.toFixed(2)} ${unitName})`;
+                    }
+                }
+                shareText += `Dosis Diaria Total: ${totalDoseMgDay.toFixed(2)} mg\n`;
+                shareText += `Dosis por Toma: ${dosisTomaText}\n`;
+            } else {
+                shareText += `Dosis: Dosis fija. Según indicación del prospecto o profesional.\n`;
+            }
 
             copyToClipboard(shareText, "Resultados de dosis copiados.");
         }
         
-        showExamplesBtnNew.addEventListener('click', (e) => {
-            e.stopPropagation();
-            examplesListNew.classList.toggle('hidden');
-        });
-        document.addEventListener('click', (e) => {
-            if (!showExamplesBtnNew.contains(e.target)) {
-                 examplesListNew.classList.add('hidden');
+        Object.values(doseInputElementsNew).forEach(input => {
+            if (input.id !== 'dosis-posologia-new') {
+                 input.addEventListener('input', calculateDoseMetricsNew);
             }
         });
         
-        Object.values(doseInputElementsNew).forEach(input => {
-            if (input) input.addEventListener('input', calculateDoseMetricsNew);
+        doseInputElementsNew.posologia.addEventListener('input', () => {
+             if (!doseInputElementsNew.posologia.disabled) {
+                fixedDoseNote.classList.add('hidden');
+                calculateDoseMetricsNew();
+            }
         });
+
         doseInputElementsNew.presentacion.addEventListener('change', handlePresentationChangeNew);
         doseInputElementsNew.utilMg.addEventListener('input', calculateConcentrationNew);
         doseInputElementsNew.utilMl.addEventListener('input', calculateConcentrationNew);
@@ -826,7 +1062,7 @@
         
         togglePregnancyOption();
         calculateAll();
-        populateExamplesNew();
+        populateMedsList();
         handlePresentationChangeNew();
         calculateDoseMetricsNew();
         calculateConcentrationNew();
