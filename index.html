@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Salud Integral</title>
+    <title>Calculadora de Salud Integral y Mental</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         html {
             height: 100%;
@@ -31,10 +31,10 @@
             height: 350px;
             max-height: 400px;
         }
-        .input-group { @apply flex flex-col mb-4; }
-        .input-group label { @apply text-base font-bold text-gray-700 mb-1; }
+        .input-group { @apply mb-4; }
+        .input-group label { @apply block text-base font-bold text-gray-700 mb-2; }
         .input-group input, .input-group select, .input-group textarea { @apply w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2; }
-        .hidden { display: none !important; }
+        .hidden { display: none; }
 
         .interactive-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -58,6 +58,29 @@
              transition: max-height 0.2s ease-in-out;
         }
 
+        /* ===== ESTILOS MEJORADOS PARA LA CALCULADORA DE SALUD MENTAL ===== */
+        .mh-step {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .mh-progress-bar-bg {
+            background-color: #6B8E23;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        /* Estilos para las tarjetas de resultados de salud mental */
+        .mh-result-card {
+             @apply bg-white p-6 rounded-lg shadow-md border-l-4 transition-all duration-300;
+        }
+        .mh-result-card.level-minima { @apply border-green-500; }
+        .mh-result-card.level-baja { @apply border-green-500; }
+        .mh-result-card.level-leve { @apply border-yellow-500; }
+        .mh-result-card.level-normal { @apply border-blue-500; }
+        .mh-result-card.level-promedio { @apply border-blue-500; }
+        .mh-result-card.level-moderada { @apply border-orange-500; }
+        .mh-result-card.level-moderadamente-severa { @apply border-orange-600; }
+        .mh-result-card.level-alta { @apply border-red-500; }
+        .mh-result-card.level-severa { @apply border-red-600; }
+
         @media print {
             .no-print { display: none !important; }
             body { background-color: #fff; padding-top: 0; }
@@ -74,21 +97,13 @@
                 <!-- Título a la Izquierda -->
                 <div class="flex-shrink-0">
                     <a href="#" class="nav-link" data-section="inicio-section">
-                        <h1 class="text-xl md:text-2xl font-bold text-[#6B8E23]">Calculadora de Salud Integral</h1>
+                        <h1 class="text-xl md:text-2xl font-bold text-[#6B8E23]">Calculadora de salud</h1>
                         <p class="text-xs text-gray-600 font-normal">Creado por Luis A. Medina Franco</p>
                     </a>
                 </div>
-                <!-- Menú para pantallas grandes (Oculto por defecto, pero con enlaces actualizados) -->
-                <div class="hidden">
-                    <nav class="flex items-center space-x-6">
-                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="inicio-section">Inicio</a>
-                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="quien-soy-section">¿Quién Soy?</a>
-                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="metricas-section">Métricas</a>
-                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="calculadora-section">Calculadora de Salud</a>
-                        <a href="#" class="nav-link text-gray-700 hover:text-[#6B8E23] font-semibold" data-section="dosis-section">Calculadora de Dosis</a>
-                    </nav>
-                </div>
-                <!-- Menú Hamburguesa a la Derecha -->
+                <!-- Menú de escritorio eliminado para unificar la experiencia con el menú desplegable -->
+                
+                <!-- Menú Hamburguesa a la Derecha (ahora visible en todas las pantallas) -->
                 <div class="flex">
                     <button id="menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-[#F7F9F4] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#6B8E23]">
                         <span class="sr-only">Abrir menú</span>
@@ -106,16 +121,28 @@
         <div id="mobile-menu" class="bg-white shadow-lg absolute w-full transform -translate-x-full">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="inicio-section">Inicio</a>
-                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="quien-soy-section">¿Quién Soy?</a>
-                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="metricas-section">Métricas</a>
-                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="calculadora-section">Calculadora de Salud Integral</a>
-                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="dosis-section">Calculadora de Dosis de Medicamentos</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="quien-soy-section">Sobre mi</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="metricas-section">Contenido</a>
+                <!-- Dropdown para calculadoras -->
+                <div>
+                    <button class="accordion-header w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 text-left">
+                        <span>Calculadoras</span>
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content pl-4">
+                        <div class="pt-2 pb-1 space-y-1">
+                             <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="calculadora-section">Salud integral</a>
+                             <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="mental-health-section">Salud mental</a>
+                             <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50" data-section="dosis-section">Dosis de medicamentos</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- ===== CONTENEDOR PRINCIPAL DE SECCIONES ===== -->
-    <main class="w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-10 pb-20 flex-grow">
+    <main class="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 pb-20 flex-grow">
 
         <!-- ===== SECCIÓN: ¿QUIÉN SOY? ===== -->
         <section id="quien-soy-section" class="page-section hidden bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
@@ -123,7 +150,7 @@
                  <h2 class="text-3xl font-bold text-[#6B8E23] mb-4">¡Hola, soy Luis!</h2>
             </div>
              <div class="text-lg text-gray-700 leading-relaxed space-y-4">
-               <p>
+                <p>
                     Soy estudiante de medicina en la Universidad de Carabobo, en el corazón de Venezuela, y me apasiona explorar la encrucijada donde la salud, la tecnología y la humanidad convergen. Esta herramienta no es solo un ejercicio académico, ni una simple interfaz de cálculo. Es una extensión de una inquietud más profunda: comprender al ser humano a través de sus datos, sin reducirlo a ellos.
                 </p>
                 <p>
@@ -134,17 +161,17 @@
                 </p>
                  <p>
                     Si esta herramienta te orienta, si te invita a pensar, si te ofrece un instante de claridad en medio del ruido, entonces ya ha cumplido su propósito.
-                </p>
+                 </p>
                  <p>
                     Y si además logra que te veas con otros ojos —más informados, más compasivos, más tuyos— entonces habrá valido la pena construirla.
-                </p>
+                 </p>
             </div>
         </section>
 
         <!-- ===== SECCIÓN: INICIO ===== -->
         <section id="inicio-section" class="page-section bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
             <div class="text-center">
-                 <h2 class="text-3xl font-bold text-[#6B8E23] mb-4">Una Herramienta para Ti y tu Médico</h2>
+                 <h2 class="text-3xl font-bold text-[#6B8E23] mb-4">Una herramienta para ti y tu médico</h2>
             </div>
             <div class="text-lg text-gray-700 leading-relaxed space-y-4">
                 <p>
@@ -161,24 +188,31 @@
 
         <!-- ===== SECCIÓN: MÉTRICAS ===== -->
         <section id="metricas-section" class="page-section hidden bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
-            <h2 class="text-3xl font-bold text-center text-[#6B8E23] mb-8">Glosario de Métricas de Salud</h2>
+            <h2 class="text-3xl font-bold text-center text-[#6B8E23] mb-8">Glosario de métricas de salud</h2>
             <div class="space-y-4">
-                <!-- GENERALES -->
+                <!-- SALUD INTEGRAL -->
                 <div>
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-[#6B8E23] pb-2">Generales</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-6 mb-4">Salud integral</h3>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-[#6B8E23] pb-2">Generales</h4>
                     <div id="generales-accordion" class="space-y-2"></div>
-                </div>
-
-                <!-- OBSTÉTRICAS -->
-                <div>
-                    <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4 border-b-2 border-[#6B8E23] pb-2">Obstétricas</h3>
+                    <h4 class="text-xl font-semibold text-gray-800 mt-8 mb-4 border-b-2 border-[#6B8E23] pb-2">Obstétricas</h4>
                     <div id="obstetricas-accordion" class="space-y-2"></div>
+                    <h4 class="text-xl font-semibold text-gray-800 mt-8 mb-4 border-b-2 border-[#6B8E23] pb-2">Pediátricas</h4>
+                    <div id="pediatricas-accordion" class="space-y-2"></div>
                 </div>
 
-                <!-- PEDIÁTRICAS -->
+                <!-- SALUD MENTAL -->
                 <div>
-                    <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4 border-b-2 border-[#6B8E23] pb-2">Pediátricas</h3>
-                    <div id="pediatricas-accordion" class="space-y-2"></div>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-10 mb-4 pt-6 border-t">Salud mental</h3>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-[#6B8E23] pb-2">Cuestionarios Psicométricos</h4>
+                    <div id="salud-mental-accordion" class="space-y-2"></div>
+                </div>
+
+                <!-- DOSIS DE MEDICAMENTOS -->
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-10 mb-4 pt-6 border-t">Dosis de medicamentos</h3>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-[#6B8E23] pb-2">Conceptos Clave</h4>
+                    <div id="dosis-accordion" class="space-y-2"></div>
                 </div>
             </div>
         </section>
@@ -186,6 +220,11 @@
         <!-- ===== SECCIÓN: CALCULADORA DE SALUD INTEGRAL ===== -->
         <section id="calculadora-section" class="page-section hidden">
             <div class="w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8 printable-content">
+                <!-- Título -->
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#6B8E23]">Calculadora de salud integral</h2>
+                    <p class="text-lg text-gray-600 mt-2">Evalúa tus indicadores de salud física.</p>
+                </div>
                 <!-- Selector de Calculadora -->
                 <div class="flex justify-center mb-8 no-print">
                     <div class="flex rounded-md shadow-sm w-full max-w-sm mx-auto">
@@ -202,44 +241,43 @@
                 <div id="adults-calculator">
                      <section id="disclaimer-intro" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg mb-8 no-print">
                          <div class="ml-3">
-                             <h3 class="text-base font-bold mb-1">Nota Importante</h3>
+                             <h3 class="text-base font-bold mb-1">Nota importante</h3>
                              <p class="text-sm">Si no tienes todos los datos, puedes usar los que tengas. Sin embargo, se sugiere utilizar todos los datos posibles para obtener una aproximación más precisa.</p>
                          </div>
                      </section>
 
                     <section id="inputs" class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
-                        <h2 class="col-span-1 md:col-span-2 lg:col-span-3 text-2xl font-semibold text-gray-800 mb-2 text-center">Tus Datos Personales</h2>
+                        <h2 class="col-span-1 md:col-span-2 lg:col-span-3 text-2xl font-semibold text-gray-800 mb-2 text-center">Tus datos personales</h2>
                         <div class="input-group"><label for="altura">Altura (cm)</label><input type="number" id="altura" placeholder="Ej: 175"></div>
-                        <div class="input-group"><label for="peso">Peso Actual (kg)</label><input type="number" id="peso" placeholder="Ej: 70"></div>
+                        <div class="input-group"><label for="peso">Peso actual (kg)</label><input type="number" id="peso" placeholder="Ej: 70"></div>
                         <div class="input-group"><label for="edad">Edad</label><input type="number" id="edad" placeholder="Ej: 30"></div>
                         <div class="input-group"><label for="sexo">Sexo</label><select id="sexo"><option value="hombre">Hombre</option><option value="mujer">Mujer</option></select></div>
                         <div class="input-group flex items-center"><input type="checkbox" id="diabetes" class="rounded text-[#6B8E23] focus:ring-[#6B8E23]"><label for="diabetes" class="ml-2 text-base font-bold text-gray-700">¿Tienes diabetes?</label></div>
                         <div id="embarazada-option" class="input-group flex items-center hidden"><input type="checkbox" id="embarazada" class="rounded text-[#6B8E23] focus:ring-[#6B8E23]"><label for="embarazada" class="ml-2 text-base font-bold text-gray-700">¿Estás embarazada?</label></div>
                         
-                        <!-- Nuevos campos movidos aquí para estar siempre visibles -->
-                        <div class="input-group"><label for="bienestar-emocional">Bienestar Emocional (1-10)</label><select id="bienestar-emocional"><option value="" disabled selected>Selecciona</option><option value="1">1 - Muy bajo</option><option value="2">2 - Bajo</option><option value="3">3 - Regular</option><option value="4">4 - Aceptable</option><option value="5">5 - Medio</option><option value="6">6 - Bueno</option><option value="7">7 - Muy bueno</option><option value="8">8 - Excelente</option><option value="9">9 - Fantástico</option><option value="10">10 - Pleno</option></select></div>
-                        <div class="input-group"><label for="emocion-principal">Emoción Principal</label><input type="text" id="emocion-principal" placeholder="Ej: Alegría, Estrés"></div>
+                        <div class="input-group"><label for="bienestar-emocional">Bienestar emocional (1-10)</label><select id="bienestar-emocional"><option value="" disabled selected>Selecciona</option><option value="1">1 - Muy bajo</option><option value="2">2 - Bajo</option><option value="3">3 - Regular</option><option value="4">4 - Aceptable</option><option value="5">5 - Medio</option><option value="6">6 - Bueno</option><option value="7">7 - Muy bueno</option><option value="8">8 - Excelente</option><option value="9">9 - Fantástico</option><option value="10">10 - Pleno</option></select></div>
+                        <div class="input-group"><label for="emocion-principal">Emoción principal</label><input type="text" id="emocion-principal" placeholder="Ej: Alegría, Estrés"></div>
                         <div class="input-group"><label for="horas-sueno">Horas de sueño</label><input type="number" id="horas-sueno" placeholder="Ej: 7"></div>
                         <div class="input-group"><label for="despierta-noche">¿Se despierta en la noche?</label><select id="despierta-noche"><option value="no">No</option><option value="si">Sí</option></select></div>
                         <div id="despierta-noche-detalles" class="hidden col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6"><div class="input-group"><label for="veces-despierta">¿Cuántas veces?</label><input type="number" id="veces-despierta" placeholder="Ej: 2"></div><div class="input-group"><label for="porque-despierta">¿Por qué? (opcional)</label><input type="text" id="porque-despierta" placeholder="Ej: Ruido, ir al baño"></div></div>
                         <div class="input-group"><label for="somnolencia-diurna">Somnolencia durante el día</label><select id="somnolencia-diurna"><option value="nunca">Nunca</option><option value="a_veces">A veces</option><option value="frecuentemente">Frecuentemente</option></select></div>
 
                         <div id="pregnancy-inputs" class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                            <h3 class="col-span-full text-xl font-semibold text-gray-800 mt-4 -mb-2">Datos Obstétricos</h3>
+                            <h3 class="col-span-full text-xl font-semibold text-gray-800 mt-4 -mb-2">Datos obstétricos</h3>
                             <div class="input-group"><label for="pre-pregnancy-weight">Peso antes del embarazo (kg)</label><input type="number" id="pre-pregnancy-weight" placeholder="Ej: 65"></div>
-                            <div class="input-group"><label for="lmp-date">Fecha de Última Menstruación</label><input type="date" id="lmp-date"></div>
+                            <div class="input-group"><label for="lmp-date">Fecha de última menstruación</label><input type="date" id="lmp-date"></div>
                             <div class="input-group"><label for="vbac-parto-vaginal-previo">¿Parto vaginal previo?</label><input type="checkbox" id="vbac-parto-vaginal-previo" class="rounded text-[#6B8E23] focus:ring-[#6B8E23]"></div>
-                            <h4 class="col-span-full text-lg font-semibold text-gray-700 mt-2">Biometría Fetal (Ultrasonido)</h4>
-                            <div class="input-group"><label for="fetal-dbp">Diámetro Biparietal (DBP, mm)</label><input type="number" id="fetal-dbp" placeholder="Ej: 80"></div>
-                            <div class="input-group"><label for="fetal-cc">Circunferencia Cefálica (CC, mm)</label><input type="number" id="fetal-cc" placeholder="Ej: 300"></div>
-                            <div class="input-group"><label for="fetal-ca">Circunferencia Abdominal (CA, mm)</label><input type="number" id="fetal-ca" placeholder="Ej: 280"></div>
-                            <div class="input-group"><label for="fetal-lf">Longitud del Fémur (LF, mm)</label><input type="number" id="fetal-lf" placeholder="Ej: 60"></div>
+                            <h4 class="col-span-full text-lg font-semibold text-gray-700 mt-2">Biometría fetal (ultrasonido)</h4>
+                            <div class="input-group"><label for="fetal-dbp">Diámetro biparietal (DBP, mm)</label><input type="number" id="fetal-dbp" placeholder="Ej: 80"></div>
+                            <div class="input-group"><label for="fetal-cc">Circunferencia cefálica (CC, mm)</label><input type="number" id="fetal-cc" placeholder="Ej: 300"></div>
+                            <div class="input-group"><label for="fetal-ca">Circunferencia abdominal (CA, mm)</label><input type="number" id="fetal-ca" placeholder="Ej: 280"></div>
+                            <div class="input-group"><label for="fetal-lf">Longitud del fémur (LF, mm)</label><input type="number" id="fetal-lf" placeholder="Ej: 60"></div>
                             <h4 class="col-span-full text-lg font-semibold text-gray-700 mt-2">Puntuación de Bishop</h4>
                             <div class="input-group"><label for="bishop-dilatacion">Dilatación (cm)</label><select id="bishop-dilatacion"><option value="0">0</option><option value="1">1-2</option><option value="2">3-4</option><option value="3">>=5</option></select></div>
                             <div class="input-group"><label for="bishop-borramiento">Borramiento (%)</label><select id="bishop-borramiento"><option value="0">0-30</option><option value="1">40-50</option><option value="2">60-70</option><option value="3">>=80</option></select></div>
                             <div class="input-group"><label for="bishop-consistencia">Consistencia</label><select id="bishop-consistencia"><option value="0">Firme</option><option value="1">Media</option><option value="2">Blanda</option></select></div>
                             <div class="input-group"><label for="bishop-posicion">Posición</label><select id="bishop-posicion"><option value="0">Posterior</option><option value="1">Media</option><option value="2">Anterior</option></select></div>
-                            <div class="input-group"><label for="bishop-estacion">Estación Fetal</label><select id="bishop-estacion"><option value="0">-3</option><option value="1">-2</option><option value="2">-1, 0</option><option value="3">+1, +2</option></select></div>
+                            <div class="input-group"><label for="bishop-estacion">Estación fetal</label><select id="bishop-estacion"><option value="0">-3</option><option value="1">-2</option><option value="2">-1, 0</option><option value="3">+1, +2</option></select></div>
                         </div>
 
                         <div id="general-inputs" class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -248,55 +286,54 @@
                             <div class="input-group"><label for="cuello">Cuello (cm)</label><input type="number" id="cuello" placeholder="Ej: 38"></div>
                             <div class="input-group"><label for="trigliceridos">Triglicéridos (mg/dL)</label><input type="number" id="trigliceridos" placeholder="Ej: 150"></div>
                             <div class="input-group"><label for="hdl">Colesterol HDL (mg/dL)</label><input type="number" id="hdl" placeholder="Ej: 45"></div>
-                            <div class="input-group"><label for="colesterolTotal">Colesterol Total (mg/dL)</label><input type="number" id="colesterolTotal" placeholder="Ej: 180"></div>
+                            <div class="input-group"><label for="colesterolTotal">Colesterol total (mg/dL)</label><input type="number" id="colesterolTotal" placeholder="Ej: 180"></div>
                             <div class="input-group"><label for="creatinina">Creatinina (mg/dL)</label><input type="number" id="creatinina" placeholder="Ej: 0.9"></div>
                             <div class="input-group"><label for="albumina">Albúmina (mg/L)</label><input type="number" id="albumina" placeholder="Ej: 15"></div>
                             <div class="input-group"><label for="ast">AST (U/L)</label><input type="number" id="ast" placeholder="Ej: 20"></div>
                             <div class="input-group"><label for="alt">ALT (U/L)</label><input type="number" id="alt" placeholder="Ej: 25"></div>
                             <div class="input-group"><label for="glicemia">Glicemia en ayunas (mg/dL)</label><input type="number" id="glicemia" placeholder="Ej: 80"></div>
                             <div class="input-group"><label for="insulina">Insulina en ayunas (mIU/L)</label><input type="number" id="insulina" placeholder="Ej: 5"></div>
-                            <div class="input-group"><label for="pas">Presión Arterial Sistólica (PAS, mmHg)</label><input type="number" id="pas" placeholder="Ej: 120"></div>
-                            <div class="input-group"><label for="pad">Presión Arterial Diastólica (PAD, mmHg)</label><input type="number" id="pad" placeholder="Ej: 80"></div>
-                            <div class="input-group"><label for="actividad">Nivel de Actividad</label><select id="actividad"><option value="1.2">Sedentario</option><option value="1.375">Ligero (1-3 días/sem)</option><option value="1.55">Moderado (3-5 días/sem)</option><option value="1.725">Alto (6-7 días/sem)</option><option value="1.9">Muy Alto (atletas)</option></select></div>
-                            <div class="input-group col-span-1 md:col-span-2 lg:col-span-3"><label for="activity-select">Añadir Actividad Específica (Opcional)</label><p class="text-sm text-gray-600 mb-2">Selecciona una actividad para estimar las calorías quemadas por hora, basado en tu peso actual.</p><select id="activity-select" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2"></select></div>
+                            <div class="input-group"><label for="pas">Presión arterial sistólica (PAS, mmHg)</label><input type="number" id="pas" placeholder="Ej: 120"></div>
+                            <div class="input-group"><label for="pad">Presión arterial diastólica (PAD, mmHg)</label><input type="number" id="pad" placeholder="Ej: 80"></div>
+                            <div class="input-group"><label for="actividad">Nivel de actividad</label><select id="actividad"><option value="1.2">Sedentario</option><option value="1.375">Ligero (1-3 días/sem)</option><option value="1.55">Moderado (3-5 días/sem)</option><option value="1.725">Alto (6-7 días/sem)</option><option value="1.9">Muy Alto (atletas)</option></select></div>
+                            <div class="input-group col-span-1 md:col-span-2 lg:col-span-3"><label for="activity-select">Añadir actividad específica (Opcional)</label><p class="text-sm text-gray-600 mb-2">Selecciona una actividad para estimar las calorías quemadas por hora, basado en tu peso actual.</p><select id="activity-select" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2"></select></div>
                             <div class="input-group"><label for="anosFumando">Años fumando</label><input type="number" id="anosFumando" placeholder="Ej: 10"></div>
                             <div class="input-group"><label for="cigarrillosDiarios">Cigarrillos diarios</label><input type="number" id="cigarrillosDiarios" placeholder="Ej: 5"></div>
                         </div>
                     </section>
 
                     <section id="results-section" class="mb-10">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Tus Indicadores de Salud</h2>
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Tus indicadores de salud</h2>
                         <div id="pregnancy-explanation" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg mb-8 no-print hidden"><div><h3 class="text-base font-bold mb-1">Información importante sobre el embarazo</h3><p class="text-sm">Al marcar esta opción, los índices estándar como el IMC o IAC desaparecen porque no son aplicables durante el embarazo. En su lugar, se usan métricas prenatales.</p></div></div>
-                        <div id="pregnancy-results" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Semana Gestacional y FPP</h3><p id="gestational-week" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="edd-date" class="text-md text-gray-700">-</p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Ganancia de Peso Recomendada</h3><p id="recommended-gain" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="current-gain" class="text-md text-gray-700">-</p><p id="gain-interpretation" class="text-sm text-gray-600 mt-2"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Peso Fetal Estimado (Hadlock)</h3><p id="efw-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="efw-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Puntuación de Bishop</h3><p id="bishop-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="bishop-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Probabilidad de Éxito de PVDC</h3><p id="vbac-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="vbac-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Análisis del Sueño</h3><p id="pregnancy-sueno-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="pregnancy-sueno-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Bienestar Emocional</h3><p id="pregnancy-bienestar-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="pregnancy-bienestar-interpretation" class="text-md text-gray-700"></p></div></div></div>
+                        <div id="pregnancy-results" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Semana gestacional y FPP</h3><p id="gestational-week" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="edd-date" class="text-md text-gray-700">-</p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Ganancia de peso recomendada</h3><p id="recommended-gain" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="current-gain" class="text-md text-gray-700">-</p><p id="gain-interpretation" class="text-sm text-gray-600 mt-2"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Peso fetal estimado (Hadlock)</h3><p id="efw-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="efw-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Puntuación de Bishop</h3><p id="bishop-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="bishop-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Probabilidad de éxito de PVDC</h3><p id="vbac-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="vbac-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Análisis del sueño</h3><p id="pregnancy-sueno-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="pregnancy-sueno-interpretation" class="text-md text-gray-700"></p></div><div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"><h3 class="text-xl font-semibold mb-2">Bienestar emocional</h3><p id="pregnancy-bienestar-value" class="text-3xl font-bold text-[#6B8E23] mb-1">-</p><p id="pregnancy-bienestar-interpretation" class="text-md text-gray-700"></p></div></div></div>
                         <div id="general-results">
                             <div class="chart-container mb-10 no-print"><canvas id="healthChart"></canvas></div>
                             <div id="results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                         </div>
-                        <div id="macronutrient-note" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg my-8"><h3 class="text-base font-bold mb-2">Nota sobre Macronutrientes</h3><p class="text-sm">Estos rangos son un punto de partida. La distribución ideal es personal y debe ser ajustada a tus objetivos (aumento muscular, pérdida de grasa), salud metabólica y tolerancia. Consulta a un profesional para un plan adaptado a ti.</p></div>
-                        <section id="action-section" class="mt-12 p-6 rounded-lg bg-[#F7F9F4] no-print"><h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Toma el Control de tu Salud</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Sugerencias Personalizadas</h3><ul id="action-items" class="list-disc list-inside space-y-2 text-gray-700"></ul></div><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para tu Médico</h3><p class="text-sm text-gray-600 mb-3">Utiliza este espacio para anotar preguntas o síntomas que quieras discutir con tu profesional.</p><textarea id="doctor-notes" rows="6" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-3 text-sm" placeholder="Ej: Mi presión ha estado más alta por las mañanas..."></textarea></div></div></section>
-                        <div class="text-center mt-8 no-print"><button id="copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar Resultados</button><p class="text-sm text-gray-500 mt-2">Guarda una copia para monitorear tu progreso.</p></div>
+                        <div id="macronutrient-note" class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg my-8"><h3 class="text-base font-bold mb-2">Nota sobre macronutrientes</h3><p class="text-sm">Estos rangos son un punto de partida. La distribución ideal es personal y debe ser ajustada a tus objetivos (aumento muscular, pérdida de grasa), salud metabólica y tolerancia. Consulta a un profesional para un plan adaptado a ti.</p></div>
+                        <section id="action-section" class="mt-12 p-6 rounded-lg bg-[#F7F9F4] no-print"><h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Toma el control de tu salud</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Sugerencias personalizadas</h3><ul id="action-items" class="list-disc list-inside space-y-2 text-gray-700"></ul></div><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para tu médico</h3><p class="text-sm text-gray-600 mb-3">Utiliza este espacio para anotar preguntas o síntomas que quieras discutir con tu profesional.</p><textarea id="doctor-notes" rows="6" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-3 text-sm" placeholder="Ej: Mi presión ha estado más alta por las mañanas..."></textarea></div></div></section>
+                        <div class="text-center mt-8 no-print"><button id="copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar resultados</button><p class="text-sm text-gray-500 mt-2">Guarda una copia para monitorear tu progreso.</p></div>
                     </section>
                 </div>
 
                 <!-- ===== CALCULADORA PEDIÁTRICA ===== -->
                 <div id="pediatric-calculator" class="hidden">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Datos del Paciente Pediátrico</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Datos del paciente pediátrico</h2>
                     <section class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
                          <div class="input-group"><label for="pediatric-edad-meses">Edad (meses)</label><input type="number" id="pediatric-edad-meses" placeholder="Ej: 12"></div>
                         <div class="input-group"><label for="pediatric-peso">Peso (kg)</label><input type="number" id="pediatric-peso" placeholder="Ej: 9.5"></div>
                         <div class="input-group"><label for="pediatric-altura">Altura (cm)</label><input type="number" id="pediatric-altura" placeholder="Ej: 75"></div>
                         <div class="input-group"><label for="pediatric-sexo">Sexo</label><select id="pediatric-sexo"><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
-                        <div class="input-group"><label for="pliegue-triceps">Pliegue Tricipital (mm)</label><input type="number" id="pliegue-triceps" placeholder="Ej: 8"></div>
-                        <div class="input-group"><label for="pliegue-subescapular">Pliegue Subescapular (mm)</label><input type="number" id="pliegue-subescapular" placeholder="Ej: 6"></div>
+                        <div class="input-group"><label for="pliegue-triceps">Pliegue tricipital (mm)</label><input type="number" id="pliegue-triceps" placeholder="Ej: 8"></div>
+                        <div class="input-group"><label for="pliegue-subescapular">Pliegue subescapular (mm)</label><input type="number" id="pliegue-subescapular" placeholder="Ej: 6"></div>
                     </section>
                     <section>
-                         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Resultados Pediátricos</h2>
+                         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Resultados pediátricos</h2>
                          <div id="pediatric-results-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Los resultados pediátricos se inyectarán aquí como tarjetas interactivas -->
                          </div>
                     </section>
                     <section id="pediatric-action-section" class="mt-12 p-6 rounded-lg bg-[#F7F9F4] no-print">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Pasos a Seguir</h2>
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Pasos a seguir</h2>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div class="bg-white p-6 rounded-lg shadow-sm">
                                 <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Sugerencias</h3>
@@ -304,14 +341,14 @@
                                 </ul>
                             </div>
                             <div class="bg-white p-6 rounded-lg shadow-sm">
-                                <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para el Pediatra</h3>
+                                <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para el pediatra</h3>
                                 <p class="text-sm text-gray-600 mb-3">Anota aquí preguntas o datos para la próxima consulta.</p>
                                 <textarea id="pediatric-doctor-notes" rows="6" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-3 text-sm" placeholder="Ej: Preguntar sobre la curva de crecimiento..."></textarea>
                             </div>
                         </div>
                     </section>
                     <div class="text-center mt-8 no-print">
-                        <button id="pediatric-copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar Resultados</button>
+                        <button id="pediatric-copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar resultados</button>
                         <p class="text-sm text-gray-500 mt-2">Guarda una copia para monitorear el progreso.</p>
                     </div>
                 </div>
@@ -319,136 +356,254 @@
             </div>
         </section>
 
+        <!-- ===== SECCIÓN: CALCULADORA DE SALUD MENTAL ===== -->
+        <section id="mental-health-section" class="page-section hidden">
+             <div class="w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 lg:p-12 mb-8 printable-content">
+                 <div id="mh-calculator-container">
+                    
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-[#6B8E23]">Autoevaluación de bienestar emocional</h2>
+                        <p class="text-lg text-gray-600 mt-2">Un espacio seguro para explorar tu salud mental.</p>
+                    </div>
+
+                      <!-- Progress Bar -->
+                      <div class="mb-8 no-print">
+                          <div class="flex justify-between mb-2">
+                              <span id="mh-progress-text" class="text-base font-medium text-[#6B8E23]">Paso 1 de 4</span>
+                              <span id="mh-progress-percent" class="text-sm font-medium text-[#6B8E23]">0%</span>
+                          </div>
+                          <div class="w-full bg-gray-200 rounded-full h-2.5">
+                              <div id="mh-progress-bar" class="mh-progress-bar-bg h-2.5 rounded-full" style="width: 0%"></div>
+                          </div>
+                      </div>
+
+                      <!-- Contador de Preguntas para feedback del usuario -->
+                      <div id="mh-question-counter-wrapper" class="text-center mb-6 hidden">
+                          <p id="mh-question-counter" class="text-lg text-gray-700"></p>
+                      </div>
+
+                      <!-- Step 1: Intro y Consentimiento -->
+                      <div id="mh-step-1" class="mh-step">
+                          <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Bienvenida</h2>
+                          <p class="text-lg text-gray-700 mb-6 text-center max-w-3xl mx-auto">Esta herramienta está diseñada para ofrecer una visión integral y confidencial de tu bienestar emocional. No es un diagnóstico, sino un punto de partida para una conversación informada con un profesional de la salud mental.</p>
+                          <div class="bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-6 rounded-lg max-w-3xl mx-auto">
+                              <h3 class="text-xl font-bold mb-3">Consentimiento informado y privacidad</h3>
+                              <p class="mb-4">Tus respuestas son sensibles y serán tratadas con la máxima confidencialidad. Al continuar, aceptas que esta herramienta es un recurso de autoevaluación y no reemplaza la consulta profesional.</p>
+                              <label for="mh-consent" class="flex items-center cursor-pointer">
+                                  <input type="checkbox" id="mh-consent" class="h-5 w-5 rounded text-[#6B8E23] focus:ring-[#6B8E23] border-gray-300">
+                                  <span class="ml-3 text-gray-800 font-medium">Entiendo y acepto continuar con la evaluación.</span>
+                              </label>
+                          </div>
+                      </div>
+
+                      <!-- Step 2: Marco Fundacional (MEJORADO) -->
+                     <div id="mh-step-2" class="mh-step hidden">
+                         <h2 class="text-2xl font-bold text-center text-[#6B8E23] mb-6">Comprendiendo tu contexto</h2>
+                         <p class="text-center text-gray-600 mb-8 -mt-4 max-w-3xl mx-auto">Responder estas preguntas opcionales nos ayuda a entender mejor tu situación. Esta información es confidencial y solo para ti.</p>
+                         <div class="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
+                             <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col">
+                                 <div class="flex items-center mb-6">
+                                     <h3 class="text-xl font-semibold text-gray-800">Historial y antecedentes</h3>
+                                 </div>
+                                 <div class="space-y-6 flex flex-col">
+                                     <div class="input-group">
+                                         <label for="mh-history-family">Antecedentes familiares</label>
+                                         <p class="text-sm text-gray-500 mb-2">¿Alguien en tu familia cercana ha tenido condiciones de salud mental? <span class="font-normal text-gray-500">(Opcional)</span></p>
+                                         <textarea id="mh-history-family" rows="3" class="bg-gray-50" placeholder="Ej: Mi madre tuvo depresión, mi abuelo ansiedad..."></textarea>
+                                     </div>
+                                     <div class="input-group">
+                                         <label for="mh-history-personal">Tu historial personal</label>
+                                         <p class="text-sm text-gray-500 mb-2">¿Has recibido algún tratamiento o diagnóstico de salud mental anteriormente? <span class="font-normal text-gray-500">(Opcional)</span></p>
+                                         <textarea id="mh-history-personal" rows="3" class="bg-gray-50" placeholder="Ej: Fui a terapia por ansiedad hace dos años..."></textarea>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col">
+                                 <div class="flex items-center mb-6">
+                                     <h3 class="text-xl font-semibold text-gray-800">Análisis de la situación actual</h3>
+                                 </div>
+                                 <div class="space-y-6 flex flex-col">
+                                     <div class="input-group"><label for="mh-precipitants">Desencadenantes (factores precipitantes)</label><p class="text-sm text-gray-500 mb-2">¿Qué evento o situación crees que desencadenó o empeoró tu malestar actual?</p><textarea id="mh-precipitants" rows="3" class="bg-gray-50" placeholder="Ej: La pérdida de mi trabajo, una ruptura..."></textarea></div>
+                                     <div class="input-group"><label for="mh-perpetuators">Mantenedores (factores perpetuadores)</label><p class="text-sm text-gray-500 mb-2">¿Qué cosas sientes que mantienen o agravan el problema en tu día a día?</p><textarea id="mh-perpetuators" rows="3" class="bg-gray-50" placeholder="Ej: El aislamiento social, dormir mal..."></textarea></div>
+                                     <div class="input-group"><label for="mh-protectives">Apoyos (factores protectores)</label><p class="text-sm text-gray-500 mb-2">¿Qué o quién te ayuda a sentirte mejor, incluso por un momento?</p><textarea id="mh-protectives" rows="3" class="bg-gray-50" placeholder="Ej: Hablar con un amigo, hacer ejercicio..."></textarea></div>
+                                     <div class="input-group"><label for="mh-trauma-trigger">Experiencias traumáticas</label><p class="text-sm text-gray-500 mb-2">¿Alguna vez has experimentado un evento profundamente angustiante o que amenazó tu vida?</p><select id="mh-trauma-trigger"><option value="no">No</option><option value="si">Sí</option></select></div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                      
+                      <!-- Step 3: Cuestionarios (REDISENADO) -->
+                     <div id="mh-step-3" class="mh-step hidden">
+                          <h2 class="text-2xl font-bold text-center text-[#6B8E23] mb-8">Indicadores centrales de bienestar</h2>
+                          <div id="mh-questionnaires-container" class="space-y-8">
+                              <!-- Los cuestionarios rediseñados se inyectarán aquí -->
+                          </div>
+                     </div>
+
+                      <!-- Step 4: Resultados -->
+                      <div id="mh-step-4" class="mh-step hidden">
+                          <h2 class="text-3xl font-bold text-center text-[#6B8E23] mb-6">Tu perfil de salud mental</h2>
+                          <div id="mh-results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Las tarjetas de resultados se inyectarán aquí -->
+                          </div>
+                          <section id="mh-action-section" class="mt-12 p-6 rounded-lg bg-[#F7F9F4] no-print">
+                              <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Pasos a seguir y reflexiones</h2>
+                              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                  <div class="bg-white p-6 rounded-lg shadow-sm">
+                                      <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Sugerencias de rutas de atención</h3>
+                                      <ul id="mh-action-items" class="list-disc list-inside space-y-3 text-gray-700"></ul>
+                                  </div>
+                                  <div class="bg-white p-6 rounded-lg shadow-sm">
+                                      <h3 class="text-xl font-semibold mb-4 text-[#6B8E23]">Notas para tu profesional de salud mental</h3>
+                                      <p class="text-sm text-gray-600 mb-3">Este es un espacio confidencial para ti. Anota cualquier pensamiento, pregunta o tema que quieras recordar discutir en tu próxima consulta.</p>
+                                      <textarea id="mh-professional-notes" rows="6" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-3 text-sm" placeholder="Ej: Me sentí particularmente ansioso/a después de [evento específico]... Quiero preguntar sobre técnicas para manejar [síntoma]..."></textarea>
+                                  </div>
+                              </div>
+                          </section>
+                          <div class="text-center mt-8 no-print">
+                              <button id="mh-copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar resultados</button>
+                              <p class="text-sm text-gray-500 mt-2">Guarda una copia para tu registro personal o para compartirla con tu profesional.</p>
+                          </div>
+                      </div>
+                      
+                      <!-- Botones de Navegación -->
+                      <div class="mt-10 flex justify-between no-print">
+                          <button id="mh-prev-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition-colors hidden">Anterior</button>
+                          <button id="mh-next-btn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors ml-auto disabled:opacity-50 disabled:cursor-not-allowed" disabled>Siguiente</button>
+                      </div>
+                 </div>
+             </div>
+        </section>
+
         <!-- ===== SECCIÓN: CALCULADORA DE DOSIS ===== -->
         <section id="dosis-section" class="page-section hidden">
              <div class="w-full bg-white rounded-xl shadow-lg p-4 sm:p-8 md:p-12 mb-8">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <div class="hidden md:block md:flex-1"></div>
-                    <h2 class="text-3xl font-bold text-center text-[#6B8E23] w-full md:w-auto">Calculadora de Dosis</h2>
-                    <div class="w-full md:flex-1 md:flex md:justify-end">
-                        <div class="relative w-full md:w-auto">
-                            <button id="open-meds-list-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors w-full md:w-auto">
-                                Lista de Medicamentos
-                            </button>
-                        </div>
-                    </div>
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#6B8E23]">Calculadora de dosis de medicamentos</h2>
+                    <p class="text-lg text-gray-600 mt-2">Encuentra la dosis adecuada según la prescripción y la presentación del medicamento.</p>
                 </div>
 
-                <div class="space-y-8">
-                    <!-- Grupo 1: Datos de la Prescripción -->
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">1. Datos de la Prescripción</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <div class="input-group">
-                                <label for="dosis-peso-new">Peso (kg)</label>
-                                <input type="number" id="dosis-peso-new" placeholder="15">
-                            </div>
-                             <div class="input-group">
-                                <label for="dosis-posologia-new">Posología (mg/kg/día)</label>
-                                <input type="number" id="dosis-posologia-new" placeholder="30">
-                            </div>
-                            <div class="input-group">
-                                <label for="dosis-frecuencia-new">A repartir en</label>
-                                <select id="dosis-frecuencia-new">
-                                    <option value="1">1 dosis = cada 24 horas</option>
-                                    <option value="2">2 dosis = cada 12 horas</option>
-                                    <option value="3" selected>3 dosis = cada 8 horas</option>
-                                    <option value="4">4 dosis = cada 6 horas</option>
-                                    <option value="6">6 dosis = cada 4 horas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div id="fixed-dose-note" class="hidden bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-3 rounded-lg mt-2">
-                           <p class="text-sm">Este medicamento funciona con dosis fijas (no por peso). La posología se ha establecido en 0. Por favor, verifique el prospecto para la dosis correcta según la edad o condición.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Grupo 2: Datos del Medicamento -->
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">2. Datos del Medicamento</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-                             <div class="input-group">
-                                <label for="dosis-presentacion-new">Presentación</label>
-                                <select id="dosis-presentacion-new">
-                                    <option value="solucion">Solución / Suspensión</option>
-                                    <option value="gotas">Gotas</option>
-                                    <option value="comprimidos">Comprimidos</option>
-                                    <option value="sobres">Sobres</option>
-                                    <option value="supositorios">Supositorios</option>
-                                    <option value="inyectables">Inyectables</option>
-                                </select>
-                            </div>
-                             <!-- Conditional Fields -->
-                            <div id="dosis-field-liquido-new" class="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-                                <div class="input-group">
-                                    <label for="dosis-concentracion-mg-new">Nº de mg</label>
-                                    <input type="number" id="dosis-concentracion-mg-new" placeholder="100">
-                                </div>
-                                <div class="input-group">
-                                    <label for="dosis-concentracion-ml-new">Nº de ml</label>
-                                    <input type="number" id="dosis-concentracion-ml-new" placeholder="5">
-                                </div>
-                            </div>
-                            <div id="dosis-field-solido-new" class="input-group hidden">
-                                <label for="dosis-mg-unidad-new">mg por unidad</label>
-                                <input type="number" id="dosis-mg-unidad-new" placeholder="250">
-                            </div>
-                        </div>
-                    </div>
+                 <div class="flex flex-col md:flex-row justify-end items-center mb-8 gap-4">
+                    <button id="open-meds-list-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors w-full md:w-auto">
+                        Lista de medicamentos
+                    </button>
+                 </div>
 
-                    <!-- Grupo 3: Resultados -->
+                 <div class="space-y-8">
+                     <!-- Grupo 1: Datos de la Prescripción -->
                      <div>
-                        <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">3. Resultados del Cálculo</h3>
-                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                             <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
-                                <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis Diaria Total</h4>
-                                <p id="dosis-dia-result-new" class="text-3xl font-bold text-[#6B8E23] break-words">-</p>
-                            </div>
-                             <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
-                                <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis por Toma</h4>
-                                <p id="dosis-toma-result-new" class="text-3xl font-bold text-[#6B8E23] break-words">-</p>
-                            </div>
-                        </div>
-                    </div>
+                         <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">1. Datos de la prescripción</h3>
+                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                             <div class="input-group">
+                                 <label for="dosis-peso-new">Peso (kg)</label>
+                                 <input type="number" id="dosis-peso-new" placeholder="15">
+                             </div>
+                              <div class="input-group">
+                                 <label for="dosis-posologia-new">Posología (mg/kg/día)</label>
+                                 <input type="number" id="dosis-posologia-new" placeholder="30">
+                             </div>
+                             <div class="input-group">
+                                 <label for="dosis-frecuencia-new">A repartir en</label>
+                                 <select id="dosis-frecuencia-new">
+                                     <option value="1">1 dosis = cada 24 horas</option>
+                                     <option value="2">2 dosis = cada 12 horas</option>
+                                     <option value="3" selected>3 dosis = cada 8 horas</option>
+                                     <option value="4">4 dosis = cada 6 horas</option>
+                                     <option value="6">6 dosis = cada 4 horas</option>
+                                 </select>
+                             </div>
+                         </div>
+                         <div id="fixed-dose-note" class="hidden bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-3 rounded-lg mt-2">
+                             <p class="text-sm">Este medicamento funciona con dosis fijas (no por peso). La posología se ha establecido en 0. Por favor, verifique el prospecto para la dosis correcta según la edad o condición.</p>
+                         </div>
+                     </div>
+                     
+                     <!-- Grupo 2: Datos del Medicamento -->
+                     <div>
+                         <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">2. Datos del medicamento</h3>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                              <div class="input-group">
+                                 <label for="dosis-presentacion-new">Presentación</label>
+                                 <select id="dosis-presentacion-new">
+                                     <option value="solucion">Solución / Suspensión</option>
+                                     <option value="gotas">Gotas</option>
+                                     <option value="comprimidos">Comprimidos</option>
+                                     <option value="sobres">Sobres</option>
+                                     <option value="supositorios">Supositorios</option>
+                                     <option value="inyectables">Inyectables</option>
+                                 </select>
+                             </div>
+                             <!-- Conditional Fields -->
+                             <div id="dosis-field-liquido-new" class="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+                                 <div class="input-group">
+                                     <label for="dosis-concentracion-mg-new">Nº de mg</label>
+                                     <input type="number" id="dosis-concentracion-mg-new" placeholder="100">
+                                 </div>
+                                 <div class="input-group">
+                                     <label for="dosis-concentracion-ml-new">Nº de ml</label>
+                                     <input type="number" id="dosis-concentracion-ml-new" placeholder="5">
+                                 </div>
+                             </div>
+                             <div id="dosis-field-solido-new" class="input-group hidden">
+                                 <label for="dosis-mg-unidad-new">mg por unidad</label>
+                                 <input type="number" id="dosis-mg-unidad-new" placeholder="250">
+                             </div>
+                         </div>
+                     </div>
 
-                    <!-- Utilidad Adicional -->
-                    <div class="pt-6 mt-6 border-t">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="font-semibold text-gray-800 mb-4 text-center">Utilidad Adicional: Calcular Concentración (mg/ml)</h3>
-                            <div class="max-w-2xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                                <!-- Inputs container -->
-                                <div class="flex-grow flex flex-col sm:flex-row items-end gap-4">
-                                    <div class="input-group mb-0 w-full sm:w-auto flex-1">
-                                        <label for="dosis-util-mg-new" class="text-sm">Nº de mg</label>
-                                        <input type="number" id="dosis-util-mg-new" placeholder="250">
-                                    </div>
-                                    <div class="input-group mb-0 w-full sm:w-auto flex-1">
-                                        <label for="dosis-util-ml-new" class="text-sm">Nº de ml</label>
-                                        <input type="number" id="dosis-util-ml-new" placeholder="5">
-                                    </div>
-                                </div>
-                                <!-- Result container -->
-                                <div class="w-full md:w-auto text-center md:text-left pt-2 md:pt-0">
-                                     <p class="text-lg font-bold text-[#6B8E23]" id="dosis-mgml-result-new">Resultado: - mg/ml</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                     <!-- Grupo 3: Resultados -->
+                      <div>
+                         <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">3. Resultados del cálculo</h3>
+                         <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
+                                 <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis diaria total</h4>
+                                 <p id="dosis-dia-result-new" class="text-3xl font-bold text-[#6B8E23] break-words">-</p>
+                             </div>
+                              <div class="bg-[#F7F9F4] p-6 rounded-lg shadow-inner text-center">
+                                 <h4 class="text-lg font-semibold text-gray-700 mb-2">Dosis por toma</h4>
+                                 <p id="dosis-toma-result-new" class="text-3xl font-bold text-[#6B8E23] break-words">-</p>
+                             </div>
+                         </div>
+                     </div>
 
-                <!-- Botón de Copiar Resultados -->
-                <div class="text-center mt-8 no-print">
-                    <button id="dosis-copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar Resultados</button>
-                    <p class="text-sm text-gray-500 mt-2">Guarda una copia para tus registros o para compartir.</p>
-                </div>
+                     <!-- Utilidad Adicional -->
+                     <div class="pt-6 mt-6 border-t">
+                         <div class="bg-gray-50 p-4 rounded-lg">
+                             <h3 class="font-semibold text-gray-800 mb-4 text-center">Utilidad adicional: Calcular concentración (mg/ml)</h3>
+                             <div class="max-w-2xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                                 <!-- Inputs container -->
+                                 <div class="flex-grow flex flex-col sm:flex-row items-end gap-4">
+                                     <div class="input-group mb-0 w-full sm:w-auto flex-1">
+                                         <label for="dosis-util-mg-new" class="text-sm">Nº de mg</label>
+                                         <input type="number" id="dosis-util-mg-new" placeholder="250">
+                                     </div>
+                                     <div class="input-group mb-0 w-full sm:w-auto flex-1">
+                                         <label for="dosis-util-ml-new" class="text-sm">Nº de ml</label>
+                                         <input type="number" id="dosis-util-ml-new" placeholder="5">
+                                     </div>
+                                 </div>
+                                 <!-- Result container -->
+                                 <div class="w-full md:w-auto text-center md:text-left pt-2 md:pt-0">
+                                      <p class="text-lg font-bold text-[#6B8E23]" id="dosis-mgml-result-new">Resultado: - mg/ml</p>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
 
-                <!-- Disclaimer -->
-                <div class="mt-10 bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg no-print">
-                    <p class="text-sm">
-                        Los resultados ofrecidos representan una aproximación general confiable, aunque su aplicabilidad individual puede variar. Por ello, se recomienda que un profesional calificado evalúe y supervise su interpretación en cada caso particular.
-                    </p>
-                </div>
-            </div>
+                 <!-- Botón de Copiar Resultados -->
+                 <div class="text-center mt-8 no-print">
+                     <button id="dosis-copyBtn" class="bg-[#6B8E23] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#58751d] transition-colors">Copiar resultados</button>
+                     <p class="text-sm text-gray-500 mt-2">Guarda una copia para tus registros o para compartir.</p>
+                 </div>
+
+                 <!-- Disclaimer -->
+                 <div class="mt-10 bg-[#F7F9F4] border-l-4 border-[#6B8E23] text-[#41521C] p-4 rounded-lg no-print">
+                     <p class="text-sm">
+                         Los resultados ofrecidos representan una aproximación general confiable, aunque su aplicabilidad individual puede variar. Por ello, se recomienda que un profesional calificado evalúe y supervise su interpretación en cada caso particular.
+                     </p>
+                 </div>
+             </div>
         </section>
 
     </main>
@@ -460,12 +615,12 @@
             <div class="overflow-y-auto">
                 <!-- Header -->
                 <div class="flex justify-between items-center p-4 border-b bg-white rounded-t-xl">
-                    <h3 class="text-2xl font-bold text-[#6B8E23]">Lista de Medicamentos</h3>
+                    <h3 class="text-2xl font-bold text-[#6B8E23]">Lista de medicamentos</h3>
                     <button id="close-meds-modal-btn" class="text-gray-400 hover:text-gray-800 text-3xl leading-none">&times;</button>
                 </div>
                 <!-- Disclaimer -->
                 <div class="p-4 bg-[#F7F9F4] border-b border-gray-200">
-                    <h4 class="font-bold text-[#556B2F]">Aviso Importante</h4>
+                    <h4 class="font-bold text-[#556B2F]">Aviso importante</h4>
                     <p class="text-sm text-[#41521C] mt-1">
                         Esta calculadora es una herramienta de orientación y no sustituye en ningún caso el diagnóstico, la prescripción o el consejo profesional de un médico o farmacéutico. La información proporcionada se basa en dosis estándar para medicamentos de venta libre. No utilice esta herramienta para tomar decisiones médicas. Antes de administrar cualquier medicamento, lea detenidamente el prospecto y consulte a un profesional de la salud, especialmente si está embarazada, en período de lactancia, padece alguna enfermedad crónica o está tomando otros medicamentos. El creador de esta herramienta no se hace responsable del uso indebido de la información aquí presentada.
                     </p>
@@ -480,7 +635,7 @@
     
     <!-- ===== FOOTER FIJO ===== -->
     <footer class="fixed bottom-0 left-0 w-full bg-[#FDFBF6] p-3 border-t border-gray-200 no-print z-40 text-center text-xs text-gray-600 shadow-[0_-2px_5px_rgba(0,0,0,0.05)]">
-        <p class="mb-1"><strong>Descargo de Responsabilidad:</strong> Esta es una herramienta educativa y no sustituye la consulta médica profesional.</p>
+        <p class="mb-1"><strong>Descargo de responsabilidad:</strong> Esta es una herramienta educativa y no sustituye la consulta médica profesional.</p>
         <p>&copy; <span id="year">2025</span> Calculadora de Salud Integral. Todos los derechos reservados.</p>
     </footer>
 
@@ -521,30 +676,30 @@
 
         const metricas = {
             generales: [
-                { id: 'imc', title: '1. IMC (Índice de Masa Corporal)', desc: 'Una relación entre tu peso y altura.', detail: 'Es un primer indicador rápido de bajo peso, peso normal, sobrepeso u obesidad.' },
-                { id: 'iac', title: '2. IAC (Índice de Adiposidad Corporal)', desc: 'Estima el porcentaje de grasa corporal.', detail: 'Ofrece una alternativa al IMC para evaluar la adiposidad sin depender del peso corporal total, usando la medida de la cadera.' },
-                { id: 'absi', title: '3. ABSI (Índice de Forma Corporal)', desc: 'Relaciona cintura, altura e IMC para el riesgo.', detail: 'Un ABSI alto sugiere una mayor acumulación de grasa visceral, que se asocia con un mayor riesgo de mortalidad prematura.' },
-                { id: 'bri', title: '4. BRI (Índice de Redondez Corporal)', desc: 'Evalúa la forma del cuerpo y la grasa visceral.', detail: 'Valores más altos se asocian con un mayor riesgo de problemas cardiovasculares y metabólicos.' },
-                { id: 'vai', title: '5. VAI (Índice de Adiposidad Visceral)', desc: 'Estima la función de la grasa visceral.', detail: 'Combina medidas antropométricas (cintura, IMC) y bioquímicas (triglicéridos, HDL) para evaluar el riesgo cardiometabólico.' },
-                { id: 'grasa-corporal', title: '6. Grasa Corporal (%)', desc: 'Porcentaje de grasa corporal estimado.', detail: 'Calculado mediante la fórmula de la Marina de EE. UU., utiliza medidas de cuello, cintura, cadera (en mujeres) y altura.' },
-                { id: 'ffmi', title: '7. FFMI (Índice de Masa Libre de Grasa)', desc: 'Estima la cantidad de masa muscular.', detail: 'Es útil para evaluar la composición corporal, especialmente en atletas o personas que realizan entrenamiento de fuerza.' },
-                { id: 'peso-ideal', title: '8. Peso Ideal y Ajustado', desc: 'Estimaciones de peso ideal y ajustado.', detail: 'El peso ideal es una referencia teórica. El peso ajustado se utiliza en ciertos cálculos clínicos, especialmente en pacientes con obesidad.' },
-                { id: 'distribucion', title: '9. Índices de Distribución (ICC, ICA)', desc: 'Índice Cintura-Cadera e Índice Cintura-Altura.', detail: 'Evalúan la distribución de la grasa corporal. Un valor alto en ambos indica mayor grasa abdominal y, por tanto, mayor riesgo para la salud.' },
-                { id: 'tmb', title: '10. Tasa Metabólica Basal (TMB)', desc: 'Calorías que quemas en reposo.', detail: 'Calculada con la fórmula de Mifflin-St Jeor, es la energía mínima necesaria para mantener las funciones vitales.' },
-                { id: 'get', title: '11. Gasto Energético Total (GET)', desc: 'Calorías totales que quemas en un día.', detail: 'Se calcula multiplicando tu TMB por un factor que representa tu nivel de actividad física diaria.' },
-                { id: 'calories-burned', title: '12. Gasto por Actividad Física', desc: 'Estimación de calorías quemadas para una actividad específica.', detail: 'Utiliza el valor MET (Equivalente Metabólico de Tarea) de una actividad para calcular el gasto calórico por hora según tu peso.' },
-                { id: 'macros', title: '13. Macronutrientes', desc: 'Distribución sugerida de proteínas, grasas y carbohidratos.', detail: 'Ofrece un rango general para la ingesta diaria de macronutrientes, basado en el Gasto Energético Total.' },
-                { id: 'homa-ir', title: '14. HOMA-IR', desc: 'Estimación de resistencia a la insulina.', detail: 'Un valor elevado sugiere que el cuerpo no está utilizando la insulina de manera eficiente, lo cual es un factor de riesgo para la diabetes tipo 2.' },
-                { id: 'ast-alt', title: '15. Relación AST/ALT', desc: 'Para evaluar la salud del hígado.', detail: 'Un cociente superior a 1 puede sugerir ciertas patologías hepáticas, aunque debe ser interpretado por un médico.' },
-                { id: 'pam', title: '16. Presión Arterial Media (PAM)', desc: 'Presión media del sistema circulatorio.', detail: 'Indica la perfusión de los órganos. Un valor entre 70-100 mmHg se considera normal.' },
-                { id: 'tfge', title: '17. TFG Estimada (CKD-EPI)', desc: 'Tasa de Filtración Glomerular.', detail: 'Es el mejor indicador de la función renal. Un valor bajo puede indicar enfermedad renal crónica.' },
-                { id: 'ascvd', title: '18. Riesgo Cardiovascular (ASCVD)', desc: 'Riesgo a 10 años de un evento cardiovascular.', detail: 'Estimación simplificada basada en factores como edad, colesterol, presión arterial y tabaquismo.' },
-                { id: 'framingham', title: '19. Riesgo Cardiovascular (Framingham)', desc: 'Riesgo de evento coronario a 10 años.', detail: 'Un modelo clásico y validado para predecir el riesgo de enfermedad coronaria.' },
-                { id: 'score', title: '20. Riesgo Cardiovascular (SCORE)', desc: 'Riesgo de evento fatal a 10 años (Europa).', detail: 'Calcula la probabilidad de morir por una enfermedad cardiovascular en los próximos 10 años.' },
-                { id: 'castelli', title: '21. Índice Aterogénico (Castelli)', desc: 'Relación Colesterol Total / HDL.', detail: 'Un índice elevado se asocia con un mayor riesgo de aterosclerosis (acumulación de placa en las arterias).' },
-                { id: 'ipa', title: '22. IPA (Índice Paquetes/Año)', desc: 'Riesgo acumulado de tabaquismo.', detail: 'Cuantifica la exposición al tabaco a lo largo del tiempo. Un IPA >10-20 aumenta significativamente el riesgo de EPOC y cáncer de pulmón.' },
-                { id: 'sueno', title: '23. Análisis del Sueño', desc: 'Resumen cualitativo de los hábitos de sueño.', detail: 'Evalúa la calidad del descanso basándose en las horas de sueño, interrupciones nocturnas y somnolencia diurna.' },
-                { id: 'bienestar', title: '24. Bienestar Emocional', desc: 'Autoevaluación del estado emocional.', detail: 'Una métrica subjetiva para reflexionar sobre el bienestar emocional general y la emoción principal percibida.' },
+                { id: 'imc', title: 'IMC (Índice de Masa Corporal)', desc: 'Una relación entre tu peso y altura.', detail: 'Es un primer indicador rápido de bajo peso, peso normal, sobrepeso u obesidad.' },
+                { id: 'iac', title: 'IAC (Índice de Adiposidad Corporal)', desc: 'Estima el porcentaje de grasa corporal.', detail: 'Ofrece una alternativa al IMC para evaluar la adiposidad sin depender del peso corporal total, usando la medida de la cadera.' },
+                { id: 'absi', title: 'ABSI (Índice de Forma Corporal)', desc: 'Relaciona cintura, altura e IMC para el riesgo.', detail: 'Un ABSI alto sugiere una mayor acumulación de grasa visceral, que se asocia con un mayor riesgo de mortalidad prematura.' },
+                { id: 'bri', title: 'BRI (Índice de Redondez Corporal)', desc: 'Evalúa la forma del cuerpo y la grasa visceral.', detail: 'Valores más altos se asocian con un mayor riesgo de problemas cardiovasculares y metabólicos.' },
+                { id: 'vai', title: 'VAI (Índice de Adiposidad Visceral)', desc: 'Estima la función de la grasa visceral.', detail: 'Combina medidas antropométricas (cintura, IMC) y bioquímicas (triglicéridos, HDL) para evaluar el riesgo cardiometabólico.' },
+                { id: 'grasa-corporal', title: 'Grasa Corporal (%)', desc: 'Porcentaje de grasa corporal estimado.', detail: 'Calculado mediante la fórmula de la Marina de EE. UU., utiliza medidas de cuello, cintura, cadera (en mujeres) y altura.' },
+                { id: 'ffmi', title: 'FFMI (Índice de Masa Libre de Grasa)', desc: 'Estima la cantidad de masa muscular.', detail: 'Es útil para evaluar la composición corporal, especialmente en atletas o personas que realizan entrenamiento de fuerza.' },
+                { id: 'peso-ideal', title: 'Peso Ideal y Ajustado', desc: 'Estimaciones de peso ideal y ajustado.', detail: 'El peso ideal es una referencia teórica. El peso ajustado se utiliza en ciertos cálculos clínicos, especialmente en pacientes con obesidad.' },
+                { id: 'distribucion', title: 'Índices de Distribución (ICC, ICA)', desc: 'Índice Cintura-Cadera e Índice Cintura-Altura.', detail: 'Evalúan la distribución de la grasa corporal. Un valor alto en ambos indica mayor grasa abdominal y, por tanto, mayor riesgo para la salud.' },
+                { id: 'tmb', title: 'Tasa Metabólica Basal (TMB)', desc: 'Calorías que quemas en reposo.', detail: 'Calculada con la fórmula de Mifflin-St Jeor, es la energía mínima necesaria para mantener las funciones vitales.' },
+                { id: 'get', title: 'Gasto Energético Total (GET)', desc: 'Calorías totales que quemas en un día.', detail: 'Se calcula multiplicando tu TMB por un factor que representa tu nivel de actividad física diaria.' },
+                { id: 'calories-burned', title: 'Gasto por Actividad Física', desc: 'Estimación de calorías quemadas para una actividad específica.', detail: 'Utiliza el valor MET (Equivalente Metabólico de Tarea) de una actividad para calcular el gasto calórico por hora según tu peso.' },
+                { id: 'macros', title: 'Macronutrientes', desc: 'Distribución sugerida de proteínas, grasas y carbohidratos.', detail: 'Ofrece un rango general para la ingesta diaria de macronutrientes, basado en el Gasto Energético Total.' },
+                { id: 'homa-ir', title: 'HOMA-IR', desc: 'Estimación de resistencia a la insulina.', detail: 'Un valor elevado sugiere que el cuerpo no está utilizando la insulina de manera eficiente, lo cual es un factor de riesgo para la diabetes tipo 2.' },
+                { id: 'ast-alt', title: 'Relación AST/ALT', desc: 'Para evaluar la salud del hígado.', detail: 'Un cociente superior a 1 puede sugerir ciertas patologías hepáticas, aunque debe ser interpretado por un médico.' },
+                { id: 'pam', title: 'Presión Arterial Media (PAM)', desc: 'Presión media del sistema circulatorio.', detail: 'Indica la perfusión de los órganos. Un valor entre 70-100 mmHg se considera normal.' },
+                { id: 'tfge', title: 'TFG Estimada (CKD-EPI)', desc: 'Tasa de Filtración Glomerular.', detail: 'Es el mejor indicador de la función renal. Un valor bajo puede indicar enfermedad renal crónica.' },
+                { id: 'ascvd', title: 'Riesgo Cardiovascular (ASCVD)', desc: 'Riesgo a 10 años de un evento cardiovascular.', detail: 'Estimación simplificada basada en factores como edad, colesterol, presión arterial y tabaquismo.' },
+                { id: 'framingham', title: 'Riesgo Cardiovascular (Framingham)', desc: 'Riesgo de evento coronario a 10 años.', detail: 'Un modelo clásico y validado para predecir el riesgo de enfermedad coronaria.' },
+                { id: 'score', title: 'Riesgo Cardiovascular (SCORE)', desc: 'Riesgo de evento fatal a 10 años (Europa).', detail: 'Calcula la probabilidad de morir por una enfermedad cardiovascular en los próximos 10 años.' },
+                { id: 'castelli', title: 'Índice Aterogénico (Castelli)', desc: 'Relación Colesterol Total / HDL.', detail: 'Un índice elevado se asocia con un mayor riesgo de aterosclerosis (acumulación de placa en las arterias).' },
+                { id: 'ipa', title: 'IPA (Índice Paquetes/Año)', desc: 'Riesgo acumulado de tabaquismo.', detail: 'Cuantifica la exposición al tabaco a lo largo del tiempo. Un IPA >10-20 aumenta significativamente el riesgo de EPOC y cáncer de pulmón.' },
+                { id: 'sueno', title: 'Análisis del Sueño', desc: 'Resumen cualitativo de los hábitos de sueño.', detail: 'Evalúa la calidad del descanso basándose en las horas de sueño, interrupciones nocturnas y somnolencia diurna.' },
+                { id: 'bienestar', title: 'Bienestar Emocional', desc: 'Autoevaluación del estado emocional.', detail: 'Una métrica subjetiva para reflexionar sobre el bienestar emocional general y la emoción principal percibida.' },
             ],
             obstetricas: [
                 { title: 'Semana Gestacional y FPP', desc: 'Tiempo de embarazo y fecha de parto.', detail: 'Calculado a partir de la Fecha de Última Menstruación (FUM), es crucial para el seguimiento del desarrollo fetal y la planificación del cuidado prenatal.' },
@@ -557,6 +712,19 @@
                 { title: 'IMC por Percentil (OMS/CDC)', desc: 'Compara el IMC con niños de misma edad y sexo.', detail: 'Es la herramienta estándar para evaluar el estado nutricional en niños (bajo peso, peso saludable, sobrepeso, obesidad).' },
                 { title: '% Grasa Corporal (Slaughter)', desc: 'Estimación de grasa a partir de pliegues cutáneos.', detail: 'Ofrece una visión más detallada de la composición corporal del niño más allá del IMC, usando pliegues del tríceps y subescapular.' },
                 { title: 'Gasto Energético Basal (Schofield)', desc: 'Calorías mínimas necesarias en reposo.', detail: 'Una estimación de las necesidades calóricas en reposo para niños, basada en peso y edad. Es útil para la planificación nutricional.' },
+            ],
+            saludMental: [
+                { title: 'PHQ-9 (Cuestionario sobre la salud del paciente-9)', desc: 'Evalúa la presencia y severidad de síntomas depresivos.', detail: 'Es una herramienta de cribado ampliamente utilizada para detectar la depresión y monitorear la respuesta al tratamiento.' },
+                { title: 'GAD-7 (Trastorno de ansiedad generalizada-7)', desc: 'Mide la severidad de los síntomas de ansiedad generalizada.', detail: 'Ayuda a identificar síntomas comunes de ansiedad como la preocupación excesiva, la inquietud y la dificultad para relajarse.' },
+                { title: 'PSS-10 (Escala de estrés percibido-10)', desc: 'Mide el grado en que las situaciones de la vida se perciben como estresantes.', detail: 'Se enfoca en la percepción subjetiva del estrés, evaluando qué tan impredecible, incontrolable y sobrecargada siente una persona su vida.' },
+                { title: 'RSE (Escala de autoestima de Rosenberg)', desc: 'Evalúa la autoestima global y los sentimientos de valía personal.', detail: 'Es una de las escalas más utilizadas para medir la autoaceptación y el autorespeto.' },
+                { title: 'CD-RISC-10 (Escala de resiliencia de Connor-Davidson-10)', desc: 'Mide la capacidad de una persona para recuperarse de la adversidad.', detail: 'Evalúa cualidades como la adaptabilidad, la confianza y la capacidad de afrontar el estrés y los desafíos.' },
+                { title: 'PCL-5 (Lista de verificación de TEPT para DSM-5)', desc: 'Evalúa los síntomas del trastorno de estrés postraumático (TEPT).', detail: 'Este cuestionario se utiliza cuando una persona ha experimentado un evento traumático para determinar la presencia y severidad de los síntomas relacionados.' },
+            ],
+            dosis: [
+                { title: 'Posología (mg/kg/día)', desc: 'Cantidad de medicamento por peso corporal por día.', detail: 'Indica cuántos miligramos (mg) de un medicamento se deben administrar por cada kilogramo (kg) de peso del paciente durante un período de 24 horas. Es la base para el cálculo de dosis pediátricas.' },
+                { title: 'Presentación y Concentración', desc: 'Forma y cantidad de medicamento en un volumen.', detail: 'La presentación (jarabe, gotas, comprimidos) y la concentración (ej. 100 mg / 5 ml) son cruciales para convertir la dosis en miligramos a un volumen medible (mililitros, gotas) o a una cantidad de unidades (comprimidos).' },
+                { title: 'Frecuencia (Dosis por toma)', desc: 'Cómo se divide la dosis diaria.', detail: 'Indica en cuántas tomas se debe repartir la dosis diaria total (ej. cada 8 horas = 3 tomas al día). Esto asegura que el nivel del medicamento en el cuerpo se mantenga estable.' },
             ]
         };
 
@@ -564,6 +732,8 @@
         document.getElementById('generales-accordion').innerHTML = metricas.generales.map(createAccordionItem).join('');
         document.getElementById('obstetricas-accordion').innerHTML = metricas.obstetricas.map(createAccordionItem).join('');
         document.getElementById('pediatricas-accordion').innerHTML = metricas.pediatricas.map(createAccordionItem).join('');
+        document.getElementById('salud-mental-accordion').innerHTML = metricas.saludMental.map(createAccordionItem).join('');
+        document.getElementById('dosis-accordion').innerHTML = metricas.dosis.map(createAccordionItem).join('');
 
         function switchSection(sectionId) {
             pageSections.forEach(section => section.classList.add('hidden'));
@@ -638,7 +808,7 @@
         function createResultCard(id, title, value, interpretation) { return ` <div class="bg-gray-50 p-6 rounded-lg shadow interactive-card"> <h3 class="text-xl font-semibold mb-2">${title}</h3> <p id="${id}-value" class="text-3xl font-bold text-[#6B8E23] mb-1">${value}</p> <p id="${id}-interpretation" class="text-md text-gray-700">${interpretation}</p> </div>`; }
         function updateGeneralUI(results) { const resultsContainer = document.getElementById('results'); const metricsOrder = getMetricsOrder(results); resultsContainer.innerHTML = metricsOrder.map(m => createResultCard(m.id, m.title, m.value, m.interpretation)).join(''); }
         function calculatePediatricMetrics(inputs) { const { pediatricSexo, pediatricEdadMeses, pediatricPeso, pediatricAltura, pliegueTriceps, pliegueSubescapular } = inputs; if (isNaN(pediatricEdadMeses) || isNaN(pediatricPeso) || isNaN(pediatricAltura) || pediatricEdadMeses <= 0) { updatePediatricUI(null); return; } const pediatricIMC = pediatricPeso / Math.pow(pediatricAltura / 100, 2); const ageYears = pediatricEdadMeses / 12; const L = pediatricSexo === 'niño' ? 1 : 1.2; const M = pediatricSexo === 'niño' ? 16 + (ageYears * 0.3) : 15.5 + (ageYears * 0.3); const S = 0.12; const Z = (Math.pow(pediatricIMC / M, L) - 1) / (L * S); const percentile = Math.round(cdf(Z) * 100); let bmiInterpretation = ''; if(percentile < 5) bmiInterpretation = 'Bajo peso'; else if (percentile < 85) bmiInterpretation = 'Peso saludable'; else if (percentile < 95) bmiInterpretation = 'Sobrepeso'; else bmiInterpretation = 'Obesidad'; const bodyFat = calculateSlaughterBodyFat(pediatricSexo, pliegueTriceps, pliegueSubescapular, ageYears > 8); const geb = calculatePediatricGEB(pediatricSexo, ageYears, pediatricPeso); const results = { bmiPercentile: { value: percentile, interpretation: bmiInterpretation }, bodyFat: bodyFat, geb: geb }; currentPediatricResults = results; updatePediatricUI(results); }
-        function updatePediatricUI(results) { const container = document.getElementById('pediatric-results-cards'); if (!results) { container.innerHTML = '<p class="col-span-full text-center text-gray-600">Por favor, introduce los datos del niño para ver los resultados.</p>'; updatePediatricActionItems(null); return; } container.innerHTML = ` ${createResultCard('ped-imc', 'IMC por Percentil', `${results.bmiPercentile.value}`, results.bmiPercentile.interpretation)} ${createResultCard('ped-fat', '% Grasa Corporal (Slaughter)', isNaN(results.bodyFat.value) ? '-' : `${results.bodyFat.value.toFixed(1)}%`, results.bodyFat.interpretation)} ${createResultCard('ped-geb', 'Gasto Energético Basal', isNaN(results.geb.value) ? '-' : `${results.geb.value.toFixed(0)} kcal/día`, results.geb.interpretation)} `; updatePediatricActionItems(results); }
+        function updatePediatricUI(results) { const container = document.getElementById('pediatric-results-cards'); if (!results) { container.innerHTML = '<p class="col-span-full text-center text-gray-600">Por favor, introduce los datos del niño para ver los resultados.</p>'; updatePediatricActionItems(null); return; } container.innerHTML = ` ${createResultCard('ped-imc', 'IMC por percentil', `${results.bmiPercentile.value}`, results.bmiPercentile.interpretation)} ${createResultCard('ped-fat', '% Grasa corporal (Slaughter)', isNaN(results.bodyFat.value) ? '-' : `${results.bodyFat.value.toFixed(1)}%`, results.bodyFat.interpretation)} ${createResultCard('ped-geb', 'Gasto energético basal', isNaN(results.geb.value) ? '-' : `${results.geb.value.toFixed(0)} kcal/día`, results.geb.interpretation)} `; updatePediatricActionItems(results); }
         function updateActionItems(inputs) { const { altura, peso, horasSueno, somnolenciaDiurna, bienestarEmocional, embarazada } = inputs; let suggestionsHTML = ''; if (embarazada) { suggestionsHTML += '<li><strong>Cuidado prenatal:</strong> Es crucial mantener todas las citas con tu médico para monitorear tu salud y la del bebé.</li>'; } else { const imc = calculateIMC(peso, altura).value; if (!isNaN(imc)) { if (imc < 18.5) suggestionsHTML += '<li><strong>Bajo peso:</strong> Tu IMC indica un peso por debajo de lo saludable. Un nutricionista puede ayudarte.</li>'; else if (imc >= 25 && imc < 30) suggestionsHTML += '<li><strong>Sobrepeso:</strong> Considera incorporar más actividad física y revisar tu alimentación.</li>'; else if (imc >= 30) suggestionsHTML += '<li><strong>Obesidad:</strong> Es importante consultar a un médico para crear un plan de salud integral.</li>'; } } if (!isNaN(horasSueno) && horasSueno < 7) { suggestionsHTML += `<li><strong>Descanso adecuado:</strong> Dormir menos de 7 horas puede ser especialmente desafiante${embarazada ? ' durante el embarazo' : ''}. Prioriza el descanso.</li>`; } if (somnolenciaDiurna === 'frecuentemente') { suggestionsHTML += `<li><strong>Somnolencia diurna:</strong> Sentirse muy somnoliento/a es común${embarazada ? ', pero si es excesivo, coméntalo con tu médico' : '. Puede indicar un sueño no reparador'}.</li>`; } if (!isNaN(bienestarEmocional) && bienestarEmocional <= 4) { suggestionsHTML += '<li><strong>Bienestar emocional:</strong> Tu bienestar es una prioridad. Si te sientes abrumado/a, es importante buscar apoyo.</li>'; } if (suggestionsHTML === '') { suggestionsHTML = '<li><strong>¡Vas por buen camino!</strong> Sigue cuidándote y manteniendo hábitos saludables.</li>'; } actionItemsList.innerHTML = suggestionsHTML; }
         function updatePediatricActionItems(results) { if (!results || isNaN(results.bmiPercentile.value)) { pediatricActionItemsList.innerHTML = '<li>Introduce los datos para ver sugerencias.</li>'; return; } const percentile = results.bmiPercentile.value; let suggestionsHTML = ''; if (percentile < 5) { suggestionsHTML += '<li><strong>Bajo peso:</strong> El percentil de IMC es bajo. Es importante hablar con el pediatra para evaluar la nutrición y el crecimiento del niño/a.</li>'; } else if (percentile >= 85 && percentile < 95) { suggestionsHTML += '<li><strong>Sobrepeso:</strong> El percentil de IMC indica sobrepeso. Es un buen momento para fomentar hábitos saludables en familia, como una dieta balanceada y actividad física regular.</li>'; } else if (percentile >= 95) { suggestionsHTML += '<li><strong>Obesidad:</strong> El percentil de IMC es elevado. Se recomienda una evaluación médica para crear un plan de manejo que apoye un crecimiento saludable.</li>'; } else { suggestionsHTML = '<li><strong>¡Crecimiento saludable!</strong> El percentil de IMC se encuentra en un rango saludable. Continúa fomentando buenos hábitos.</li>'; } pediatricActionItemsList.innerHTML = suggestionsHTML; }
         function getIMCInterpretation(value) { if (isNaN(value)) return ''; if (value < 18.5) return 'Bajo Peso'; else if (value < 25) return 'Normal'; else if (value < 30) return 'Sobrepeso'; else return 'Obesidad'; }
@@ -709,10 +879,54 @@
         }
 
         function copyToClipboard(text, successMessage) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.left = "-9999px"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { document.execCommand('copy'); showToast(successMessage); } catch (err) { showToast('Error al copiar los resultados.', true); } document.body.removeChild(textArea); }
-        function copyResults() { const isEmbarazada = inputElements.embarazada.checked; if (isEmbarazada) { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.gestationalWeek?.value)) { showToast("Calcula los resultados obstétricos primero.", true); return; } let shareText = "Resumen de Salud Obstétrica\n\n"; shareText += `Semana Gestacional: ${!isNaN(currentResults.gestationalWeek.value) ? currentResults.gestationalWeek.value + ' semanas' : '-'}\n`; shareText += `FPP: ${currentResults.gestationalWeek.edd}\n`; shareText += `Ganancia de Peso Recomendada: ${currentResults.recommendedGain.value}\n`; shareText += `Ganancia Actual: ${currentResults.recommendedGain.currentGain} kg\n`; shareText += `Peso Fetal Estimado: ${isNaN(currentResults.efw.value) ? '-' : currentResults.efw.value.toFixed(0) + ' g'}\n`; shareText += `Puntuación de Bishop: ${isNaN(currentResults.bishop.value) ? '-' : currentResults.bishop.value} (${currentResults.bishop.interpretation})\n`; shareText += `Probabilidad de Éxito de PVDC: ${isNaN(currentResults.vbac.value) ? '-' : currentResults.vbac.value.toFixed(1) + '%'} (${currentResults.vbac.interpretation})\n`; shareText += `\n=== BIENESTAR ===\n`; shareText += `Análisis del Sueño: ${currentResults.analisisSueno.value}. ${currentResults.analisisSueno.interpretation}\n`; shareText += `Bienestar Emocional: ${currentResults.bienestarEmocional.value}. ${currentResults.bienestarEmocional.interpretation}\n`; const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados obstétricos copiados."); } else { if (Object.keys(currentResults).length === 0 || isNaN(currentResults.imc?.value)) { showToast("Calcula los resultados de adulto primero.", true); return; } let shareText = "Resumen de Salud Integral\n\n"; const metricsOrder = getMetricsOrder(currentResults); metricsOrder.forEach(m => { const cleanValue = m.value.toString().replace(/<br>/g, ' | '); const cleanTitle = m.title.substring(m.title.indexOf('.') + 2); shareText += `${cleanTitle}: ${cleanValue} ${m.interpretation}\n`; }); const notes = document.getElementById('doctor-notes').value; if (notes.trim()) { shareText += `\n=== NOTAS PARA MI MÉDICO ===\n${notes}`; } copyToClipboard(shareText, "Resultados de adulto copiados."); } }
-        function copyPediatricResults() { if (Object.keys(currentPediatricResults).length === 0 || isNaN(currentPediatricResults.bmiPercentile.value)) { showToast("Calcula los resultados pediátricos primero.", true); return; } const { bmiPercentile, bodyFat, geb } = currentPediatricResults; const notes = document.getElementById('pediatric-doctor-notes').value; let shareText = "Resumen de Salud Pediátrica\n\n"; shareText += `=== INDICADORES ===\n`; shareText += `IMC por Percentil: ${bmiPercentile.value} (${bmiPercentile.interpretation})\n`; shareText += `% Grasa Corporal (Slaughter): ${isNaN(bodyFat.value) ? '-' : bodyFat.value.toFixed(1) + '%'} (${bodyFat.interpretation})\n`; shareText += `Gasto Energético Basal: ${isNaN(geb.value) ? '-' : geb.value.toFixed(0)} kcal/día (${geb.interpretation})\n\n`; if (notes.trim() !== '') { shareText += `=== NOTAS PARA EL PEDIATRA ===\n${notes}\n`; } copyToClipboard(shareText, 'Resultados Pediátricos copiados.'); }
         
-        // --- LÓGICA DE LA CALCULADORA DE DOSIS (NUEVA) ---
+        function copyResults() {
+            const isEmbarazada = inputElements.embarazada.checked;
+            if (isEmbarazada) {
+                if (Object.keys(currentResults).length === 0 || isNaN(currentResults.gestationalWeek?.value)) {
+                    showToast("Calcula los resultados obstétricos primero.", true);
+                    return;
+                }
+                let shareText = "--- RESUMEN DE SALUD OBSTÉTRICA ---\n\n";
+                shareText += "== SEGUIMIENTO PRENATAL ==\n";
+                shareText += `Semana Gestacional: ${!isNaN(currentResults.gestationalWeek.value) ? currentResults.gestationalWeek.value + ' semanas' : '-'}\n`;
+                shareText += `FPP: ${currentResults.gestationalWeek.edd}\n`;
+                shareText += `Ganancia de Peso Recomendada: ${currentResults.recommendedGain.value}\n`;
+                shareText += `Ganancia Actual: ${currentResults.recommendedGain.currentGain} kg\n`;
+                shareText += `Peso Fetal Estimado: ${isNaN(currentResults.efw.value) ? '-' : currentResults.efw.value.toFixed(0) + ' g'}\n`;
+                shareText += `Puntuación de Bishop: ${isNaN(currentResults.bishop.value) ? '-' : currentResults.bishop.value} (${currentResults.bishop.interpretation})\n`;
+                shareText += `Probabilidad de Éxito de PVDC: ${isNaN(currentResults.vbac.value) ? '-' : currentResults.vbac.value.toFixed(1) + '%'} (${currentResults.vbac.interpretation})\n\n`;
+                shareText += "== BIENESTAR ==\n";
+                shareText += `Análisis del Sueño: ${currentResults.analisisSueno.value}. ${currentResults.analisisSueno.interpretation}\n`;
+                shareText += `Bienestar Emocional: ${currentResults.bienestarEmocional.value}. ${currentResults.bienestarEmocional.interpretation}\n`;
+                const notes = document.getElementById('doctor-notes').value;
+                if (notes.trim()) {
+                    shareText += `\n== NOTAS PARA MI MÉDICO ==\n${notes}`;
+                }
+                copyToClipboard(shareText, "Resultados obstétricos copiados.");
+            } else {
+                if (Object.keys(currentResults).length === 0 || isNaN(currentResults.imc?.value)) {
+                    showToast("Calcula los resultados de adulto primero.", true);
+                    return;
+                }
+                let shareText = "--- RESUMEN DE SALUD INTEGRAL ---\n\n";
+                shareText += "== INDICADORES CLAVE ==\n";
+                const metricsOrder = getMetricsOrder(currentResults);
+                metricsOrder.forEach(m => {
+                    const cleanValue = m.value.toString().replace(/<br>/g, ' | ');
+                    shareText += `${m.title}: ${cleanValue} ${m.interpretation}\n`;
+                });
+                const notes = document.getElementById('doctor-notes').value;
+                if (notes.trim()) {
+                    shareText += `\n== NOTAS PARA MI MÉDICO ==\n${notes}`;
+                }
+                copyToClipboard(shareText, "Resultados de adulto copiados.");
+            }
+        }
+
+        function copyPediatricResults() { if (Object.keys(currentPediatricResults).length === 0 || isNaN(currentPediatricResults.bmiPercentile.value)) { showToast("Calcula los resultados pediátricos primero.", true); return; } const { bmiPercentile, bodyFat, geb } = currentPediatricResults; const notes = document.getElementById('pediatric-doctor-notes').value; let shareText = "--- RESUMEN DE SALUD PEDIÁTRICA ---\n\n"; shareText += `== INDICADORES ==\n`; shareText += `IMC por Percentil: ${bmiPercentile.value} (${bmiPercentile.interpretation})\n`; shareText += `% Grasa Corporal (Slaughter): ${isNaN(bodyFat.value) ? '-' : bodyFat.value.toFixed(1) + '%'} (${bodyFat.interpretation})\n`; shareText += `Gasto Energético Basal: ${isNaN(geb.value) ? '-' : geb.value.toFixed(0)} kcal/día (${geb.interpretation})\n\n`; if (notes.trim() !== '') { shareText += `== NOTAS PARA EL PEDIATRA ==\n${notes}\n`; } copyToClipboard(shareText, 'Resultados pediátricos copiados.'); }
+        
+        // --- LÓGICA DE LA CALCULADORA DE DOSIS ---
         const doseInputElementsNew = {
             peso: document.getElementById('dosis-peso-new'),
             posologia: document.getElementById('dosis-posologia-new'),
@@ -763,18 +977,18 @@
                 { id: "GUA001", nombre: "Guaifenesina Jarabe 100 mg/5 ml", posologia: 15, frecuencia: 4, presentacion: 'solucion', concMg: 100, concMl: 5 },
             ],
             "Alivio Digestivo": [
-                 { id: "ALM001", nombre: "Hidróxido de Al/Mg Suspensión", posologia: 0, frecuencia: 4, presentacion: 'solucion', concMg: 400, concMl: 5 },
-                 { id: "CAR002", nombre: "Carbonato de Calcio Masticable 500 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 500 },
-                 { id: "HIOS001", nombre: "Butilbromuro de Hioscina 10 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 10 },
-                 { id: "TRIM001", nombre: "Trimebutina Suspensión 24 mg/5 ml", posologia: 12, frecuencia: 3, presentacion: 'solucion', concMg: 24, concMl: 5 },
-                 { id: "TRIM002", nombre: "Trimebutina Comprimidos 200 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 200 },
-                 { id: "LOP001", nombre: "Loperamida 2 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 2 },
-                 { id: "BAC001", nombre: "Enterogermina (Bacillus Clausii)", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 2000000000, concMl: 5 },
-                 { id: "LAC001", nombre: "Lactulosa Jarabe", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 66.6, concMl: 100 },
-                 { id: "BIS001", nombre: "Bisacodilo 5mg", posologia: 0, frecuencia: 1, presentacion: 'comprimidos', mgUnidad: 5},
-                 { id: "POL001", nombre: "Polietilenglicol 3350", posologia: 0, frecuencia: 1, presentacion: 'sobres'},
-                 { id: "SIM001", nombre: "Simeticona Gotas", posologia: 0, frecuencia: 3, presentacion: 'gotas'},
-                 { id: "SIM002", nombre: "Simeticona Comprimidos 80 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 80 },
+                { id: "ALM001", nombre: "Hidróxido de Al/Mg Suspensión", posologia: 0, frecuencia: 4, presentacion: 'solucion', concMg: 400, concMl: 5 },
+                { id: "CAR002", nombre: "Carbonato de Calcio Masticable 500 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 500 },
+                { id: "HIOS001", nombre: "Butilbromuro de Hioscina 10 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 10 },
+                { id: "TRIM001", nombre: "Trimebutina Suspensión 24 mg/5 ml", posologia: 12, frecuencia: 3, presentacion: 'solucion', concMg: 24, concMl: 5 },
+                { id: "TRIM002", nombre: "Trimebutina Comprimidos 200 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 200 },
+                { id: "LOP001", nombre: "Loperamida 2 mg", posologia: 0, frecuencia: 4, presentacion: 'comprimidos', mgUnidad: 2 },
+                { id: "BAC001", nombre: "Enterogermina (Bacillus Clausii)", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 2000000000, concMl: 5 },
+                { id: "LAC001", nombre: "Lactulosa Jarabe", posologia: 0, frecuencia: 2, presentacion: 'solucion', concMg: 66.6, concMl: 100 },
+                { id: "BIS001", nombre: "Bisacodilo 5mg", posologia: 0, frecuencia: 1, presentacion: 'comprimidos', mgUnidad: 5},
+                { id: "POL001", nombre: "Polietilenglicol 3350", posologia: 0, frecuencia: 1, presentacion: 'sobres'},
+                { id: "SIM001", nombre: "Simeticona Gotas", posologia: 0, frecuencia: 3, presentacion: 'gotas'},
+                { id: "SIM002", nombre: "Simeticona Comprimidos 80 mg", posologia: 0, frecuencia: 3, presentacion: 'comprimidos', mgUnidad: 80 },
             ],
             "Sales de Rehidratación Oral": [
                 { id: "SRO001", nombre: "Sales de Rehidratación Oral (OMS)", posologia: 0, frecuencia: 1, presentacion: 'sobres' },
@@ -939,13 +1153,13 @@
                     }
                 }
             } else { // Sólidos
-                const mgUnidad = parseFloat(doseInputElementsNew.mgUnidad.value);
+                 const mgUnidad = parseFloat(doseInputElementsNew.mgUnidad.value);
                  if(!isNaN(mgUnidad) && mgUnidad > 0) {
-                    const units = dosePerTakeMg / mgUnidad;
-                    let unitName = presentacion.slice(0, -1);
-                    if (units !== 1) unitName = presentacion;
-                    resultToma += ` <br class="sm:hidden"> <span class="text-gray-600 font-normal">(${units.toFixed(2)} ${unitName})</span>`;
-                }
+                     const units = dosePerTakeMg / mgUnidad;
+                     let unitName = presentacion.slice(0, -1);
+                     if (units !== 1) unitName = presentacion;
+                     resultToma += ` <br class="sm:hidden"> <span class="text-gray-600 font-normal">(${units.toFixed(2)} ${unitName})</span>`;
+                 }
             }
             doseTomaResultNew.innerHTML = resultToma;
         }
@@ -970,15 +1184,15 @@
                 return;
             }
 
-            let shareText = "Resumen de Cálculo de Dosis\n\n";
-            shareText += `=== DATOS DE LA PRESCRIPCIÓN ===\n`;
+            let shareText = "--- RESUMEN DE CÁLCULO DE DOSIS ---\n\n";
+            shareText += `== DATOS DE LA PRESCRIPCIÓN ==\n`;
             if (!isNaN(peso)) shareText += `Peso del Paciente: ${peso} kg\n`;
             if (!isFixedDose) {
                 shareText += `Posología: ${posologia} mg/kg/día\n`;
             }
             shareText += `Frecuencia: ${frecuenciaText}\n\n`;
 
-            shareText += `=== DATOS DEL MEDICAMENTO ===\n`;
+            shareText += `== DATOS DEL MEDICAMENTO ==\n`;
             shareText += `Presentación: ${presentacionText}\n`;
             
             const isLiquid = ['solucion', 'gotas', 'inyectables'].includes(presentacionValue);
@@ -999,7 +1213,7 @@
                 }
             }
 
-            shareText += `=== RESULTADOS ===\n`;
+            shareText += `== RESULTADOS ==\n`;
              if (!isFixedDose) {
                 const totalDoseMgDay = peso * posologia;
                 const dosePerTakeMg = totalDoseMgDay / numDoses;
@@ -1019,11 +1233,11 @@
                 } else {
                      const mgUnidad = parseFloat(doseInputElementsNew.mgUnidad.value);
                      if(!isNaN(mgUnidad) && mgUnidad > 0) {
-                        const units = dosePerTakeMg / mgUnidad;
-                        let unitName = presentacionValue.slice(0, -1);
-                        if (units !== 1) unitName = presentacionValue;
-                        dosisTomaText += ` (${units.toFixed(2)} ${unitName})`;
-                    }
+                         const units = dosePerTakeMg / mgUnidad;
+                         let unitName = presentacionValue.slice(0, -1);
+                         if (units !== 1) unitName = presentacionValue;
+                         dosisTomaText += ` (${units.toFixed(2)} ${unitName})`;
+                     }
                 }
                 shareText += `Dosis Diaria Total: ${totalDoseMgDay.toFixed(2)} mg\n`;
                 shareText += `Dosis por Toma: ${dosisTomaText}\n`;
@@ -1051,6 +1265,432 @@
         doseInputElementsNew.utilMg.addEventListener('input', calculateConcentrationNew);
         doseInputElementsNew.utilMl.addEventListener('input', calculateConcentrationNew);
 
+        // --- LÓGICA DE LA CALCULADORA DE SALUD MENTAL (CORREGIDA) ---
+        const mh = {
+            consent: document.getElementById('mh-consent'),
+            prevBtn: document.getElementById('mh-prev-btn'),
+            nextBtn: document.getElementById('mh-next-btn'),
+            steps: document.querySelectorAll('.mh-step'),
+            progressText: document.getElementById('mh-progress-text'),
+            progressPercent: document.getElementById('mh-progress-percent'),
+            progressBar: document.getElementById('mh-progress-bar'),
+            questionnairesContainer: document.getElementById('mh-questionnaires-container'),
+            resultsContainer: document.getElementById('mh-results-container'),
+            actionItems: document.getElementById('mh-action-items'),
+            copyBtn: document.getElementById('mh-copyBtn'),
+            counterWrapper: document.getElementById('mh-question-counter-wrapper'),
+            counterText: document.getElementById('mh-question-counter'),
+            currentStep: 1,
+            totalSteps: 4,
+            finalScores: {},
+            contextData: {}
+        };
+
+        const questionnairesDB = {
+            phq9: {
+                title: "PHQ-9 (Depresión)",
+                instructions: "Durante las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas?",
+                questions: [
+                    "Poco interés o placer en hacer las cosas.",
+                    "Sentirse decaído(a), deprimido(a) o sin esperanzas.",
+                    "Problemas para quedarse o permanecer dormido(a), o dormir demasiado.",
+                    "Sentirse cansado(a) o con poca energía.",
+                    "Poco apetito o comer en exceso.",
+                    "Sentirse mal consigo mismo(a) – o que es un fracaso o que ha decepcionado a su familia o a sí mismo(a).",
+                    "Problemas para concentrarse en cosas, como leer el periódico o ver la televisión.",
+                    "Moverse o hablar tan lentamente que otras personas podrían haberlo notado. O lo contrario – estar tan inquieto(a) o agitado(a) que se ha estado moviendo mucho más de lo habitual.",
+                    "Pensamientos de que estaría mejor muerto(a) o de hacerse daño de alguna manera."
+                ],
+                options: [
+                    { text: "Para nada", value: 0 },
+                    { text: "Varios días", value: 1 },
+                    { text: "Más de la mitad", value: 2 },
+                    { text: "Casi todos", value: 3 }
+                ],
+                getInterpretation: (score) => {
+                    if (score <= 4) return { level: 'Mínima', text: 'Depresión mínima o ausente.', className: 'level-minima' };
+                    if (score <= 9) return { level: 'Leve', text: 'Depresión leve.', className: 'level-leve' };
+                    if (score <= 14) return { level: 'Moderada', text: 'Depresión moderada.', className: 'level-moderada' };
+                    if (score <= 19) return { level: 'Moderadamente Severa', text: 'Depresión moderadamente severa.', className: 'level-moderadamente-severa' };
+                    return { level: 'Severa', text: 'Depresión severa.', className: 'level-severa' };
+                }
+            },
+            gad7: {
+                title: "GAD-7 (Ansiedad)",
+                instructions: "Durante las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas?",
+                questions: [
+                    "Sentirse nervioso(a), ansioso(a) o con los nervios de punta.",
+                    "No ser capaz de detener o controlar la preocupación.",
+                    "Preocuparse demasiado por diferentes cosas.",
+                    "Dificultad para relajarse.",
+                    "Estar tan inquieto(a) que es difícil quedarse quieto(a).",
+                    "Molestarse o irritarse fácilmente.",
+                    "Sentir miedo como si algo terrible pudiera suceder."
+                ],
+                options: [
+                    { text: "Para nada", value: 0 },
+                    { text: "Varios días", value: 1 },
+                    { text: "Más de la mitad", value: 2 },
+                    { text: "Casi todos", value: 3 }
+                ],
+                getInterpretation: (score) => {
+                    if (score <= 4) return { level: 'Mínima', text: 'Ansiedad mínima.', className: 'level-minima' };
+                    if (score <= 9) return { level: 'Leve', text: 'Ansiedad leve.', className: 'level-leve' };
+                    if (score <= 14) return { level: 'Moderada', text: 'Ansiedad moderada.', className: 'level-moderada' };
+                    return { level: 'Severa', text: 'Ansiedad severa.', className: 'level-severa' };
+                }
+            },
+            pss10: {
+                title: "PSS-10 (Estrés Percibido)",
+                instructions: "Las siguientes preguntas se refieren a sus sentimientos y pensamientos durante el último mes.",
+                questions: [
+                    "¿Con qué frecuencia se ha sentido afectado(a) por algo que ha ocurrido inesperadamente?",
+                    "¿Con qué frecuencia ha sentido que no podía controlar las cosas importantes en su vida?",
+                    "¿Con qué frecuencia se ha sentido nervioso(a) y estresado(a)?",
+                    "¿Con qué frecuencia ha sentido confianza en su capacidad para manejar sus problemas personales?", // Invertido
+                    "¿Con qué frecuencia ha sentido que las cosas le salían bien?", // Invertido
+                    "¿Con qué frecuencia ha sentido que no podía afrontar todas las cosas que tenía que hacer?",
+                    "¿Con qué frecuencia ha podido controlar las irritaciones en su vida?", // Invertido
+                    "¿Con qué frecuencia se ha sentido que estaba al tanto de las cosas?", // Invertido
+                    "¿Con qué frecuencia se ha enfadado por cosas que estaban fuera de su control?",
+                    "¿Con qué frecuencia ha sentido que las dificultades se acumulaban tanto que no podía superarlas?"
+                ],
+                options: [
+                    { text: "Nunca", value: 0 }, { text: "Casi nunca", value: 1 }, { text: "A veces", value: 2 }, { text: "A menudo", value: 3 }, { text: "Muy a menudo", value: 4 }
+                ],
+                invertedIndices: [3, 4, 6, 7],
+                getInterpretation: (score) => {
+                    if (score <= 13) return { level: 'Bajo', text: 'Nivel de estrés bajo.', className: 'level-baja' };
+                    if (score <= 26) return { level: 'Moderado', text: 'Nivel de estrés moderado.', className: 'level-moderada' };
+                    return { level: 'Alto', text: 'Nivel de estrés alto percibido.', className: 'level-alta' };
+                }
+            },
+            rse: {
+                title: "RSE (Autoestima de Rosenberg)",
+                instructions: "Indique su grado de acuerdo con las siguientes afirmaciones.",
+                questions: [
+                    "En general, estoy satisfecho(a) conmigo mismo(a).",
+                    "A veces pienso que no soy bueno(a) en absoluto.", // Invertido
+                    "Siento que tengo varias cualidades buenas.",
+                    "Soy capaz de hacer las cosas tan bien como la mayoría de la gente.",
+                    "Siento que no tengo mucho de qué enorgullecerme.", // Invertido
+                    "Ciertamente, a veces me siento inútil.", // Invertido
+                    "Siento que soy una persona de valía, al menos en igual medida que los demás.",
+                    "Desearía tener más respeto por mí mismo(a).", // Invertido
+                    "En general, me inclino a pensar que soy un(a) fracasado(a).", // Invertido
+                    "Tengo una actitud positiva hacia mí mismo(a)."
+                ],
+                options: [
+                    { text: "Muy en desacuerdo", value: 0 }, { text: "En desacuerdo", value: 1 }, { text: "De acuerdo", value: 2 }, { text: "Muy de acuerdo", value: 3 }
+                ],
+                invertedIndices: [1, 4, 5, 7, 8],
+                getInterpretation: (score) => {
+                    if (score <= 15) return { level: 'Baja', text: 'Baja autoestima.', className: 'level-baja' };
+                    if (score <= 25) return { level: 'Normal', text: 'Autoestima en el rango normal/medio.', className: 'level-normal' };
+                    return { level: 'Alta', text: 'Alta autoestima.', className: 'level-alta' };
+                }
+            },
+            cdrisc10: {
+                title: "CD-RISC-10 (Resiliencia)",
+                instructions: "Indique qué tan ciertas son estas afirmaciones para usted.",
+                questions: [
+                    "Soy capaz de adaptarme cuando ocurren cambios.", "Puedo lidiar con lo que se me presente.", "Trato de ver el lado humorístico de las cosas cuando me enfrento a problemas.", "Tener que lidiar con el estrés puede fortalecerme.", "Tiendo a recuperarme después de una enfermedad, lesión u otras dificultades.", "Creo que puedo alcanzar mis metas, incluso si hay obstáculos.", "Bajo presión, me mantengo enfocado(a) y pienso con claridad.", "No me desanimo fácilmente por el fracaso.", "Me considero una persona fuerte al enfrentar los desafíos y dificultades de la vida.", "Soy capaz de manejar sentimientos desagradables o dolorosos como la tristeza, el miedo y la ira."
+                ],
+                options: [
+                    { text: "Nada cierto", value: 0 }, { text: "Raramente", value: 1 }, { text: "A veces", value: 2 }, { text: "A menudo", value: 3 }, { text: "Casi siempre", value: 4 }
+                ],
+                getInterpretation: (score) => {
+                    if (score <= 28) return { level: 'Baja', text: 'Nivel de resiliencia bajo a moderado.', className: 'level-baja' };
+                    if (score <= 34) return { level: 'Promedio', text: 'Nivel de resiliencia promedio.', className: 'level-promedio' };
+                    return { level: 'Alta', text: 'Nivel de resiliencia alto.', className: 'level-alta' };
+                }
+            },
+            pcl5: {
+                title: "PCL-5 (TEPT)",
+                instructions: "En el último mes, ¿cuánto le han molestado los siguientes problemas relacionados con su experiencia traumática?",
+                questions: [
+                    "¿Recuerdos, sueños o flashbacks repetidos y angustiantes del evento estresante?", "¿Evitar recuerdos, pensamientos o sentimientos relacionados con el evento?", "¿Evitar recordatorios externos (personas, lugares, conversaciones) del evento?", "¿Tener dificultad para recordar partes importantes del evento?", "¿Tener pensamientos negativos sobre usted mismo, los demás o el mundo?", "¿Culparse a sí mismo o a otros por el evento o sus consecuencias?", "¿Sentir emociones negativas persistentes (miedo, ira, culpa, vergüenza)?", "¿Pérdida de interés en actividades que antes disfrutaba?", "¿Sentirse distante o alejado de los demás?", "¿Incapacidad para experimentar emociones positivas?", "¿Comportamiento irritable y arrebatos de ira?", "¿Comportamiento imprudente o autodestructivo?", "¿Estar hipervigilante, siempre en guardia?", "¿Sobresaltarse fácilmente?", "¿Problemas de concentración?", "¿Dificultad para dormir?"
+                ],
+                options: [
+                    { text: "Para nada", value: 0 }, { text: "Un poco", value: 1 }, { text: "Moderado", value: 2 }, { text: "Bastante", value: 3 }, { text: "Extremo", value: 4 }
+                ],
+                getInterpretation: (score) => {
+                     if (score <= 32) return { level: 'Bajo', text: 'Baja probabilidad de TEPT.', className: 'level-baja' };
+                     return { level: 'Alto', text: 'Puntuación sugestiva de TEPT. Se recomienda evaluación profesional.', className: 'level-alta' };
+                }
+            }
+        };
+
+        function renderQuestionnaire(key) {
+            const qData = questionnairesDB[key];
+            const hasMultipleOptions = qData.options.length > 4;
+            const desktopOptionCols = hasMultipleOptions ? 5 : 4;
+            
+            let html = `
+                <div id="questionnaire-${key}" class="p-4 sm:p-6 border rounded-xl bg-white shadow-sm flex flex-col">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">${qData.title}</h3>
+                        <p class="text-gray-600 mt-1">${qData.instructions}</p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- Header for Desktop View -->
+                        <div class="hidden md:grid grid-cols-12 gap-x-4 border-b pb-2">
+                            <div class="col-span-7 font-semibold text-gray-600 text-sm">Pregunta</div>
+                            <div class="col-span-5 grid grid-cols-${qData.options.length} text-center">
+                                ${qData.options.map(option => `<span class="font-semibold text-gray-600 text-xs">${option.text}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Question Rows -->
+                        ${qData.questions.map((question, index) => `
+                            <!-- Wrapper for each question with bottom border -->
+                            <div class="pb-6 border-b last:border-b-0">
+                                <!-- Mobile Layout -->
+                                <div class="md:hidden">
+                                    <p class="font-medium text-gray-800 mb-3">${index + 1}. ${question}</p>
+                                    <div class="space-y-2">
+                                        ${qData.options.map(option => `
+                                            <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 has-[:checked]:bg-[#F7F9F4] has-[:checked]:border-[#6B8E23] transition-colors cursor-pointer">
+                                                <input type="radio" name="${key}-${index}" value="${option.value}" class="h-4 w-4 text-[#6B8E23] focus:ring-[#6B8E23] border-gray-300">
+                                                <span class="ml-3 text-gray-700">${option.text}</span>
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <!-- Desktop Layout -->
+                                <div class="hidden md:grid grid-cols-12 gap-x-4 items-center">
+                                    <p class="col-span-7 font-medium text-gray-800">${index + 1}. ${question}</p>
+                                    <div class="col-span-5 grid grid-cols-${qData.options.length} text-center">
+                                        ${qData.options.map(option => `
+                                            <label class="flex justify-center items-center h-8 w-8 mx-auto rounded-full hover:bg-gray-100 cursor-pointer has-[:checked]:bg-[#eef3e6]">
+                                                <input type="radio" name="${key}-${index}" value="${option.value}" class="h-5 w-5 text-[#6B8E23] focus:ring-offset-1 focus:ring-[#8FB158] border-gray-400">
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            return html;
+        }
+
+
+        function loadQuestionnaires() {
+            let containerHTML = renderQuestionnaire('phq9');
+            containerHTML += renderQuestionnaire('gad7');
+            containerHTML += renderQuestionnaire('pss10');
+            containerHTML += renderQuestionnaire('rse');
+            containerHTML += renderQuestionnaire('cdrisc10');
+
+            const traumaTrigger = document.getElementById('mh-trauma-trigger').value;
+            if (traumaTrigger === 'si') {
+                 containerHTML += renderQuestionnaire('pcl5');
+            }
+
+            mh.questionnairesContainer.innerHTML = containerHTML;
+        }
+        
+        function updateMHProgress(step) {
+            mh.currentStep = step;
+            const percent = mh.totalSteps > 1 ? ((mh.currentStep - 1) / (mh.totalSteps - 1)) * 100 : 100;
+            mh.progressText.textContent = `Paso ${mh.currentStep} de ${mh.totalSteps}`;
+            mh.progressPercent.textContent = `${Math.round(percent)}%`;
+            mh.progressBar.style.width = `${percent}%`;
+        }
+
+        function showMHStep(step) {
+            mh.steps.forEach(s => s.classList.add('hidden'));
+            document.getElementById(`mh-step-${step}`).classList.remove('hidden');
+            updateMHProgress(step);
+
+            mh.counterWrapper.classList.toggle('hidden', step !== 3);
+            mh.prevBtn.classList.toggle('hidden', step === 1);
+            mh.nextBtn.textContent = (step === mh.totalSteps - 1) ? 'Calcular Resultados' : 'Siguiente';
+            
+            if(step === mh.totalSteps){
+                mh.prevBtn.classList.add('hidden');
+                mh.nextBtn.classList.add('hidden');
+            } else {
+                 mh.nextBtn.classList.remove('hidden');
+            }
+            validateMHStep(step);
+        }
+
+        function validateMHStep(step) {
+            let isValid = false;
+            if (step === 1) {
+                isValid = mh.consent.checked;
+            } else if (step === 2) { 
+                isValid = true; // No required fields in this step
+            } else if (step === 3) { // Questionnaires step
+                const inputs = mh.questionnairesContainer.querySelectorAll('input[type="radio"]');
+                const questions = new Set();
+                inputs.forEach(input => questions.add(input.name));
+                const totalQuestions = questions.size;
+                const answeredCount = mh.questionnairesContainer.querySelectorAll('input[type="radio"]:checked').length;
+                
+                if (totalQuestions > 0) {
+                    mh.counterText.innerHTML = `Has respondido <span class="font-bold text-[#6B8E23]">${answeredCount}</span> de <span class="font-bold text-[#6B8E23]">${totalQuestions}</span> preguntas.`;
+                }
+
+                isValid = answeredCount === totalQuestions && totalQuestions > 0;
+            }
+            mh.nextBtn.disabled = !isValid;
+        }
+
+        function calculateMHScores() {
+            mh.finalScores = {};
+            for (const key in questionnairesDB) {
+                const form = document.getElementById(`questionnaire-${key}`);
+                if (!form) continue;
+
+                let score = 0;
+                const qData = questionnairesDB[key];
+                const checkedRadios = form.querySelectorAll('input[type="radio"]:checked');
+
+                checkedRadios.forEach((radio, index) => {
+                    let value = parseInt(radio.value);
+                    if (qData.invertedIndices && qData.invertedIndices.includes(index)) {
+                        value = (qData.options.length - 1) - value;
+                    }
+                    score += value;
+                });
+                mh.finalScores[key] = {
+                    score: score,
+                    interpretation: qData.getInterpretation(score)
+                };
+            }
+        }
+        
+        function generateMHReport() {
+            mh.resultsContainer.innerHTML = '';
+            mh.actionItems.innerHTML = '';
+            
+            const orderedKeys = ['phq9', 'gad7', 'pss10', 'rse', 'cdrisc10', 'pcl5'];
+
+            orderedKeys.forEach(key => {
+                if (mh.finalScores[key]) {
+                    const data = mh.finalScores[key];
+                    const qInfo = questionnairesDB[key];
+                    
+                    const resultCard = `
+                        <div class="mh-result-card ${data.interpretation.className}">
+                            <h3 class="text-xl font-semibold mb-2">${qInfo.title}</h3>
+                            <p class="text-3xl font-bold text-[#6B8E23] mb-1">${data.score} <span class="text-lg font-medium text-gray-600">/ ${qInfo.questions.length * (qInfo.options.length-1)}</span></p>
+                            <p class="text-md text-gray-700 font-semibold">${data.interpretation.level}: <span class="font-normal">${data.interpretation.text}</span></p>
+                        </div>
+                    `;
+                    mh.resultsContainer.innerHTML += resultCard;
+                }
+            });
+            generateMHRecommendations();
+        }
+
+        function generateMHRecommendations() {
+            let suggestionsHTML = '';
+            const scores = mh.finalScores;
+
+            if (scores.phq9) {
+                if (scores.phq9.score >= 5 && scores.phq9.score <= 9) suggestionsHTML += '<li><strong>Depresión leve:</strong> Considera cambios en el estilo de vida (ejercicio, sueño) y monitorea tu estado de ánimo.</li>';
+                if (scores.phq9.score >= 10 && scores.phq9.score <= 14) suggestionsHTML += '<li><strong>Depresión moderada:</strong> Se recomienda buscar psicoterapia (ej. TCC). Considera hablar con un médico sobre farmacoterapia.</li>';
+                if (scores.phq9.score >= 15) suggestionsHTML += '<li><strong>Depresión severa:</strong> Es crucial buscar ayuda profesional de inmediato. El tratamiento combinado (terapia y medicación) suele ser más efectivo.</li>';
+            }
+            if (scores.gad7) {
+                if (scores.gad7.score >= 5 && scores.gad7.score <= 9) suggestionsHTML += '<li><strong>Ansiedad leve:</strong> Explora técnicas de manejo de estrés como mindfulness o ejercicios de relajación.</li>';
+                if (scores.gad7.score >= 10 && scores.gad7.score <= 14) suggestionsHTML += '<li><strong>Ansiedad moderada:</strong> La psicoterapia, especialmente la TCC, es muy eficaz para la ansiedad.</li>';
+                if (scores.gad7.score >= 15) suggestionsHTML += '<li><strong>Ansiedad severa:</strong> Se recomienda encarecidamente la ayuda profesional para un tratamiento intensivo.</li>';
+            }
+            if (scores.pss10) {
+                if (scores.pss10.score >= 14 && scores.pss10.score <= 26) suggestionsHTML += '<li><strong>Estrés moderado:</strong> Identifica las fuentes de estrés y desarrolla habilidades de afrontamiento como la gestión del tiempo y el establecimiento de límites.</li>';
+                if (scores.pss10.score >= 27) suggestionsHTML += '<li><strong>Estrés alto:</strong> Considera una intervención formal como terapia para el estrés. Es importante evaluar si coexiste con ansiedad o depresión.</li>';
+            }
+            if((scores.gad7 && scores.gad7.score >= 10) || (scores.phq9 && scores.phq9.score >= 10)) {
+                 suggestionsHTML += '<li class="mt-2 pt-2 border-t"><strong>Conexión mente-cuerpo:</strong> La ansiedad y/o depresión pueden impactar tu salud física. Mencionar estos resultados a tu médico general es un paso importante para un cuidado integral.</li>';
+            }
+
+             if (suggestionsHTML === '') {
+                   suggestionsHTML = '<li><strong>Resultados en rango saludable:</strong> Tus respuestas sugieren un buen manejo del bienestar emocional. ¡Sigue así!</li>';
+             }
+
+            mh.actionItems.innerHTML = suggestionsHTML;
+        }
+
+        function copyMHResults() {
+             let shareText = "--- MI PERFIL DE SALUD MENTAL ---\n\n";
+             
+             shareText += "== CONTEXTO PERSONAL ==\n";
+             mh.contextData = {
+                historyFamily: document.getElementById('mh-history-family').value,
+                historyPersonal: document.getElementById('mh-history-personal').value,
+                precipitants: document.getElementById('mh-precipitants').value,
+                perpetuators: document.getElementById('mh-perpetuators').value,
+                protectives: document.getElementById('mh-protectives').value
+            };
+             shareText += `Eventos Desencadenantes: ${mh.contextData.precipitants || 'No especificado'}\n`;
+             shareText += `Factores que Mantienen el Problema: ${mh.contextData.perpetuators || 'No especificado'}\n`;
+             shareText += `Factores Protectores: ${mh.contextData.protectives || 'No especificado'}\n\n`;
+
+
+             shareText += "== RESULTADOS DE CUESTIONARIOS ==\n";
+             const orderedKeys = ['phq9', 'gad7', 'pss10', 'rse', 'cdrisc10', 'pcl5'];
+             orderedKeys.forEach(key => {
+                 if(mh.finalScores[key]) {
+                     const data = mh.finalScores[key];
+                     const qInfo = questionnairesDB[key];
+                     shareText += `${qInfo.title}: ${data.score} puntos - ${data.interpretation.level} (${data.interpretation.text})\n`;
+                 }
+             });
+
+             const notes = document.getElementById('mh-professional-notes').value;
+             if (notes.trim()) {
+                 shareText += `\n== NOTAS PARA MI PROFESIONAL ==\n${notes}`;
+             }
+
+             copyToClipboard(shareText, "Resultados de salud mental copiados.");
+        }
+
+        mh.consent.addEventListener('change', () => validateMHStep(1));
+        
+        mh.questionnairesContainer.addEventListener('change', (event) => {
+             if (event.target.type === 'radio') {
+                validateMHStep(mh.currentStep);
+             }
+        });
+        
+        document.getElementById('mh-trauma-trigger').addEventListener('change', () => {
+             // Si el usuario está en el paso de los cuestionarios, los recargamos para añadir/quitar PCL-5
+            if (mh.currentStep === 3) {
+                 loadQuestionnaires();
+                 validateMHStep(3); // Re-validar por si se quitaron preguntas
+            }
+        });
+
+        mh.nextBtn.addEventListener('click', () => {
+            if (mh.nextBtn.disabled) return;
+            if (mh.currentStep < mh.totalSteps - 1) { 
+                if(mh.currentStep === 2) {
+                    loadQuestionnaires();
+                }
+                showMHStep(mh.currentStep + 1);
+            } else if (mh.currentStep === mh.totalSteps - 1) { // Paso 3 (cuestionarios)
+                calculateMHScores();
+                generateMHReport();
+                showMHStep(mh.currentStep + 1);
+            }
+        });
+
+        mh.prevBtn.addEventListener('click', () => {
+            if (mh.currentStep > 1) {
+                showMHStep(mh.currentStep - 1);
+            }
+        });
+        
+        mh.copyBtn.addEventListener('click', copyMHResults);
+
+
         // --- EVENT LISTENERS E INICIALIZACIÓN ---
         Object.values(inputElements).forEach(input => { if(input) input.addEventListener('input', calculateAll); });
         inputElements.sexo.addEventListener('change', togglePregnancyOption);
@@ -1071,4 +1711,6 @@
     </script>
 </body>
 </html>
+
+
 
