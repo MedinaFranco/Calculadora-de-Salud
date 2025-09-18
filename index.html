@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de salud integral y mental</title>
+    <title>Calculadora de salud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,9 +172,9 @@
         <section id="inicio-section" class="page-section bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 mb-8">
             
             <!-- Bienvenida -->
-            <div class="text-center border-b pb-8 mb-8">
-                <h2 class="text-4xl font-bold text-[#6B8E23] mb-4">Tu guía personal de salud y bienestar</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            <div class="border-b pb-8 mb-8">
+                <h2 class="text-4xl font-bold text-[#6B8E23] mb-4 text-center">Tu guía personal de salud y bienestar</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto text-left md:text-center">
                     Este espacio ha sido diseñado para ofrecerte una perspectiva clara y cuantificable sobre tu bienestar. Aquí, los números se convierten en un mapa que, junto a la guía de un profesional, te permitirá navegar con mayor certeza el camino hacia tu salud integral.
                 </p>
             </div>
@@ -431,38 +431,61 @@
 
                       <!-- Step 2: Marco Fundacional (MEJORADO) -->
                      <div id="mh-step-2" class="mh-step hidden">
-                         <h2 class="text-2xl font-bold text-center text-[#6B8E23] mb-6">Comprendiendo tu contexto</h2>
-                         <p class="text-center text-gray-600 mb-8 -mt-4 max-w-3xl mx-auto">Responder estas preguntas opcionales nos ayuda a entender mejor tu situación. Esta información es confidencial y solo para ti.</p>
-                         <div class="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
-                             <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col">
-                                 <div class="flex items-center mb-6">
-                                     <h3 class="text-xl font-semibold text-gray-800">Historial y antecedentes</h3>
-                                 </div>
-                                 <div class="space-y-6 flex flex-col">
-                                     <div class="input-group">
-                                         <label for="mh-history-family">Antecedentes familiares</label>
-                                         <p class="text-sm text-gray-500 mb-2">¿Alguien en tu familia cercana ha tenido condiciones de salud mental? <span class="font-normal text-gray-500">(Opcional)</span></p>
-                                         <textarea id="mh-history-family" rows="3" class="bg-gray-50" placeholder="Ej: Mi madre tuvo depresión, mi abuelo ansiedad..."></textarea>
-                                     </div>
-                                     <div class="input-group">
-                                         <label for="mh-history-personal">Tu historial personal</label>
-                                         <p class="text-sm text-gray-500 mb-2">¿Has recibido algún tratamiento o diagnóstico de salud mental anteriormente? <span class="font-normal text-gray-500">(Opcional)</span></p>
-                                         <textarea id="mh-history-personal" rows="3" class="bg-gray-50" placeholder="Ej: Fui a terapia por ansiedad hace dos años..."></textarea>
-                                     </div>
-                                 </div>
-                             </div>
-                             <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col">
-                                 <div class="flex items-center mb-6">
-                                     <h3 class="text-xl font-semibold text-gray-800">Análisis de la situación actual</h3>
-                                 </div>
-                                 <div class="space-y-6 flex flex-col">
-                                     <div class="input-group"><label for="mh-precipitants">Desencadenantes (factores precipitantes)</label><p class="text-sm text-gray-500 mb-2">¿Qué evento o situación crees que desencadenó o empeoró tu malestar actual?</p><textarea id="mh-precipitants" rows="3" class="bg-gray-50" placeholder="Ej: La pérdida de mi trabajo, una ruptura..."></textarea></div>
-                                     <div class="input-group"><label for="mh-perpetuators">Mantenedores (factores perpetuadores)</label><p class="text-sm text-gray-500 mb-2">¿Qué cosas sientes que mantienen o agravan el problema en tu día a día?</p><textarea id="mh-perpetuators" rows="3" class="bg-gray-50" placeholder="Ej: El aislamiento social, dormir mal..."></textarea></div>
-                                     <div class="input-group"><label for="mh-protectives">Apoyos (factores protectores)</label><p class="text-sm text-gray-500 mb-2">¿Qué o quién te ayuda a sentirte mejor, incluso por un momento?</p><textarea id="mh-protectives" rows="3" class="bg-gray-50" placeholder="Ej: Hablar con un amigo, hacer ejercicio..."></textarea></div>
-                                     <div class="input-group"><label for="mh-trauma-trigger">Experiencias traumáticas</label><p class="text-sm text-gray-500 mb-2">¿Alguna vez has experimentado un evento profundamente angustiante o que amenazó tu vida?</p><select id="mh-trauma-trigger"><option value="no">No</option><option value="si">Sí</option></select></div>
-                                 </div>
-                             </div>
-                         </div>
+                        <h2 class="text-2xl font-bold text-center text-[#6B8E23] mb-6">Comprendiendo tu contexto</h2>
+                        <p class="text-center text-gray-600 mb-8 -mt-4 max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
+                            Responder estas preguntas opcionales nos ayuda a entender mejor tu situación. Esta información es confidencial y solo para ti.
+                        </p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto">
+                            <!-- Tarjeta 1 -->
+                            <div class="bg-white p-6 lg:p-8 rounded-xl border border-gray-200 shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-4">Historial y antecedentes</h3>
+                                <div class="space-y-6">
+                                    <div class="input-group">
+                                        <label for="mh-history-family">Antecedentes familiares</label>
+                                        <p class="text-sm text-gray-500 mb-2">
+                                            ¿Alguien en tu familia cercana ha tenido condiciones de salud mental? <span class="font-normal">(Opcional)</span>
+                                        </p>
+                                        <textarea id="mh-history-family" class="bg-gray-50 w-full min-h-[120px] lg:min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2 resize-y" placeholder="Ej: Mi madre tuvo depresión, mi abuelo ansiedad..."></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="mh-history-personal">Tu historial personal</label>
+                                        <p class="text-sm text-gray-500 mb-2">
+                                            ¿Has recibido algún tratamiento o diagnóstico de salud mental anteriormente? <span class="font-normal">(Opcional)</span>
+                                        </p>
+                                        <textarea id="mh-history-personal" class="bg-gray-50 w-full min-h-[120px] lg:min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2 resize-y" placeholder="Ej: Fui a terapia por ansiedad hace dos años..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Tarjeta 2 -->
+                            <div class="bg-white p-6 lg:p-8 rounded-xl border border-gray-200 shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-4">Análisis de la situación actual</h3>
+                                <div class="space-y-6">
+                                    <div class="input-group">
+                                        <label for="mh-precipitants">Desencadenantes</label>
+                                        <p class="text-sm text-gray-500 mb-2">¿Qué evento o situación crees que desencadenó o empeoró tu malestar actual?</p>
+                                        <textarea id="mh-precipitants" class="bg-gray-50 w-full min-h-[120px] lg:min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2 resize-y" placeholder="Ej: La pérdida de mi trabajo, una ruptura..."></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="mh-perpetuators">Mantenedores</label>
+                                        <p class="text-sm text-gray-500 mb-2">¿Qué cosas sientes que mantienen o agravan el problema en tu día a día?</p>
+                                        <textarea id="mh-perpetuators" class="bg-gray-50 w-full min-h-[120px] lg:min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2 resize-y" placeholder="Ej: El aislamiento social, dormir mal..."></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="mh-protectives">Apoyos</label>
+                                        <p class="text-sm text-gray-500 mb-2">¿Qué o quién te ayuda a sentirte mejor, incluso por un momento?</p>
+                                        <textarea id="mh-protectives" class="bg-gray-50 w-full min-h-[120px] lg:min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2 resize-y" placeholder="Ej: Hablar con un amigo, hacer ejercicio..."></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="mh-trauma-trigger">Experiencias traumáticas</label>
+                                        <p class="text-sm text-gray-500 mb-2">¿Alguna vez has experimentado un evento profundamente angustiante o que amenazó tu vida?</p>
+                                        <select id="mh-trauma-trigger" class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#6B8E23] focus:ring-[#6B8E23] p-2">
+                                            <option value="no">No</option>
+                                            <option value="si">Sí</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                      </div>
                       
                       <!-- Step 3: Cuestionarios (REDISENADO) -->
@@ -1594,7 +1617,26 @@
                 title: "PCL-5 (TEPT)",
                 instructions: "En el último mes, ¿cuánto le han molestado los siguientes problemas relacionados con su experiencia traumática?",
                 questions: [
-                    "¿Recuerdos, sueños o flashbacks repetidos y angustiantes del evento estresante?", "¿Evitar recuerdos, pensamientos o sentimientos relacionados con el evento?", "¿Evitar recordatorios externos (personas, lugares, conversaciones) del evento?", "¿Tener dificultad para recordar partes importantes del evento?", "¿Tener pensamientos negativos sobre usted mismo, los demás o el mundo?", "¿Culparse a sí mismo o a otros por el evento o sus consecuencias?", "¿Sentir emociones negativas persistentes (miedo, ira, culpa, vergüenza)?", "¿Pérdida de interés en actividades que antes disfrutaba?", "¿Sentirse distante o alejado de los demás?", "¿Incapacidad para experimentar emociones positivas?", "¿Comportamiento irritable y arrebatos de ira?", "¿Comportamiento imprudente o autodestructivo?", "¿Estar hipervigilante, siempre en guardia?", "¿Sobresaltarse fácilmente?", "¿Problemas de concentración?", "¿Dificultad para dormir?"
+                    "Recuerdos angustiantes, repetidos e involuntarios.",
+                    "Sueños o pesadillas angustiantes sobre el evento.",
+                    "Sentir o actuar como si el evento estuviera ocurriendo de nuevo (flashbacks).",
+                    "Sentir mucho malestar emocional cuando algo le recuerda el evento.",
+                    "Tener reacciones físicas fuertes (p. ej., sudoración, palpitaciones) cuando algo le recuerda el evento.",
+                    "Evitar pensamientos o sentimientos relacionados con el evento.",
+                    "Evitar personas, lugares o situaciones que le recuerdan el evento.",
+                    "Tener problemas para recordar partes importantes del evento.",
+                    "Tener pensamientos negativos y persistentes sobre usted mismo, los demás o el mundo.",
+                    "Culparse a sí mismo o a otros por lo que sucedió.",
+                    "Sentir emociones negativas de forma persistente (miedo, ira, culpa, vergüenza).",
+                    "Haber perdido el interés en actividades que antes disfrutaba.",
+                    "Sentirse distante o desconectado de los demás.",
+                    "Dificultad para sentir emociones positivas (como felicidad o amor).",
+                    "Sentirse irritable o tener arrebatos de ira.",
+                    "Comportarse de forma imprudente o autodestructiva.",
+                    "Estar siempre en guardia o alerta al peligro (hipervigilancia).",
+                    "Sobresaltarse o asustarse fácilmente.",
+                    "Dificultad para concentrarse.",
+                    "Problemas para dormir (conciliar el sueño, permanecer dormido o sueño inquieto)."
                 ],
                 options: [
                     { text: "Para nada", value: 0 }, { text: "Un poco", value: 1 }, { text: "Moderado", value: 2 }, { text: "Bastante", value: 3 }, { text: "Extremo", value: 4 }
@@ -1608,56 +1650,54 @@
 
         function renderQuestionnaire(key) {
             const qData = questionnairesDB[key];
-            const hasMultipleOptions = qData.options.length > 4;
-            const desktopOptionCols = hasMultipleOptions ? 5 : 4;
             
             let html = `
-                <div id="questionnaire-${key}" class="p-4 sm:p-6 border rounded-xl bg-white shadow-sm flex flex-col">
+                <div id="questionnaire-${key}" class="p-4 sm:p-6 border rounded-xl bg-white shadow-sm">
                     <div class="mb-6">
                         <h3 class="text-xl font-bold text-gray-800">${qData.title}</h3>
                         <p class="text-gray-600 mt-1">${qData.instructions}</p>
                     </div>
                     
-                    <div class="space-y-6">
-                        <!-- Header for Desktop View -->
-                        <div class="hidden md:grid grid-cols-12 gap-x-4 border-b pb-2">
-                            <div class="col-span-7 font-semibold text-gray-600 text-sm">Pregunta</div>
-                            <div class="col-span-5 grid grid-cols-${qData.options.length} text-center">
-                                ${qData.options.map(option => `<span class="font-semibold text-gray-600 text-xs">${option.text}</span>`).join('')}
-                            </div>
-                        </div>
-
-                        <!-- Question Rows -->
+                    <!-- Mobile Layout -->
+                    <div class="md:hidden space-y-6">
                         ${qData.questions.map((question, index) => `
-                            <!-- Wrapper for each question with bottom border -->
                             <div class="pb-6 border-b last:border-b-0">
-                                <!-- Mobile Layout -->
-                                <div class="md:hidden">
-                                    <p class="font-medium text-gray-800 mb-3">${index + 1}. ${question}</p>
-                                    <div class="space-y-2">
-                                        ${qData.options.map(option => `
-                                            <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 has-[:checked]:bg-[#F7F9F4] has-[:checked]:border-[#6B8E23] transition-colors cursor-pointer">
-                                                <input type="radio" name="${key}-${index}" value="${option.value}" class="h-4 w-4 text-[#6B8E23] focus:ring-[#6B8E23] border-gray-300">
-                                                <span class="ml-3 text-gray-700">${option.text}</span>
-                                            </label>
-                                        `).join('')}
-                                    </div>
-                                </div>
-
-                                <!-- Desktop Layout -->
-                                <div class="hidden md:grid grid-cols-12 gap-x-4 items-center">
-                                    <p class="col-span-7 font-medium text-gray-800">${index + 1}. ${question}</p>
-                                    <div class="col-span-5 grid grid-cols-${qData.options.length} text-center">
-                                        ${qData.options.map(option => `
-                                            <label class="flex justify-center items-center h-8 w-8 mx-auto rounded-full hover:bg-gray-100 cursor-pointer has-[:checked]:bg-[#eef3e6]">
-                                                <input type="radio" name="${key}-${index}" value="${option.value}" class="h-5 w-5 text-[#6B8E23] focus:ring-offset-1 focus:ring-[#8FB158] border-gray-400">
-                                            </label>
-                                        `).join('')}
-                                    </div>
+                                <p class="font-medium text-gray-800 mb-3">${index + 1}. ${question}</p>
+                                <div class="space-y-2">
+                                    ${qData.options.map(option => `
+                                        <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 has-[:checked]:bg-[#F7F9F4] has-[:checked]:border-[#6B8E23] transition-colors cursor-pointer">
+                                            <input type="radio" name="${key}-${index}" value="${option.value}" class="h-4 w-4 text-[#6B8E23] focus:ring-[#6B8E23] border-gray-300">
+                                            <span class="ml-3 text-gray-700">${option.text}</span>
+                                        </label>
+                                    `).join('')}
                                 </div>
                             </div>
                         `).join('')}
                     </div>
+
+                    <!-- Desktop Layout using a robust table -->
+                    <table class="hidden md:table w-full">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="w-7/12 text-left font-semibold text-gray-600 text-sm pb-2">Pregunta</th>
+                                ${qData.options.map(option => `<th class="w-[10%] text-center font-semibold text-gray-600 text-xs pb-2">${option.text}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${qData.questions.map((question, index) => `
+                                <tr class="border-b last:border-b-0">
+                                    <td class="py-4 font-medium text-gray-800">${index + 1}. ${question}</td>
+                                    ${qData.options.map(option => `
+                                        <td class="py-4 text-center">
+                                            <label class="flex justify-center items-center h-8 w-8 mx-auto rounded-full hover:bg-gray-100 cursor-pointer has-[:checked]:bg-[#eef3e6]">
+                                                <input type="radio" name="${key}-${index}" value="${option.value}" class="h-5 w-5 text-[#6B8E23] focus:ring-offset-1 focus:ring-[#8FB158] border-gray-400">
+                                            </label>
+                                        </td>
+                                    `).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>`;
             return html;
         }
@@ -1672,9 +1712,9 @@
 
             const traumaTrigger = document.getElementById('mh-trauma-trigger').value;
             if (traumaTrigger === 'si') {
-                 containerHTML += renderQuestionnaire('pcl5');
+                containerHTML += renderQuestionnaire('pcl5');
             }
-
+            
             mh.questionnairesContainer.innerHTML = containerHTML;
         }
         
@@ -1809,7 +1849,6 @@
         function copyMHResults() {
              let shareText = "--- Mi perfil de salud mental ---\n\n";
              
-             shareText += "== Contexto personal ==\n";
              mh.contextData = {
                 historyFamily: document.getElementById('mh-history-family').value,
                 historyPersonal: document.getElementById('mh-history-personal').value,
@@ -1817,6 +1856,10 @@
                 perpetuators: document.getElementById('mh-perpetuators').value,
                 protectives: document.getElementById('mh-protectives').value
             };
+
+             shareText += "== Contexto personal ==\n";
+             if (mh.contextData.historyFamily.trim()) shareText += `Antecedentes familiares: ${mh.contextData.historyFamily}\n`;
+             if (mh.contextData.historyPersonal.trim()) shareText += `Historial personal: ${mh.contextData.historyPersonal}\n`;
              shareText += `Eventos desencadenantes: ${mh.contextData.precipitants || 'No especificado'}\n`;
              shareText += `Factores que mantienen el problema: ${mh.contextData.perpetuators || 'No especificado'}\n`;
              shareText += `Factores protectores: ${mh.contextData.protectives || 'No especificado'}\n\n`;
@@ -1900,6 +1943,13 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
